@@ -117,6 +117,16 @@ class _ProgressChartState extends State<ProgressChart> {
       selected = sorted.last;
       selectedLine = lines.firstWhere((line) => line.points.contains(selected));
     }
+    if (selected == null && widget.selectedDay != null) {
+      for (final line in lines) {
+        final point = lastPointOnDay(line.points, widget.selectedDay!);
+        if (point != null) {
+          selected = point;
+          selectedLine = line;
+          break;
+        }
+      }
+    }
     final selection = selected;
     final selectionLine = selectedLine;
     return TweenAnimationBuilder<double>(
@@ -131,190 +141,236 @@ class _ProgressChartState extends State<ProgressChart> {
         children: [
           LayoutBuilder(
             builder: (context, constraints) {
-              // Fixed reserves keep comparison plots aligned independently of units.
+              // Matching axis reserves align plots for kilograms and centimetres.
               final divisions = constraints.maxWidth < 340 ? 2 : 3;
               final lastDay = (widget.window.days - 1).toDouble();
               final ticks = List.generate(
                 divisions + 1,
                 (index) => (lastDay * index / divisions).round().toDouble(),
               );
+              void selectPoint(Offset position) {
+                final width = constraints.maxWidth - 32;
+                const height = 232.0 - 30;
+                ProgressPoint? nearest;
+                var distance = 32.0 * 32;
+                for (final line in lines) {
+                  for (final point in line.points) {
+                    final location = Offset(
+                      (widget.window.x(point.date) + .2) /
+                          (widget.window.days + .35) *
+                          width,
+                      (scale.maxY - point.value) /
+                          (scale.maxY - scale.minY) *
+                          height,
+                    );
+                    final delta = (location - position).distanceSquared;
+                    if (delta < distance) {
+                      distance = delta;
+                      nearest = point;
+                    }
+                  }
+                }
+                if (nearest == null) return;
+                if (_selectedId != nearest.id) {
+                  setState(() => _selectedId = nearest!.id);
+                }
+                widget.onSelectDay?.call(nearest.date.toLocal());
+              }
+
               return RootSwipeGuard(
                 child: SizedBox(
-                  height: 220,
-                  child: LineChart(
-                    LineChartData(
-                      minX: -.35,
-                      maxX: widget.window.days + .35,
-                      minY: scale.minY,
-                      maxY: scale.maxY,
-                      gridData: FlGridData(
-                        show: true,
-                        drawVerticalLine: false,
-                        horizontalInterval: scale.step,
-                        getDrawingHorizontalLine: (_) => FlLine(
-                          color: colors.line.withValues(alpha: .45),
-                          strokeWidth: .6,
-                        ),
-                      ),
-                      borderData: FlBorderData(show: false),
-                      titlesData: FlTitlesData(
-                        topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 20,
-                            getTitlesWidget: _noTitle,
-                          ),
-                        ),
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 42,
-                            interval: scale.step,
-                            minIncluded: false,
-                            maxIncluded: false,
-                            getTitlesWidget: (value, meta) => SideTitleWidget(
-                              axisSide: meta.axisSide,
-                              space: 6,
-                              child: Text(
-                                progressNumber(value, widget.isRu),
-                                style: text.inter(size: 9, color: colors.muted),
+                  height: 232,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTapUp: (details) => selectPoint(details.localPosition),
+                    onHorizontalDragStart: (details) =>
+                        selectPoint(details.localPosition),
+                    onHorizontalDragUpdate: (details) =>
+                        selectPoint(details.localPosition),
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      onHover: (event) => selectPoint(event.localPosition),
+                      child: IgnorePointer(
+                        child: LineChart(
+                          LineChartData(
+                            minX: -.2,
+                            maxX: widget.window.days + .15,
+                            minY: scale.minY,
+                            maxY: scale.maxY,
+                            gridData: FlGridData(
+                              show: true,
+                              drawVerticalLine: false,
+                              horizontalInterval: scale.step,
+                              getDrawingHorizontalLine: (_) => FlLine(
+                                color: colors.line.withValues(alpha: .38),
+                                strokeWidth: .5,
                               ),
                             ),
-                          ),
-                        ),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 30,
-                            interval: 1,
-                            minIncluded: false,
-                            maxIncluded: false,
-                            getTitlesWidget: (value, meta) =>
-                                ticks.contains(value)
-                                ? SideTitleWidget(
-                                    axisSide: meta.axisSide,
-                                    space: 9,
-                                    fitInside:
-                                        SideTitleFitInsideData.fromTitleMeta(
-                                          meta,
-                                          enabled: true,
-                                          distanceFromEdge: 0,
+                            borderData: FlBorderData(show: false),
+                            titlesData: FlTitlesData(
+                              topTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              leftTitles: const AxisTitles(
+                                sideTitles: SideTitles(showTitles: false),
+                              ),
+                              rightTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 32,
+                                  interval: scale.step,
+                                  minIncluded: false,
+                                  maxIncluded: false,
+                                  getTitlesWidget: (value, meta) =>
+                                      SideTitleWidget(
+                                        axisSide: meta.axisSide,
+                                        space: 8,
+                                        child: Text(
+                                          NumberFormat(
+                                            '0.#',
+                                            widget.isRu ? 'ru' : 'en',
+                                          ).format(value),
+                                          style: text.inter(
+                                            size: 9,
+                                            color: colors.muted,
+                                          ),
                                         ),
-                                    child: Text(
-                                      DateFormat(
-                                        'd MMM',
-                                        widget.isRu ? 'ru' : 'en',
-                                      ).format(widget.window.dateAt(value)),
-                                      style: text.inter(
-                                        size: 9,
-                                        color: colors.muted,
+                                      ),
+                                ),
+                              ),
+                              bottomTitles: AxisTitles(
+                                sideTitles: SideTitles(
+                                  showTitles: true,
+                                  reservedSize: 30,
+                                  interval: 1,
+                                  minIncluded: false,
+                                  maxIncluded: false,
+                                  getTitlesWidget: (value, meta) =>
+                                      ticks.contains(value)
+                                      ? SideTitleWidget(
+                                          axisSide: meta.axisSide,
+                                          space: 9,
+                                          fitInside:
+                                              SideTitleFitInsideData.fromTitleMeta(
+                                                meta,
+                                                enabled: true,
+                                                distanceFromEdge: 0,
+                                              ),
+                                          child: Text(
+                                            DateFormat(
+                                              'd MMM',
+                                              widget.isRu ? 'ru' : 'en',
+                                            ).format(
+                                              widget.window.dateAt(value),
+                                            ),
+                                            style: text.inter(
+                                              size: 9,
+                                              color: colors.muted,
+                                            ),
+                                          ),
+                                        )
+                                      : const SizedBox.shrink(),
+                                ),
+                              ),
+                            ),
+                            extraLinesData: ExtraLinesData(
+                              verticalLines: [
+                                if (widget.selectedDay != null &&
+                                    widget.window.contains(widget.selectedDay!))
+                                  VerticalLine(
+                                    x: widget.window.x(
+                                      DateTime(
+                                        widget.selectedDay!.toLocal().year,
+                                        widget.selectedDay!.toLocal().month,
+                                        widget.selectedDay!.toLocal().day,
+                                        12,
                                       ),
                                     ),
-                                  )
-                                : const SizedBox.shrink(),
-                          ),
-                        ),
-                      ),
-                      extraLinesData: ExtraLinesData(
-                        verticalLines: [
-                          if (widget.selectedDay != null &&
-                              widget.window.contains(widget.selectedDay!))
-                            VerticalLine(
-                              x: widget.window.x(
-                                DateTime(
-                                  widget.selectedDay!.toLocal().year,
-                                  widget.selectedDay!.toLocal().month,
-                                  widget.selectedDay!.toLocal().day,
-                                  12,
-                                ),
-                              ),
-                              color: colors.muted.withValues(alpha: .4),
-                              strokeWidth: 1,
-                              dashArray: [3, 4],
+                                    color: colors.muted.withValues(alpha: .4),
+                                    strokeWidth: 1,
+                                    dashArray: [3, 4],
+                                  ),
+                              ],
                             ),
-                        ],
-                      ),
-                      lineTouchData: LineTouchData(
-                        handleBuiltInTouches: false,
-                        touchSpotThreshold: 32,
-                        touchCallback: (event, response) {
-                          if (!event.isInterestedForInteractions ||
-                              response?.lineBarSpots?.isNotEmpty != true) {
-                            return;
-                          }
-                          final spot = response!.lineBarSpots!.first;
-                          final point =
-                              lines[spot.barIndex].points[spot.spotIndex];
-                          if (_selectedId != point.id) {
-                            setState(() => _selectedId = point.id);
-                          }
-                          widget.onSelectDay?.call(point.date.toLocal());
-                        },
-                      ),
-                      lineBarsData: [
-                        for (final line in lines)
-                          LineChartBarData(
-                            spots: [
-                              for (final point in line.points)
-                                FlSpot(
-                                  widget.window.x(point.date),
-                                  point.value,
+                            lineTouchData: const LineTouchData(
+                              enabled: false,
+                              handleBuiltInTouches: false,
+                            ),
+                            lineBarsData: [
+                              for (final line in lines)
+                                LineChartBarData(
+                                  spots: [
+                                    for (final point in line.points)
+                                      FlSpot(
+                                        widget.window.x(point.date),
+                                        point.value,
+                                      ),
+                                  ],
+                                  isCurved: true,
+                                  curveSmoothness: .12,
+                                  preventCurveOverShooting: true,
+                                  preventCurveOvershootingThreshold: 0,
+                                  color: line.color,
+                                  barWidth: 2.4,
+                                  dashArray: line.dashed ? [5, 4] : null,
+                                  isStrokeCapRound: true,
+                                  dotData: FlDotData(
+                                    show: true,
+                                    getDotPainter: (spot, _, _, index) {
+                                      final point = line.points[index];
+                                      final highlighted =
+                                          point.id == selection?.id ||
+                                          (widget.selectedDay != null &&
+                                              isSameLocalCalendarDay(
+                                                point.date,
+                                                widget.selectedDay!,
+                                              ));
+                                      return line.dashed
+                                          ? FlDotSquarePainter(
+                                              size: highlighted ? 7 : 4,
+                                              color: line.color,
+                                              strokeColor: colors.card,
+                                              strokeWidth: 1,
+                                            )
+                                          : FlDotCirclePainter(
+                                              radius: highlighted
+                                                  ? 4.5
+                                                  : line.points.length > 45
+                                                  ? 1.5
+                                                  : 2.4,
+                                              color: highlighted
+                                                  ? colors.card
+                                                  : line.color,
+                                              strokeColor: highlighted
+                                                  ? line.color
+                                                  : colors.card,
+                                              strokeWidth: highlighted
+                                                  ? 2.4
+                                                  : 1.4,
+                                            );
+                                    },
+                                  ),
+                                  belowBarData: BarAreaData(
+                                    show:
+                                        lines.length == 1 &&
+                                        line.points.length > 1,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        line.color.withValues(alpha: .105),
+                                        line.color.withValues(alpha: 0),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                             ],
-                            isCurved: false,
-                            color: line.color,
-                            barWidth: 2,
-                            dashArray: line.dashed ? [6, 4] : null,
-                            isStrokeCapRound: true,
-                            dotData: FlDotData(
-                              show: true,
-                              getDotPainter: (spot, _, _, index) {
-                                final point = line.points[index];
-                                final highlighted =
-                                    point.id == selection?.id ||
-                                    (widget.selectedDay != null &&
-                                        isSameLocalCalendarDay(
-                                          point.date,
-                                          widget.selectedDay!,
-                                        ));
-                                return line.dashed
-                                    ? FlDotSquarePainter(
-                                        size: highlighted ? 8 : 5,
-                                        color: line.color,
-                                        strokeColor: colors.card,
-                                        strokeWidth: 1,
-                                      )
-                                    : FlDotCirclePainter(
-                                        radius: highlighted
-                                            ? 4.5
-                                            : line.points.length > 90
-                                            ? 1.8
-                                            : 3,
-                                        color: line.color,
-                                        strokeColor: colors.card,
-                                        strokeWidth: 1.5,
-                                      );
-                              },
-                            ),
-                            belowBarData: BarAreaData(
-                              show: lines.length == 1 && line.points.length > 1,
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  line.color.withValues(alpha: .12),
-                                  line.color.withValues(alpha: .01),
-                                ],
-                              ),
-                            ),
                           ),
-                      ],
+                          // Never interpolate timestamps/values when switching datasets.
+                          duration: Duration.zero,
+                        ),
+                      ),
                     ),
-                    // Never interpolate timestamps/values when switching datasets.
-                    duration: Duration.zero,
                   ),
                 ),
               );
@@ -324,21 +380,68 @@ class _ProgressChartState extends State<ProgressChart> {
           Semantics(
             liveRegion: true,
             child: Container(
+              key: const ValueKey('progressSelection'),
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.fromLTRB(14, 13, 14, 12),
               decoration: BoxDecoration(
-                color: colors.card2,
-                borderRadius: BorderRadius.circular(12),
+                color: colors.accentSoft.withValues(alpha: .4),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(color: colors.accent.withValues(alpha: .08)),
               ),
-              child: Text(
-                selection == null
-                    ? (widget.isRu
-                          ? 'Коснитесь точки для просмотра'
-                          : 'Touch a point to inspect')
-                    : '${selectionLine!.label} · ${progressNumber(selection.value, widget.isRu)} ${widget.unit}'
-                          '\n${DateFormat('d MMM y · HH:mm:ss', widget.isRu ? 'ru' : 'en').format(selection.date.toLocal())}',
-                style: text.inter(size: 11, height: 1.5),
-              ),
+              child: selection == null
+                  ? Text(
+                      widget.selectedDay != null
+                          ? (widget.isRu
+                                ? 'Нет измерения за выбранный день'
+                                : 'No reading on the selected day')
+                          : (widget.isRu
+                                ? 'Коснитесь точки для просмотра'
+                                : 'Touch a point to inspect'),
+                      style: text.inter(
+                        size: 11,
+                        color: colors.fg2,
+                        height: 1.5,
+                      ),
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 8,
+                          runSpacing: 4,
+                          children: [
+                            Text(
+                              '${progressNumber(selection.value, widget.isRu)} ${widget.unit}',
+                              style: text.fraunces(
+                                size: 21,
+                                weight: FontWeight.w700,
+                              ),
+                            ),
+                            Text(
+                              selectionLine!.label,
+                              style: text.inter(
+                                size: 10,
+                                color: selectionLine.color,
+                                weight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          DateFormat(
+                            'd MMM y · HH:mm:ss',
+                            widget.isRu ? 'ru' : 'en',
+                          ).format(selection.date.toLocal()),
+                          style: text.inter(
+                            size: 10,
+                            color: colors.fg2,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
             ),
           ),
           if (all.length == 1)
@@ -356,5 +459,3 @@ class _ProgressChartState extends State<ProgressChart> {
     );
   }
 }
-
-Widget _noTitle(double value, TitleMeta meta) => const SizedBox.shrink();

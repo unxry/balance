@@ -243,6 +243,50 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('vertical drags through a plot scroll the containing page', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(414, 896));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    final controller = ScrollController();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(
+      app(
+        SingleChildScrollView(
+          controller: controller,
+          child: Column(
+            children: [
+              ProgressChart(
+                window: ProgressWindow(days: 30, now: DateTime(2026, 10, 15)),
+                unit: 'cm',
+                isRu: false,
+                lines: [
+                  ProgressLine(
+                    label: 'Chest',
+                    color: Colors.green,
+                    points: [
+                      ProgressPoint('a', DateTime(2026, 10, 1), 94),
+                      ProgressPoint('b', DateTime(2026, 10, 15), 92.5),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 1000),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.dragFrom(
+      tester.getCenter(find.byType(LineChart)),
+      const Offset(0, -150),
+    );
+    await tester.pumpAndSettle();
+    expect(controller.offset, greaterThan(100));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('touch selects a real intraday point and reports its date', (
     tester,
   ) async {
@@ -278,8 +322,10 @@ void main() {
     );
     final x =
         rect.left +
-        42 +
-        (window.x(points.first.date) + .35) / 7.7 * (rect.width - 62);
+        (window.x(points.first.date) - chart.data.minX) /
+            (chart.data.maxX - chart.data.minX) *
+            (rect.width -
+                chart.data.titlesData.rightTitles.sideTitles.reservedSize);
     final y =
         rect.top +
         (scale.maxY - 92.5) / (scale.maxY - scale.minY) * (rect.height - 30);

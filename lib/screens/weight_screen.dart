@@ -14,6 +14,7 @@ import '../providers/settings_provider.dart';
 import '../services/balance_analytics_service.dart';
 import '../services/progress_series.dart';
 import '../widgets/progress_chart.dart';
+import '../widgets/progress_segmented_control.dart';
 import 'body_progress_section.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
@@ -266,51 +267,15 @@ class _WeightScreenState extends State<WeightScreen> {
     );
   }
 
-  Widget _progressModes(AppColors colors, AppText text, S strings) => Container(
-    padding: const EdgeInsets.all(4),
-    decoration: BoxDecoration(
-      color: colors.card2,
-      borderRadius: BorderRadius.circular(999),
-    ),
-    child: Row(
-      children: [
-        for (var index = 0; index < 3; index++)
-          Expanded(
-            child: Semantics(
-              selected: _progressMode == index,
-              button: true,
-              child: InkWell(
-                key: ValueKey('progressMode-$index'),
-                borderRadius: BorderRadius.circular(999),
-                onTap: () => setState(() => _progressMode = index),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 180),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _progressMode == index
-                        ? colors.surface
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      (strings.isRu
-                          ? ['Вес', 'Замеры', 'Сравнение']
-                          : ['Weight', 'Measurements', 'Compare'])[index],
-                      style: text.inter(size: 12, weight: FontWeight.w700),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-      ],
-    ),
-  );
+  Widget _progressModes(AppColors colors, AppText text, S strings) =>
+      ProgressSegmentedControl(
+        labels: strings.isRu
+            ? const ['Вес', 'Замеры', 'Сравнение']
+            : const ['Weight', 'Measurements', 'Compare'],
+        itemKeys: List.generate(3, (index) => ValueKey('progressMode-$index')),
+        selected: _progressMode,
+        onChanged: (index) => setState(() => _progressMode = index),
+      );
 
   void _scheduleSummaryGraphVisibilityCheck() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -453,61 +418,14 @@ class _WeightScreenState extends State<WeightScreen> {
     ];
     return Semantics(
       label: strings.isRu ? 'Период анализа' : 'Analytics period',
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: colors.card2,
-          borderRadius: BorderRadius.circular(999),
-        ),
-        child: Row(
-          children: [
-            for (final item in items)
-              Expanded(
-                child: Semantics(
-                  selected: _range == item.$1,
-                  button: true,
-                  child: InkWell(
-                    key: ValueKey('weightRange-${item.$1.name}'),
-                    onTap: () => setState(() {
-                      _range = item.$1;
-                    }),
-                    borderRadius: BorderRadius.circular(999),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 220),
-                      curve: Curves.easeOutCubic,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 2,
-                      ),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: _range == item.$1
-                            ? colors.surface
-                            : Colors.transparent,
-                        borderRadius: BorderRadius.circular(999),
-                        boxShadow: _range == item.$1
-                            ? [
-                                BoxShadow(
-                                  color: colors.fg.withValues(alpha: 0.07),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ]
-                            : null,
-                      ),
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          item.$2,
-                          style: text.inter(size: 12, weight: FontWeight.w700),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
+      child: ProgressSegmentedControl(
+        secondary: true,
+        labels: items.map((item) => item.$2).toList(),
+        itemKeys: items
+            .map((item) => ValueKey('weightRange-${item.$1.name}'))
+            .toList(),
+        selected: items.indexWhere((item) => item.$1 == _range),
+        onChanged: (index) => setState(() => _range = items[index].$1),
       ),
     );
   }
@@ -523,7 +441,7 @@ class _WeightScreenState extends State<WeightScreen> {
     final changeColor = _movementColor(colors, data.profile.goal, change);
     return SectionCard(
       radius: 24,
-      padding: const EdgeInsets.fromLTRB(14, 18, 14, 14),
+      padding: const EdgeInsets.fromLTRB(12, 20, 12, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

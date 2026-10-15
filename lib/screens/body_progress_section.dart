@@ -109,17 +109,52 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
         .reversed
         .toList();
 
+    Widget bodyLegend() => Wrap(
+      spacing: 8,
+      runSpacing: 4,
+      children: [
+        for (final type in BodyMeasurementType.values)
+          FilterChip(
+            key: ValueKey('bodyLegend-${type.name}'),
+            selected: _visible.contains(type),
+            selectedColor: colors.accentSoft.withValues(alpha: .55),
+            backgroundColor: Colors.transparent,
+            showCheckmark: false,
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+            ),
+            side: BorderSide(
+              color: _visible.contains(type)
+                  ? _bodyColor(type, colors).withValues(alpha: .3)
+                  : colors.line.withValues(alpha: .45),
+            ),
+            checkmarkColor: _bodyColor(type, colors),
+            avatar: Icon(
+              type == BodyMeasurementType.chest ? Icons.circle : Icons.square,
+              size: 9,
+              color: _bodyColor(type, colors),
+            ),
+            label: Text(bodyTypeLabel(type, ru), style: text.inter(size: 12)),
+            onSelected: (visible) => setState(
+              () => visible ? _visible.add(type) : _visible.remove(type),
+            ),
+          ),
+      ],
+    );
+
     Widget chartCard(String title, List<ProgressLine> lines, String unit) =>
         SectionCard(
           radius: 24,
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.fromLTRB(12, 20, 12, 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 '$title · $unit',
-                style: text.inter(size: 13, weight: FontWeight.w700),
+                style: text.fraunces(size: 19, weight: FontWeight.w700),
               ),
+              if (unit == cm) ...[const SizedBox(height: 10), bodyLegend()],
               const SizedBox(height: 16),
               ProgressChart(
                 key: ValueKey('bodyChart-$unit'),
@@ -197,34 +232,6 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
           style: text.inter(size: 11, color: colors.muted),
         ),
         const SizedBox(height: 10),
-        Wrap(
-          spacing: 8,
-          runSpacing: 4,
-          children: [
-            for (final type in BodyMeasurementType.values)
-              FilterChip(
-                key: ValueKey('bodyLegend-${type.name}'),
-                selected: _visible.contains(type),
-                selectedColor: colors.card2,
-                checkmarkColor: _bodyColor(type, colors),
-                avatar: Icon(
-                  type == BodyMeasurementType.chest
-                      ? Icons.circle
-                      : Icons.square,
-                  size: 9,
-                  color: _bodyColor(type, colors),
-                ),
-                label: Text(
-                  bodyTypeLabel(type, ru),
-                  style: text.inter(size: 12),
-                ),
-                onSelected: (visible) => setState(
-                  () => visible ? _visible.add(type) : _visible.remove(type),
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(height: 10),
         if (widget.comparison) ...[
           chartCard(ru ? 'Вес' : 'Weight', [
             ProgressLine(
@@ -245,7 +252,7 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
             children: [
               Text(
                 ru ? 'Изменение за период' : 'Change in this period',
-                style: text.inter(size: 13, weight: FontWeight.w700),
+                style: text.fraunces(size: 19, weight: FontWeight.w700),
               ),
               const SizedBox(height: 8),
               if (widget.comparison)

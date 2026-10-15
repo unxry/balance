@@ -76,7 +76,7 @@ void main() {
         healthService: _NotDeterminedHealth(),
         waterWriter: (_, _) => Future.value(),
       );
-      await data.load();
+      await tester.runAsync(data.load);
       addTearDown(() async {
         data.dispose();
       });

@@ -11,6 +11,8 @@ import '../models/body_measurement.dart';
 import '../models/recipe_models.dart';
 import '../models/reminder_models.dart';
 import '../models/user_profile.dart';
+import '../models/daily_tip.dart';
+import '../services/daily_tips_service.dart';
 import '../services/achievement_engine.dart';
 import '../services/activity_motion_service.dart';
 import '../services/health_service.dart';
@@ -91,6 +93,70 @@ class AppDataProvider extends ChangeNotifier {
   String? _analyticsCacheDay;
   final AchievementEngine _achievementEngine = const AchievementEngine();
   final SmartReminderEngine _smartReminderEngine = const SmartReminderEngine();
+  late DailyTipsService dailyTips;
+  String? dailyTipsError;
+
+  TipContext _tipContext() {
+    final cutoff = localDateKey(
+      DateTime(today.year, today.month, today.day - 6),
+    );
+    final foodDays = _foodHistory.entries.where(
+      (entry) =>
+          entry.key.compareTo(cutoff) >= 0 &&
+          entry.key.compareTo(localDateKey(today)) <= 0 &&
+          entry.value.isNotEmpty,
+    );
+    final completedDays = foodDays.where(
+      (entry) => entry.key != localDateKey(today),
+    );
+    final lowDays = completedDays.where((entry) {
+      final goal = calorieGoalForDate(entry.key);
+      final logged = entry.value.fold<int>(0, (sum, food) => sum + food.kcal);
+      return goal > 0 && logged < goal * .75;
+    }).length;
+    return TipContext(
+      hasFood: foodDays.isNotEmpty,
+      hasWater: _waterHistory.entries.any(
+        (entry) =>
+            entry.key.compareTo(cutoff) >= 0 &&
+            entry.key.compareTo(localDateKey(today)) <= 0 &&
+            entry.value > 0,
+      ),
+      hasSteps: activityAvailable,
+      hasWeightTrend:
+          weightHistory
+              .map((entry) => localDateKey(entry.date))
+              .toSet()
+              .length >=
+          2,
+      lowLoggedIntake: lowDays >= 3,
+    );
+  }
+
+  Future<void> refreshDailyTip() async {
+    try {
+      await dailyTips.refresh(context: _tipContext());
+      dailyTipsError = null;
+    } catch (_) {
+      dailyTipsError = 'storage';
+    }
+    if (!_disposed) notifyListeners();
+  }
+
+  Future<void> setTipsPersonalized(bool value) async {
+    await dailyTips.setPersonalized(value);
+    if (!_disposed) notifyListeners();
+  }
+
+  Future<void> toggleSavedTip(String id) async {
+    await dailyTips.toggleSaved(id);
+    if (!_disposed) notifyListeners();
+  }
+
+  Future<void> setTipCompleted(String date, bool value) async {
+    await dailyTips.setCompleted(date, value);
+    if (!_disposed) notifyListeners();
+  }
 
   UserProfile profile = UserProfile();
 
@@ -274,9 +340,14 @@ class AppDataProvider extends ChangeNotifier {
 
     _updateStreak();
 
+    dailyTips = DailyTipsService(
+      store: HiveDailyTipsStore(_userBox),
+      now: _now,
+    );
     _loaded = true;
     _syncDailyBalance();
     await refreshSteps();
+    await refreshDailyTip();
     notifyListeners();
   }
 
@@ -536,6 +607,7 @@ class AppDataProvider extends ChangeNotifier {
     if (!_loaded) return;
     final todayKey = localDateKey(_now());
     if (_activeDayKey == todayKey) return;
+    unawaited(refreshDailyTip());
 
     final followedActiveDay = selectedDateKey == _activeDayKey;
 
@@ -893,6 +965,7 @@ class AppDataProvider extends ChangeNotifier {
     _waterDerivedTimer?.cancel();
     _pendingWaterDerived.clear();
     await _waterCommitTail;
+    await dailyTips.pending;
     _stopActivityMotion();
     await _userBox.clear();
     await _foodBox.clear();
@@ -1090,6 +1163,7 @@ class AppDataProvider extends ChangeNotifier {
   }
 
   Future<void> persistPendingMutations() async {
+    if (_loaded) await dailyTips.pending;
     if (_pendingBodyWrites > 0) await _bodyWrites;
     await Future.wait(
       {
@@ -1449,7 +1523,9 @@ class AppDataProvider extends ChangeNotifier {
         waterGoalLiters: waterGoalLiters,
         steps: todaySteps,
         latestWeightDate: latestActualWeightDate,
-        advice: analyticsForDays(30).advice.ru,
+        advice:
+            dailyTips.currentTip?.ru.body ??
+            'Откройте Balance, чтобы посмотреть идею дня.',
         manualReminders: manualReminders,
       ),
     );

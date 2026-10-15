@@ -536,11 +536,18 @@ void main() {
       final firstChart = tester.widget<LineChart>(find.byType(LineChart));
       expect(firstChart.data.lineBarsData.single.spots, hasLength(1));
       await tester.tap(find.byKey(const ValueKey('weightRange-week')));
-      await tester.pump();
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('weightWeeklyOverview')),
+        160,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(
         find.byKey(const ValueKey('weightWeeklyOverview')),
         findsOneWidget,
       );
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, 700));
+      await tester.pumpAndSettle();
       final collection = find.byKey(const ValueKey('weightCollectionState'));
       expect(
         find.descendant(
@@ -598,7 +605,8 @@ void main() {
       expect(find.byKey(const ValueKey('weightCollectionState')), findsNothing);
       final chart = tester.widget<LineChart>(find.byType(LineChart));
       expect(chart.data.lineBarsData.single.spots, hasLength(2));
-      expect(chart.data.lineBarsData.first.isCurved, isFalse);
+      expect(chart.data.lineBarsData.first.isCurved, isTrue);
+      expect(chart.data.lineBarsData.first.preventCurveOverShooting, isTrue);
       expect(chart.data.lineBarsData.first.isStrokeCapRound, isTrue);
     },
   );
@@ -1142,9 +1150,11 @@ void main() {
     expect(find.byKey(const ValueKey('adviceDetailSheet')), findsOneWidget);
     expect(find.text('СОВЕТ ДНЯ'), findsWidgets);
     expect(find.text('На основе'), findsOneWidget);
-    expect(find.text('Питание'), findsOneWidget);
-    expect(find.text('Вода'), findsOneWidget);
-    expect(find.text('Шаги'), findsOneWidget);
+    expect(
+      find.text('Универсальная идея · личные данные не использовались'),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('tipPersonalization')), findsOneWidget);
   });
 
   testWidgets('Diary action ends above the glass navigation', (tester) async {
