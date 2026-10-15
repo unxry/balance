@@ -64,7 +64,11 @@ Future<void> main() async {
                       (
                         type,
                         DateTime(2026, 10, day, 9),
-                        (type == BodyMeasurementType.chest ? 92.3 : 99.1) +
+                        (switch (type) {
+                              BodyMeasurementType.chest => 92.3,
+                              BodyMeasurementType.waist => 74.5,
+                              BodyMeasurementType.hips => 99.1,
+                            }) +
                             (15 - day) * .1,
                       ),
               ];
@@ -152,6 +156,11 @@ Future<void> main() async {
       date: date.add(const Duration(hours: 1)),
     );
     await data.addBodyMeasurement(
+      type: BodyMeasurementType.waist,
+      cm: 76 - index * .14 + variation,
+      date: date.add(const Duration(hours: 1, minutes: 5)),
+    );
+    await data.addBodyMeasurement(
       type: BodyMeasurementType.hips,
       cm: 101 - index * .2 + variation,
       date: date.add(const Duration(hours: 1, minutes: 10)),
@@ -162,6 +171,11 @@ Future<void> main() async {
     type: BodyMeasurementType.chest,
     cm: 92.3,
     date: DateTime(2026, 10, 15, 9, 30),
+  );
+  await data.addBodyMeasurement(
+    type: BodyMeasurementType.waist,
+    cm: 74.5,
+    date: DateTime(2026, 10, 15, 9, 35),
   );
   await data.addBodyMeasurement(
     type: BodyMeasurementType.hips,

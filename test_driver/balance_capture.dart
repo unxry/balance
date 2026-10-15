@@ -30,6 +30,29 @@ Future<void> main() async {
       }
 
       await driver.tap(find.byValueKey('rootTab-weight'));
+      if (Platform.environment['BALANCE_CAPTURE_MEASUREMENTS_ONLY'] == '1') {
+        await mode(1);
+        await capture('measurements-cards');
+        await driver.scrollIntoView(
+          find.byValueKey('bodyChart-см'),
+          alignment: .25,
+        );
+        await capture('measurements-chart');
+        await top();
+        await mode(2);
+        await capture('comparison-top');
+        await driver.scrollIntoView(
+          find.byValueKey('comparisonDate'),
+          alignment: .25,
+        );
+        await capture('comparison-values');
+        await top();
+        await mode(1);
+        await driver.tap(find.byValueKey('addWeightButton'));
+        await driver.tap(find.byValueKey('bodyType-waist'));
+        await capture('waist-editor');
+        return;
+      }
       if (Platform.environment['BALANCE_CAPTURE_PERIODS_ONLY'] == '1') {
         for (final period in ['m3', 'year']) {
           await top();

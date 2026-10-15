@@ -679,11 +679,6 @@ class _WeightScreenState extends State<WeightScreen> {
                     _dateLong(entry.date, strings.isRu),
                     style: text.inter(size: 12, weight: FontWeight.w700),
                   ),
-                  const SizedBox(height: 3),
-                  Text(
-                    intl.DateFormat('HH:mm').format(entry.date.toLocal()),
-                    style: text.mono(size: 8, color: colors.muted),
-                  ),
                 ],
               ),
             ),
@@ -1705,8 +1700,7 @@ class _WeightScreenState extends State<WeightScreen> {
                     const SizedBox(height: 8),
                     Text(
                       '${strings.isRu ? "Добавлено" : "Added"}: '
-                      '${_dateLong(entry.createdAt, strings.isRu)} · '
-                      '${intl.DateFormat('HH:mm').format(entry.createdAt)}',
+                      '${_dateLong(entry.createdAt, strings.isRu)}',
                       style: text.inter(size: 10, color: colors.muted),
                     ),
                   ],
@@ -1787,64 +1781,6 @@ class _WeightScreenState extends State<WeightScreen> {
                           Icon(
                             Icons.chevron_right_rounded,
                             color: colors.muted,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    strings.isRu ? 'Время' : 'Time',
-                    style: text.inter(size: 12, weight: FontWeight.w600),
-                  ),
-                  const SizedBox(height: 8),
-                  InkWell(
-                    key: const ValueKey('weightTimeField'),
-                    onTap: () async {
-                      FocusScope.of(context).unfocus();
-                      final picked = await showTimePicker(
-                        context: context,
-                        initialTime: TimeOfDay.fromDateTime(selectedDate),
-                      );
-                      if (picked != null) {
-                        setSheetState(
-                          () => selectedDate = DateTime(
-                            selectedDate.year,
-                            selectedDate.month,
-                            selectedDate.day,
-                            picked.hour,
-                            picked.minute,
-                          ),
-                        );
-                      }
-                    },
-                    borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 16,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colors.card2,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: colors.line.withValues(alpha: .45),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.schedule_rounded,
-                            size: 18,
-                            color: colors.accent,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            intl.DateFormat('HH:mm').format(selectedDate),
-                            style: text.inter(
-                              size: 13,
-                              weight: FontWeight.w600,
-                            ),
                           ),
                         ],
                       ),
@@ -2701,7 +2637,7 @@ String _dateLong(DateTime value, bool isRu) => intl.DateFormat(
 ).format(value.toLocal());
 
 String _dateTime(DateTime value, bool isRu) => intl.DateFormat(
-  isRu ? 'd MMM, HH:mm' : 'MMM d, h:mm a',
+  isRu ? 'd MMM y' : 'MMM d, y',
   isRu ? 'ru' : 'en',
 ).format(value.toLocal());
 

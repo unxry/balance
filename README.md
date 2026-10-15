@@ -8,7 +8,7 @@ typography and accessible light/dark themes. Russian and English are supported.
 
 - Food diary, barcode search, offline food catalog and personal recipes.
 - Water logging with a configurable goal and local reminders.
-- Weight and chest/hip measurement histories, calendar periods and synchronized
+- Weight and chest/waist/hip measurement histories, calendar periods and synchronized
   comparison charts. Missing readings stay missing; no values are invented.
 - Local profile, achievements, versioned backup/restore and automatic snapshots.
 - Daily Tips 2.0: **180 authored bilingual tips**, 18 in each of ten categories,

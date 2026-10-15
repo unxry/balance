@@ -16,15 +16,21 @@ import '../widgets/weight_forecast_note.dart';
 
 String bodyTypeLabel(BodyMeasurementType type, bool isRu) => switch (type) {
   BodyMeasurementType.chest => isRu ? 'Грудь' : 'Chest',
+  BodyMeasurementType.waist => isRu ? 'Талия' : 'Waist',
   BodyMeasurementType.hips => isRu ? 'Бёдра' : 'Hips',
 };
 
-Color _bodyColor(BodyMeasurementType type, AppColors colors) =>
-    type == BodyMeasurementType.chest
-    ? colors.accent
-    : colors.brightness == Brightness.dark
-    ? const Color(0xFFD5A28D)
-    : const Color(0xFFA96D58);
+Color _bodyColor(BodyMeasurementType type, AppColors colors) => switch (type) {
+  BodyMeasurementType.chest => colors.accent,
+  BodyMeasurementType.waist =>
+    colors.brightness == Brightness.dark
+        ? const Color(0xFFA4C1C5)
+        : const Color(0xFF66858A),
+  BodyMeasurementType.hips =>
+    colors.brightness == Brightness.dark
+        ? const Color(0xFFD5A28D)
+        : const Color(0xFFA96D58),
+};
 
 Future<void> showBodyMeasurementEditor(
   BuildContext context, {
@@ -96,10 +102,14 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
       ),
       window,
     );
-    final chest = bodyPoints(BodyMeasurementType.chest);
-    final hips = bodyPoints(BodyMeasurementType.hips);
+    final body = {
+      for (final type in BodyMeasurementType.values) type: bodyPoints(type),
+    };
     final dates = <String, DateTime>{};
-    for (final point in [...weights, ...chest, ...hips]) {
+    for (final point in [
+      ...weights,
+      ...body.values.expand((points) => points),
+    ]) {
       dates[localDateKey(point.date)] = point.date.toLocal();
     }
     final keys = dates.keys.toList()..sort();
@@ -108,13 +118,11 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
         ? <WeightForecastPoint>[]
         : forecastInProgressView(window, [
             ...weights,
-            ...chest,
-            ...hips,
+            ...body.values.expand((points) => points),
           ], fullForecast);
     final domain = ProgressDomain.forPoints(window, [
       ...weights,
-      ...chest,
-      ...hips,
+      ...body.values.expand((points) => points),
     ], forecast: forecast);
     final maxX = math.max(
       widget.days + .15,
@@ -139,7 +147,7 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
             label: bodyTypeLabel(type, ru),
             color: _bodyColor(type, colors),
             dashed: type == BodyMeasurementType.hips,
-            points: type == BodyMeasurementType.chest ? chest : hips,
+            points: body[type]!,
           ),
     ];
     Widget legend() => Wrap(
@@ -164,7 +172,11 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
               borderRadius: BorderRadius.circular(11),
             ),
             avatar: Icon(
-              type == BodyMeasurementType.chest ? Icons.circle : Icons.square,
+              switch (type) {
+                BodyMeasurementType.chest => Icons.circle,
+                BodyMeasurementType.waist => Icons.diamond_rounded,
+                BodyMeasurementType.hips => Icons.square,
+              },
               size: 7,
               color: _bodyColor(type, colors),
             ),
@@ -255,20 +267,14 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
             )
           else
             _dayRow(text, ru ? 'Вес' : 'Weight', weights, selectedDay, kg),
-          _dayRow(
-            text,
-            bodyTypeLabel(BodyMeasurementType.chest, ru),
-            chest,
-            selectedDay,
-            cm,
-          ),
-          _dayRow(
-            text,
-            bodyTypeLabel(BodyMeasurementType.hips, ru),
-            hips,
-            selectedDay,
-            cm,
-          ),
+          for (final type in BodyMeasurementType.values)
+            _dayRow(
+              text,
+              bodyTypeLabel(type, ru),
+              body[type]!,
+              selectedDay,
+              cm,
+            ),
         ],
       ),
     );
@@ -290,18 +296,13 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
         if (widget.comparison) ...[
           _comparisonSummary(context, [
             (ru ? 'Вес' : 'Weight', weights, kg, colors.accent),
-            (
-              bodyTypeLabel(BodyMeasurementType.chest, ru),
-              chest,
-              cm,
-              colors.accent,
-            ),
-            (
-              bodyTypeLabel(BodyMeasurementType.hips, ru),
-              hips,
-              cm,
-              _bodyColor(BodyMeasurementType.hips, colors),
-            ),
+            for (final type in BodyMeasurementType.values)
+              (
+                bodyTypeLabel(type, ru),
+                body[type]!,
+                cm,
+                _bodyColor(type, colors),
+              ),
           ]),
           const SizedBox(height: 12),
           SectionCard(
@@ -408,21 +409,23 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
                         .toList(),
                   ),
               ];
-              return constraints.maxWidth < 270 ||
+              return constraints.maxWidth < 360 ||
                       MediaQuery.textScalerOf(context).scale(1) > 1.35
                   ? Column(
                       children: [
-                        cards[0],
-                        const SizedBox(height: 10),
-                        cards[1],
+                        for (var i = 0; i < cards.length; i++) ...[
+                          if (i > 0) const SizedBox(height: 10),
+                          cards[i],
+                        ],
                       ],
                     )
                   : Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(child: cards[0]),
-                        const SizedBox(width: 10),
-                        Expanded(child: cards[1]),
+                        for (var i = 0; i < cards.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 10),
+                          Expanded(child: cards[i]),
+                        ],
                       ],
                     );
             },
@@ -457,18 +460,8 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
                   style: text.inter(size: 12, weight: FontWeight.w600),
                 ),
                 const SizedBox(height: 6),
-                _summaryRow(
-                  text,
-                  bodyTypeLabel(BodyMeasurementType.chest, ru),
-                  chest,
-                  cm,
-                ),
-                _summaryRow(
-                  text,
-                  bodyTypeLabel(BodyMeasurementType.hips, ru),
-                  hips,
-                  cm,
-                ),
+                for (final type in BodyMeasurementType.values)
+                  _summaryRow(text, bodyTypeLabel(type, ru), body[type]!, cm),
                 const SizedBox(height: 6),
                 Text(
                   ru
@@ -524,7 +517,7 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
                 ),
                 subtitle: Text(
                   DateFormat(
-                    'd MMM y · HH:mm',
+                    'd MMM y',
                     ru ? 'ru' : 'en',
                   ).format(entry.date.toLocal()),
                   style: text.inter(size: 10, color: colors.muted),
@@ -580,7 +573,7 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Text(
-        '$label: ${point == null ? (widget.isRu ? 'нет данных' : 'no data') : '${progressNumber(point.value, widget.isRu, digits: 1)} $unit · ${DateFormat('HH:mm').format(point.date.toLocal())}'}',
+        '$label: ${point == null ? (widget.isRu ? 'нет данных' : 'no data') : '${progressNumber(point.value, widget.isRu, digits: 1)} $unit'}',
         key: ValueKey('comparisonValue-$label'),
         style: text.inter(size: 13),
       ),
@@ -621,19 +614,22 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
     return SectionCard(
       radius: 20,
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-      child: MediaQuery.textScalerOf(context).scale(1) > 1.35
-          ? Column(
-              children: [
-                for (var i = 0; i < metrics.length; i++) item(i, row: true),
-              ],
-            )
-          : Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (var i = 0; i < metrics.length; i++)
-                  Expanded(child: item(i)),
-              ],
-            ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final singleColumn =
+              MediaQuery.textScalerOf(context).scale(1) > 1.35 ||
+              constraints.maxWidth < 260;
+          return Wrap(
+            children: [
+              for (var i = 0; i < metrics.length; i++)
+                SizedBox(
+                  width: constraints.maxWidth / (singleColumn ? 1 : 2),
+                  child: item(i, row: singleColumn),
+                ),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -650,6 +646,7 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
     final delta = previous == null ? null : last!.cm - previous.cm;
     final color = _bodyColor(type, c);
     return SectionCard(
+      key: ValueKey('bodyMetric-${type.name}'),
       radius: 23,
       padding: const EdgeInsets.all(13),
       child: LayoutBuilder(
@@ -682,22 +679,26 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
               ],
             ),
             const SizedBox(height: 10),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: last == null
-                        ? '—'
-                        : progressNumber(last.cm, ru, digits: 1),
-                    style: t.fraunces(
-                      size: constraints.maxWidth < 140 ? 28 : 32,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: last == null
+                          ? '—'
+                          : progressNumber(last.cm, ru, digits: 1),
+                      style: t.fraunces(
+                        size: constraints.maxWidth < 140 ? 28 : 32,
+                      ),
                     ),
-                  ),
-                  TextSpan(
-                    text: ' ${ru ? 'см' : 'cm'}',
-                    style: t.inter(size: 11, color: c.muted),
-                  ),
-                ],
+                    TextSpan(
+                      text: ' ${ru ? 'см' : 'cm'}',
+                      style: t.inter(size: 11, color: c.muted),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 10),
@@ -896,6 +897,7 @@ class _BodyMeasurementEditorState extends State<_BodyMeasurementEditor> {
                   children: [
                     for (final type in BodyMeasurementType.values)
                       ChoiceChip(
+                        key: ValueKey('bodyType-${type.name}'),
                         label: Text(bodyTypeLabel(type, ru)),
                         selected: _type == type,
                         onSelected: widget.entry == null
@@ -952,27 +954,6 @@ class _BodyMeasurementEditorState extends State<_BodyMeasurementEditor> {
                               _date.second,
                               _date.millisecond,
                               _date.microsecond,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    TextButton.icon(
-                      icon: const Icon(Icons.schedule_rounded, size: 17),
-                      label: Text(DateFormat('HH:mm').format(_date)),
-                      onPressed: () async {
-                        final time = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.fromDateTime(_date),
-                        );
-                        if (time != null && mounted) {
-                          setState(
-                            () => _date = DateTime(
-                              _date.year,
-                              _date.month,
-                              _date.day,
-                              time.hour,
-                              time.minute,
                             ),
                           );
                         }

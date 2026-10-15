@@ -127,6 +127,61 @@ void main() {
     }
   }
 
+  testWidgets(
+    'waist can be recorded without a time field and has its own series',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(414, 896));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(app(WeightScreen(onBack: () {})));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('progressMode-1')));
+      await tester.pumpAndSettle();
+      for (final type in BodyMeasurementType.values) {
+        expect(find.byKey(ValueKey('bodyMetric-${type.name}')), findsOneWidget);
+      }
+      await tester.tap(find.byKey(const ValueKey('addWeightButton')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ChoiceChip, 'Талия'));
+      await tester.pumpAndSettle();
+      expect(find.byIcon(Icons.schedule_rounded), findsNothing);
+      await tester.enterText(
+        find.byKey(const ValueKey('bodyMeasurementValue')),
+        '74,5',
+      );
+      await tester.runAsync(() async {
+        await tester.tap(find.byKey(const ValueKey('saveBodyMeasurement')));
+        await data.persistPendingMutations();
+      });
+      await tester.pumpAndSettle();
+      expect(data.bodyMeasurements, hasLength(1));
+      expect(data.bodyMeasurements.single.type, BodyMeasurementType.waist);
+      final chart = tester.widget<ProgressChart>(
+        find.byKey(const ValueKey('bodyChart-см')),
+      );
+      expect(
+        chart.lines
+            .singleWhere((line) => line.label == 'Талия')
+            .points
+            .single
+            .value,
+        74.5,
+      );
+      expect(
+        chart.lines
+            .where((line) => line.label != 'Талия')
+            .every((line) => line.points.isEmpty),
+        isTrue,
+      );
+      await tester.tap(find.byKey(const ValueKey('progressMode-0')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('addWeightButton')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('weightDateField')), findsOneWidget);
+      expect(find.byKey(const ValueKey('weightTimeField')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   testWidgets('add chest only, edit, cancel deletion and confirm deletion', (
     tester,
   ) async {
@@ -233,6 +288,7 @@ void main() {
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Chest: no data'), findsOneWidget);
+    expect(find.text('Waist: no data'), findsOneWidget);
     expect(find.text('Hips: no data'), findsOneWidget);
     await tester.scrollUntilVisible(
       find.byKey(const ValueKey('bodyLegend-chest')),
@@ -247,7 +303,8 @@ void main() {
           .widgetList<LineChart>(find.byType(LineChart))
           .last
           .data
-          .lineBarsData,
+          .lineBarsData
+          .where((line) => line.spots.isNotEmpty),
       hasLength(1),
     );
     expect(tester.takeException(), isNull);
@@ -347,7 +404,8 @@ void main() {
     await tester.tapAt(Offset(x, y));
     await tester.pumpAndSettle();
     expect(selected, points.first.date);
-    expect(find.text('12 Oct 2026 · 08:00'), findsOneWidget);
+    expect(find.text('12 Oct 2026'), findsOneWidget);
+    expect(find.text('12 Oct 2026 · 08:00'), findsNothing);
     expect(tester.takeException(), isNull);
   });
   testWidgets(

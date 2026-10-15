@@ -555,7 +555,7 @@ class _ProgressChartState extends State<ProgressChart>
                                 const SizedBox(height: 4),
                                 Text(
                                   DateFormat(
-                                    'd MMM y${predictionSelected ? '' : ' · HH:mm'}',
+                                    'd MMM y',
                                     widget.isRu ? 'ru' : 'en',
                                   ).format(selection.date.toLocal()),
                                   style: t.inter(size: 10, color: c.fg2),

@@ -1,4 +1,4 @@
-enum BodyMeasurementType { chest, hips }
+enum BodyMeasurementType { chest, waist, hips }
 
 class BodyMeasurement {
   final String id;
