@@ -8,6 +8,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_app/models/body_measurement.dart';
+import 'package:flutter_app/theme/app_colors.dart';
+import 'package:flutter_app/widgets/common.dart';
 import 'package:flutter_app/providers/app_data_provider.dart';
 import 'package:flutter_app/providers/settings_provider.dart';
 import 'package:flutter_app/screens/body_progress_section.dart';
@@ -41,24 +43,31 @@ void main() {
     if (directory.existsSync()) directory.deleteSync(recursive: true);
   });
 
-  Widget app(Widget child, {double scale = 1, bool dark = false}) =>
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: data),
-          ChangeNotifierProvider(create: (_) => SettingsProvider()),
-        ],
-        child: MaterialApp(
-          home: Scaffold(
-            body: MediaQuery(
-              data: MediaQueryData(
-                textScaler: TextScaler.linear(scale),
-                disableAnimations: true,
-              ),
-              child: child,
+  Widget app(
+    Widget child, {
+    double scale = 1,
+    bool dark = false,
+  }) => MultiProvider(
+    providers: [
+      ChangeNotifierProvider.value(value: data),
+      ChangeNotifierProvider(create: (_) => SettingsProvider()),
+    ],
+    child: AppColorsScope(
+      colors: AppColors.of(dark ? AppThemeMode.dark : AppThemeMode.wellness),
+      child: MaterialApp(
+        theme: ThemeData(brightness: dark ? Brightness.dark : Brightness.light),
+        home: Scaffold(
+          body: MediaQuery(
+            data: MediaQueryData(
+              textScaler: TextScaler.linear(scale),
+              disableAnimations: true,
             ),
+            child: child,
           ),
         ),
-      );
+      ),
+    ),
+  );
 
   for (final size in [
     const Size(320, 568),
@@ -101,6 +110,7 @@ void main() {
                   ),
                 ),
                 scale: 1.5,
+                dark: !ru,
               ),
             );
             await tester.pumpAndSettle();
@@ -313,26 +323,128 @@ void main() {
     );
     await tester.pumpAndSettle();
     final chart = tester.widget<LineChart>(find.byType(LineChart));
-    expect(chart.data.lineBarsData.single.spots, hasLength(2));
+    expect(chart.data.lineBarsData.single.spots.length, greaterThan(2));
+    expect(chart.data.lineBarsData.single.spots.first.y, points.first.value);
+    expect(chart.data.lineBarsData.single.spots.last.y, points.last.value);
     // Touch near the first point in the actual plot rectangle.
     final rect = tester.getRect(find.byType(LineChart));
-    final scale = ProgressScale.forValues(
-      points.map((p) => p.value),
-      minimumSpan: 8,
-    );
     final x =
         rect.left +
-        (window.x(points.first.date) - chart.data.minX) /
+        (tester
+                    .widget<ProgressChart>(find.byType(ProgressChart))
+                    .domain
+                    .x(window, points.first.date) -
+                chart.data.minX) /
             (chart.data.maxX - chart.data.minX) *
             (rect.width -
                 chart.data.titlesData.rightTitles.sideTitles.reservedSize);
     final y =
         rect.top +
-        (scale.maxY - 92.5) / (scale.maxY - scale.minY) * (rect.height - 30);
+        (chart.data.maxY - 92.5) /
+            (chart.data.maxY - chart.data.minY) *
+            (rect.height -
+                chart.data.titlesData.bottomTitles.sideTitles.reservedSize);
     await tester.tapAt(Offset(x, y));
     await tester.pumpAndSettle();
     expect(selected, points.first.date);
-    expect(find.textContaining('08:00:00'), findsOneWidget);
+    expect(find.text('12 Oct 2026 · 08:00'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+  testWidgets(
+    'comparison shares future selection without invented body values',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(414, 1100));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.runAsync(() async {
+        for (var day = 1; day <= 15; day += 2) {
+          await data.addWeightEntry(
+            80 - day * .05,
+            date: DateTime(2026, 10, day, 8),
+          );
+        }
+        await data.addBodyMeasurement(
+          type: BodyMeasurementType.chest,
+          cm: 92,
+          date: DateTime(2026, 10, 15, 9),
+        );
+      });
+      expect(data.weightForecast.ready, isTrue);
+      final count = data.weightHistory.length;
+      await tester.pumpWidget(
+        app(
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: BodyProgressSection(
+                days: 30,
+                comparison: true,
+                isRu: false,
+              ),
+            ),
+          ),
+          scale: 1,
+        ),
+      );
+      await tester.pumpAndSettle();
+      final charts = tester
+          .widgetList<LineChart>(find.byType(LineChart))
+          .toList();
+      expect(charts, hasLength(2));
+      expect(charts[0].data.minX, charts[1].data.minX);
+      expect(charts[0].data.maxX, charts[1].data.maxX);
+      expect(
+        charts[0].data.titlesData.rightTitles.sideTitles.reservedSize,
+        lessThanOrEqualTo(32),
+      );
+      final weight = tester
+          .widgetList<ProgressChart>(find.byType(ProgressChart))
+          .first;
+      expect(weight.lines.single.points.length, count);
+      expect(
+        charts.first.data.lineBarsData.where((b) => b.dashArray != null),
+        isNotEmpty,
+      );
+      final actualBar = charts.first.data.lineBarsData.first;
+      expect(
+        actualBar.spots
+            .where((spot) => actualBar.dotData.checkToShowDot(spot, actualBar))
+            .length,
+        count,
+      );
+      final prediction = weight.forecast.last;
+      final chart = charts.first;
+      final rect = tester.getRect(find.byType(LineChart).first);
+      final x =
+          rect.left +
+          (weight.domain.x(weight.window, prediction.date) - chart.data.minX) /
+              (chart.data.maxX - chart.data.minX) *
+              (rect.width -
+                  chart.data.titlesData.rightTitles.sideTitles.reservedSize);
+      final y =
+          rect.top +
+          (chart.data.maxY - prediction.kg) /
+              (chart.data.maxY - chart.data.minY) *
+              weight.height;
+      await tester.tapAt(Offset(x, y));
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('comparisonValue-Weight')))
+            .data,
+        contains('Forecast'),
+      );
+      expect(
+        tester
+            .widget<Text>(find.byKey(const ValueKey('comparisonValue-Chest')))
+            .data,
+        contains('no data'),
+      );
+      final selected = tester
+          .widgetList<ProgressChart>(find.byType(ProgressChart))
+          .toList();
+      expect(selected.first.selectedDay, selected.last.selectedDay);
+      expect(data.weightHistory.length, count);
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

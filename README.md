@@ -54,6 +54,42 @@ General guidance was checked against the [NHS balanced eating guide](https://www
 and [CDC sleep guidance](https://www.cdc.gov/sleep/about/). Tips are original,
 general wellness suggestions, without diagnostic or guaranteed weight-loss claims.
 
+## Weight forecast and progress
+
+Real weight and circumference readings use shape-preserving cubic interpolation
+on actual local calendar coordinates. Drawing samples are never measurements,
+markers or statistics. The approach follows [PCHIP](https://docs.scipy.org/doc/scipy/reference/generated/scipy.interpolate.PchipInterpolator.html);
+the selected period filters records while the visible axis fits their actual span
+with a small marker inset. A single reading stays a single point near the start;
+intraday intervals retain their times. Comparison uses the union of real dates.
+The visible forecast is shortened for sparse history, with an explicit explanation;
+sub-day views show actual readings only. This never changes the fitted horizon.
+Vertical scrolling remains available through the charts and Reduce Motion disables
+entry/selection transitions. Comparison shares dates and selection with separate
+kg/cm scales; missing body readings stay missing.
+
+The existing analytics service fits daily weight medians from the latest 28 calendar
+days using a [Theil–Sen slope](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.theilslopes.html)
+and a median residual intercept. Eligibility requires four distinct measured days
+spanning at least seven inclusive days. Residual MAD filters isolated outliers;
+noise, reversals, excessive rejected readings and rates above 1.5 kg/week suppress
+the forecast. These are conservative product heuristics, not clinical validation.
+The horizon is seven days, or fourteen with at least eight measured days spanning
+two weeks; the week view always shows at most seven future days. With eight
+inliers, 200 deterministic paired bootstrap samples produce a shaded range of
+trend estimates. This is **not** a calibrated prediction/confidence interval for
+future weight and does not represent all biological variability.
+
+`balance_user` → `weightForecastV2` persists algorithm version, true fit time,
+source fingerprints/records, fitted rate and quality metadata. New daily readings
+wait until four calendar days after the last fit; pending data is checked on
+startup/resume. Edits, deletions, same-day and backdated additions invalidate
+immediately, including records added since the previous fit. Unchanged data does
+not change the fit date. Separate observed-record metadata survives restarts.
+Within the cadence, only the visible continuation reanchors to the latest real
+reading; the fitted rate/date stay fixed. Stale or newly inconsistent projections
+are hidden. Forecast values never enter real history, deltas or daily snapshots.
+
 ## Technologies and layout
 
 Flutter/Dart (Dart SDK `^3.9.2`), Provider, Hive, SharedPreferences, SQLite/sqflite,

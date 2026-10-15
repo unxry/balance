@@ -80,7 +80,7 @@ class _BalanceAppState extends State<BalanceApp> with WidgetsBindingObserver {
         boxes: boxes,
         appVersion: const String.fromEnvironment(
           'BALANCE_APP_VERSION',
-          defaultValue: '1.0.0+17',
+          defaultValue: '1.0.0+19',
         ),
         readExtras: () async => {
           'settings': _settings.exportSettings(),

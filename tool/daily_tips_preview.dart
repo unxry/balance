@@ -16,11 +16,88 @@ import 'package:flutter_app/widgets/common.dart';
 Future<void> main() async {
   late SettingsProvider settings;
   late AppDataProvider data;
+  var baseline = <(DateTime, double)>[];
+  var baselineBody = <(BodyMeasurementType, DateTime, double)>[];
+  var largeText = false;
+  var reduceMotion = false;
+  void Function()? rebuild;
+
   enableFlutterDriverExtension(
     handler: (message) async {
       if (message == 'dark') await settings.setTheme(AppThemeMode.dark);
       if (message == 'light') await settings.setTheme(AppThemeMode.wellness);
+      if (message == 'ru') await settings.setLang(AppLang.ru);
       if (message == 'en') await settings.setLang(AppLang.en);
+      if ([
+        'sparse',
+        'restore',
+        'sparse-all',
+        'single',
+        'empty',
+        'restore-all',
+      ].contains(message)) {
+        for (final entry in data.weightHistory.toList()) {
+          await data.deleteWeightEntry(entry.id);
+        }
+        final records = message == 'restore' || message == 'restore-all'
+            ? baseline
+            : message == 'empty'
+            ? <(DateTime, double)>[]
+            : [
+                if (message != 'single') (DateTime(2026, 10, 14, 8), 76.6),
+                (DateTime(2026, 10, 15, 8), 76.5),
+              ];
+        for (final entry in records) {
+          await data.addWeightEntry(entry.$2, date: entry.$1);
+        }
+      }
+      if (['sparse-all', 'single', 'empty', 'restore-all'].contains(message)) {
+        for (final entry in data.bodyMeasurements.toList()) {
+          await data.deleteBodyMeasurement(entry.id);
+        }
+        final records = message == 'restore-all'
+            ? baselineBody
+            : [
+                if (message != 'empty')
+                  for (final type in BodyMeasurementType.values)
+                    for (final day in [if (message != 'single') 14, 15])
+                      (
+                        type,
+                        DateTime(2026, 10, day, 9),
+                        (type == BodyMeasurementType.chest ? 92.3 : 99.1) +
+                            (15 - day) * .1,
+                      ),
+              ];
+        for (final entry in records) {
+          await data.addBodyMeasurement(
+            type: entry.$1,
+            cm: entry.$3,
+            date: entry.$2,
+          );
+        }
+      }
+      if (message == 'large') {
+        largeText = true;
+        reduceMotion = true;
+        rebuild?.call();
+      }
+      if (message == 'close') {
+        for (final entry in data.bodyMeasurements.toList()) {
+          await data.deleteBodyMeasurement(entry.id);
+        }
+        for (var day = 1; day <= 15; day += 2) {
+          for (final type in BodyMeasurementType.values) {
+            await data.addBodyMeasurement(
+              type: type,
+              cm:
+                  94 -
+                  day * .035 +
+                  (type == BodyMeasurementType.hips ? .35 : 0),
+              date: DateTime(2026, 10, day, 9),
+            );
+          }
+        }
+      }
       if (message == 'tip') return data.dailyTips.currentTip!.id;
       return 'OK';
     },
@@ -91,6 +168,11 @@ Future<void> main() async {
     cm: 99.1,
     date: DateTime(2026, 10, 15, 9, 40),
   );
+  baseline = [for (final entry in data.weightHistory) (entry.date, entry.kg)];
+  baselineBody = [
+    for (final entry in data.bodyMeasurements)
+      (entry.type, entry.date, entry.cm),
+  ];
   settings = SettingsProvider();
   runApp(
     MultiProvider(
@@ -115,6 +197,18 @@ Future<void> main() async {
                   brightness: c.brightness,
                   surface: c.surface,
                 ),
+              ),
+              builder: (context, child) => StatefulBuilder(
+                builder: (context, setState) {
+                  rebuild = () => setState(() {});
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(
+                      textScaler: TextScaler.linear(largeText ? 1.5 : 1),
+                      disableAnimations: reduceMotion,
+                    ),
+                    child: child!,
+                  );
+                },
               ),
               home: const RootShell(),
             ),

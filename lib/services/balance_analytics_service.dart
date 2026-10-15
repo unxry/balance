@@ -3,6 +3,10 @@ import 'dart:math';
 import '../models/history_models.dart';
 import '../models/user_profile.dart';
 import 'progress_series.dart';
+import '../models/weight_forecast.dart';
+import '../utils/calendar_date.dart';
+
+export '../models/weight_forecast.dart';
 
 enum AnalyticsConfidence { insufficient, low, medium, high }
 
@@ -27,19 +31,13 @@ class WeightTrendPoint {
   const WeightTrendPoint({required this.date, required this.kg});
 }
 
-class WeightForecastPoint {
-  final DateTime date;
-  final double kg;
-
-  const WeightForecastPoint({required this.date, required this.kg});
-}
-
 class WeightAnalytics {
   final int periodDays;
   final DateTime periodStart;
   final List<WeightEntry> actualWeights;
   final List<WeightTrendPoint> trendPoints;
   final List<WeightForecastPoint> forecastPoints;
+  final WeightForecastSnapshot? forecast;
   final double? actualWeightChange;
   final double? smoothedWeightChange;
   final double? observedWeeklyTrendKg;
@@ -83,6 +81,7 @@ class WeightAnalytics {
     required this.actualWeights,
     required this.trendPoints,
     required this.forecastPoints,
+    this.forecast,
     required this.actualWeightChange,
     required this.smoothedWeightChange,
     required this.observedWeeklyTrendKg,
@@ -137,6 +136,7 @@ class BalanceAnalyticsService {
     required double waterGoalLiters,
     List<CalorieGoalHistoryEntry> calorieGoalHistory = const [],
     AdviceType? previousAdviceType,
+    WeightForecastSnapshot? forecastSnapshot,
   }) {
     final today = _day(now);
     final window = ProgressWindow(days: periodDays, now: now);
@@ -279,12 +279,12 @@ class BalanceAnalyticsService {
       blendedWeekly: blendedWeekly,
     );
 
-    final forecast = _forecast(
-      actual: allActual,
-      trend: blendedWeekly,
-      confidence: confidence,
-      periodDays: periodDays,
-      today: today,
+    final prediction =
+        forecastSnapshot ?? calculateForecast(weights: weights, now: now);
+    final forecast = prediction.project(
+      latest: allActual.isEmpty ? null : allActual.last,
+      maxDays: periodDays <= 7 ? 7 : 14,
+      now: now,
     );
     final goalEstimate = _goalEstimate(
       profile: profile,
@@ -333,6 +333,7 @@ class BalanceAnalyticsService {
       actualWeights: List.unmodifiable(actual),
       trendPoints: List.unmodifiable(trend),
       forecastPoints: List.unmodifiable(forecast),
+      forecast: prediction,
       actualWeightChange: actualChange,
       smoothedWeightChange: smoothChange,
       observedWeeklyTrendKg: observedWeekly,
@@ -555,46 +556,199 @@ class BalanceAnalyticsService {
     return AnalyticsConfidence.low;
   }
 
-  List<WeightForecastPoint> _forecast({
-    required List<WeightEntry> actual,
-    required double? trend,
-    required AnalyticsConfidence confidence,
-    required int periodDays,
-    required DateTime today,
+  WeightForecastSnapshot calculateForecast({
+    required List<WeightEntry> weights,
+    required DateTime now,
   }) {
-    if (actual.isEmpty ||
-        trend == null ||
-        confidence == AnalyticsConfidence.insufficient) {
-      return const [];
+    final records = forecastSourceRecords(weights);
+    final sourceHash = forecastSourceHash(records);
+    final today = localDateKey(now);
+    final valid =
+        weights
+            .where(
+              (entry) =>
+                  entry.kg.isFinite &&
+                  entry.kg >= 20 &&
+                  entry.kg <= 400 &&
+                  localDateKey(entry.date).compareTo(today) <= 0,
+            )
+            .toList()
+          ..sort((a, b) {
+            final byDate = a.date.compareTo(b.date);
+            return byDate == 0 ? a.id.compareTo(b.id) : byDate;
+          });
+    final grouped = <String, List<double>>{};
+    final used = <WeightEntry>[];
+    for (final entry in valid) {
+      if (calendarDayDifference(today, localDateKey(entry.date)) >= 28) {
+        continue;
+      }
+      grouped.putIfAbsent(localDateKey(entry.date), () => []).add(entry.kg);
+      used.add(entry);
     }
-    final last = actual.last;
-    final start = _day(last.date).isAfter(today) ? today : _day(last.date);
-    final horizon = periodDays <= 7
-        ? 7
-        : periodDays <= 30
-        ? 14
-        : 30;
-    final points = <WeightForecastPoint>[
-      WeightForecastPoint(date: start, kg: last.kg),
+    final dates = grouped.keys.toList()..sort();
+    final span = dates.isEmpty
+        ? 0
+        : calendarDayDifference(dates.last, dates.first) + 1;
+    final daily = <({double x, double y})>[
+      for (final date in dates)
+        (
+          x: calendarDayDifference(date, dates.first).toDouble(),
+          y: _forecastQuantile(grouped[date]!, .5),
+        ),
     ];
-    final step = horizon <= 14 ? 2 : 5;
-    for (var days = step; days <= horizon; days += step) {
-      points.add(
-        WeightForecastPoint(
-          date: start.add(Duration(days: days)),
-          kg: (last.kg + trend * days / 7).clamp(20, 400),
-        ),
+    WeightForecastSnapshot result(
+      WeightForecastStatus status,
+      String reason, {
+      double? slope,
+      double? lower,
+      double? upper,
+      int outliers = 0,
+    }) => WeightForecastSnapshot(
+      status: status,
+      reason: reason,
+      sourceHash: sourceHash,
+      usedSourceHash: forecastSourceHash(forecastSourceRecords(used)),
+      sourceRecords: records,
+      calculatedAt: status == WeightForecastStatus.collecting ? null : now,
+      calculatedDateKey: status == WeightForecastStatus.collecting
+          ? null
+          : today,
+      anchorDate: valid.isEmpty ? null : valid.last.date,
+      anchorKg: valid.isEmpty ? null : valid.last.kg,
+      dailyCount: daily.length,
+      spanDays: span,
+      horizonDays: daily.length >= 8 && span >= 14 ? 14 : 7,
+      slopePerDay: slope,
+      lowerSlope: lower,
+      upperSlope: upper,
+      outlierCount: outliers,
+    );
+    if (daily.length < 4 || span < 7) {
+      return result(WeightForecastStatus.collecting, 'collecting');
+    }
+    final firstFit = _forecastFit(daily);
+    if (firstFit == null) {
+      return result(WeightForecastStatus.unreliable, 'quality');
+    }
+    final residuals = daily
+        .map((p) => p.y - (firstFit.$2 + firstFit.$1 * p.x))
+        .toList();
+    final centre = _forecastQuantile(residuals, .5);
+    final noise =
+        1.4826 *
+        _forecastQuantile(
+          residuals.map((r) => (r - centre).abs()).toList(),
+          .5,
+        );
+    final threshold = max(.6, noise * 3.5);
+    final inliers = <({double x, double y})>[
+      for (var i = 0; i < daily.length; i++)
+        if ((residuals[i] - centre).abs() <= threshold) daily[i],
+    ];
+    final rejected = daily.length - inliers.length;
+    if (inliers.length < 4 ||
+        rejected / daily.length > .25 ||
+        inliers.last.x - inliers.first.x < 6) {
+      return result(
+        WeightForecastStatus.unreliable,
+        'outliers',
+        outliers: rejected,
       );
     }
-    if (points.last.date.difference(start).inDays != horizon) {
-      points.add(
-        WeightForecastPoint(
-          date: start.add(Duration(days: horizon)),
-          kg: (last.kg + trend * horizon / 7).clamp(20, 400),
-        ),
+    final fit = _forecastFit(inliers)!;
+    final errors = inliers
+        .map((p) => (p.y - fit.$2 - fit.$1 * p.x).abs())
+        .toList();
+    final scatter = _forecastQuantile(errors, .8);
+    final anchorX = calendarDayDifference(
+      localDateKey(valid.last.date),
+      dates.first,
+    ).toDouble();
+    final anchorError = (valid.last.kg - fit.$2 - fit.$1 * anchorX).abs();
+    if (scatter > .8 || anchorError > max(.8, scatter * 3)) {
+      return result(
+        WeightForecastStatus.unreliable,
+        'noise',
+        outliers: rejected,
       );
     }
-    return points;
+    if (fit.$1.abs() * 7 > 1.5) {
+      return result(
+        WeightForecastStatus.unreliable,
+        'rate',
+        outliers: rejected,
+      );
+    }
+    final half = inliers.length ~/ 2;
+    if (half >= 3) {
+      final early = _forecastFit(inliers.sublist(0, half))?.$1 ?? 0;
+      final late = _forecastFit(inliers.sublist(half))?.$1 ?? 0;
+      if (early * late < 0 && early.abs() > .035 && late.abs() > .035) {
+        return result(
+          WeightForecastStatus.unreliable,
+          'unstable',
+          outliers: rejected,
+        );
+      }
+    }
+    double? lower;
+    double? upper;
+    if (inliers.length >= 8) {
+      final random = Random(int.parse(sourceHash.substring(0, 8), radix: 16));
+      final slopes = <double>[];
+      for (var run = 0; run < 200; run++) {
+        final sample = List.generate(
+          inliers.length,
+          (_) => inliers[random.nextInt(inliers.length)],
+        );
+        final estimate = _forecastFit(sample);
+        if (estimate != null) slopes.add(estimate.$1);
+      }
+      if (slopes.length >= 100) {
+        lower = min(fit.$1, _forecastQuantile(slopes, .1));
+        upper = max(fit.$1, _forecastQuantile(slopes, .9));
+        if (upper - lower > .18) {
+          return result(
+            WeightForecastStatus.unreliable,
+            'unstable',
+            outliers: rejected,
+          );
+        }
+      }
+    }
+    return result(
+      WeightForecastStatus.ready,
+      'ready',
+      slope: fit.$1,
+      lower: lower,
+      upper: upper,
+      outliers: rejected,
+    );
+  }
+
+  (double, double)? _forecastFit(List<({double x, double y})> points) {
+    final slopes = <double>[];
+    for (var i = 0; i < points.length; i++) {
+      for (var j = i + 1; j < points.length; j++) {
+        final dx = points[j].x - points[i].x;
+        if (dx != 0) slopes.add((points[j].y - points[i].y) / dx);
+      }
+    }
+    if (slopes.isEmpty) return null;
+    final slope = _forecastQuantile(slopes, .5);
+    return (
+      slope,
+      _forecastQuantile(points.map((p) => p.y - slope * p.x).toList(), .5),
+    );
+  }
+
+  double _forecastQuantile(List<double> values, double q) {
+    final sorted = [...values]..sort();
+    final position = (sorted.length - 1) * q;
+    final index = position.floor();
+    return sorted[index] +
+        (sorted[position.ceil()] - sorted[index]) * (position - index);
   }
 
   (int?, DateTime?) _goalEstimate({

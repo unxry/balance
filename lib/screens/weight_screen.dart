@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:provider/provider.dart';
@@ -14,6 +13,7 @@ import '../providers/settings_provider.dart';
 import '../services/balance_analytics_service.dart';
 import '../services/progress_series.dart';
 import '../widgets/progress_chart.dart';
+import '../widgets/weight_forecast_note.dart';
 import '../widgets/progress_segmented_control.dart';
 import 'body_progress_section.dart';
 import '../theme/app_colors.dart';
@@ -23,84 +23,9 @@ import '../widgets/common.dart';
 import '../widgets/premium_motion.dart';
 import '../widgets/tab_bar_pill.dart';
 
+export '../widgets/progress_curve.dart' show conservativeWeightCurveSpots;
+
 enum WeightRange { week, month, m3, year }
-
-const _weightCurveSamplesPerSegment = 10;
-
-/// Densifies a measured series with a monotone cubic Hermite curve.
-///
-/// The slope limiter keeps each segment inside its two measured endpoints, so
-/// the visual line cannot invent a peak or dip between actual readings.
-@visibleForTesting
-List<FlSpot> conservativeWeightCurveSpots(
-  List<FlSpot> spots, {
-  int samplesPerSegment = _weightCurveSamplesPerSegment,
-}) {
-  if (spots.length < 2 || samplesPerSegment < 1) return List<FlSpot>.of(spots);
-  final sorted = List<FlSpot>.of(spots)..sort((a, b) => a.x.compareTo(b.x));
-  final slopes = List<double>.filled(sorted.length - 1, 0);
-  for (var i = 0; i < slopes.length; i++) {
-    final dx = sorted[i + 1].x - sorted[i].x;
-    slopes[i] = dx == 0 ? 0 : (sorted[i + 1].y - sorted[i].y) / dx;
-  }
-  final tangents = List<double>.filled(sorted.length, 0);
-  tangents.first = slopes.first;
-  tangents.last = slopes.last;
-  for (var i = 1; i < tangents.length - 1; i++) {
-    final previous = slopes[i - 1];
-    final next = slopes[i];
-    tangents[i] = previous.sign == next.sign ? (previous + next) / 2 : 0;
-  }
-  for (var i = 0; i < slopes.length; i++) {
-    final secant = slopes[i];
-    if (secant == 0) {
-      tangents[i] = 0;
-      tangents[i + 1] = 0;
-      continue;
-    }
-    final a = tangents[i] / secant;
-    final b = tangents[i + 1] / secant;
-    final magnitude = a * a + b * b;
-    if (magnitude > 9) {
-      final scale = 3 / sqrt(magnitude);
-      tangents[i] = scale * a * secant;
-      tangents[i + 1] = scale * b * secant;
-    }
-  }
-
-  double sample(int segment, double t) {
-    final start = sorted[segment];
-    final end = sorted[segment + 1];
-    final h = end.x - start.x;
-    final t2 = t * t;
-    final t3 = t2 * t;
-    final h00 = 2 * t3 - 3 * t2 + 1;
-    final h10 = t3 - 2 * t2 + t;
-    final h01 = -2 * t3 + 3 * t2;
-    final h11 = t3 - t2;
-    final y =
-        h00 * start.y +
-        h10 * h * tangents[segment] +
-        h01 * end.y +
-        h11 * h * tangents[segment + 1];
-    return y.clamp(min(start.y, end.y), max(start.y, end.y));
-  }
-
-  final result = <FlSpot>[];
-  for (var segment = 0; segment < sorted.length - 1; segment++) {
-    for (var step = 0; step <= samplesPerSegment; step++) {
-      if (segment > 0 && step == 0) continue;
-      final t = step / samplesPerSegment;
-      result.add(
-        FlSpot(
-          sorted[segment].x + (sorted[segment + 1].x - sorted[segment].x) * t,
-          sample(segment, t),
-        ),
-      );
-    }
-  }
-  return result;
-}
 
 extension on WeightRange {
   int get days => switch (this) {
@@ -497,6 +422,12 @@ class _WeightScreenState extends State<WeightScreen> {
   ) {
     final items = <(String, bool, Color)>[
       (strings.isRu ? 'фактический' : 'actual', false, colors.accent),
+      if (analytics.forecastPoints.isNotEmpty)
+        (
+          strings.isRu ? 'прогноз' : 'forecast',
+          true,
+          colors.accent.withValues(alpha: .55),
+        ),
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1053,14 +984,16 @@ class _WeightScreenState extends State<WeightScreen> {
                   _summaryCard(
                     colors,
                     text,
-                    value: analytics.estimatedWeeksToGoal == null
+                    value: analytics.forecastPoints.isEmpty
                         ? '—'
-                        : '~${analytics.estimatedWeeksToGoal} ${strings.isRu ? "нед" : "wk"}',
-                    label: analytics.estimatedWeeksToGoal == null
+                        : '${analytics.forecastPoints.length - 1} ${strings.isRu ? "дн" : "days"}',
+                    label: analytics.forecastPoints.isEmpty
                         ? (strings.isRu
                               ? 'нужно больше данных'
                               : 'more data needed')
-                        : (strings.isRu ? 'текущий темп' : 'current pace'),
+                        : (strings.isRu
+                              ? 'горизонт прогноза'
+                              : 'forecast horizon'),
                     icon: Icons.schedule_rounded,
                     color: colors.accent,
                     compact: compact,
@@ -1304,18 +1237,18 @@ class _WeightScreenState extends State<WeightScreen> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          analytics.estimatedWeeksToGoal == null
-              ? (strings.isRu ? 'Нужно больше данных' : 'More data needed')
-              : '~${analytics.estimatedWeeksToGoal} ${strings.isRu ? "нед. до цели" : "weeks to goal"}',
-          style: text.fraunces(size: 25, weight: FontWeight.w800),
+        WeightForecastNote(
+          snapshot: analytics.forecast ?? const WeightForecastSnapshot(),
+          isRu: strings.isRu,
+          active: analytics.forecastPoints.isNotEmpty,
+          horizonDays: analytics.forecastPoints.length - 1,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 14),
         Text(
           strings.isRu
-              ? 'Прогноз учитывает только реальные измерения веса и устойчивый темп за выбранный период. Если данных мало или темп нестабилен, Balance не показывает вымышленную дату.'
-              : 'The forecast uses real weight measurements and a stable pace for the selected period. Balance does not show a made-up date when data is sparse or unstable.',
-          style: text.inter(size: 12, color: colors.muted, height: 1.45),
+              ? 'Медиана за сутки и робастная оценка Theil–Sen по последним 28 дням. Минимум 4 дня с измерениями за 7 календарных дней. Расчёт обновляется раз в 4 дня при новых записях; исправления и удаления проверяются сразу. Продолжение строится от последнего реального веса с сохранённым темпом.'
+              : 'Daily medians and a robust Theil–Sen trend over the last 28 days. At least 4 measured days across 7 calendar days. The fit updates every 4 days when new data exists; edits and deletions are checked immediately. The continuation starts at the latest real weight using the saved rate.',
+          style: text.inter(size: 12, color: colors.fg2, height: 1.5),
         ),
       ],
     ),
@@ -2089,77 +2022,55 @@ class _WeightChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (analytics.actualWeights.isEmpty) {
-      return SizedBox(height: 258, child: _collectionState(null));
-    }
-    return KeyedSubtree(
-      key: const ValueKey('weightFullChart'),
-      child: ProgressChart(
-        window: ProgressWindow(
-          days: analytics.periodDays,
-          now: DateTime(
-            analytics.periodStart.year,
-            analytics.periodStart.month,
-            analytics.periodStart.day + analytics.periodDays - 1,
-          ),
-        ),
-        lines: [
-          ProgressLine(
-            label: isRu ? 'Вес' : 'Weight',
-            color: colors.accent,
-            points: [
-              for (final entry in analytics.actualWeights)
-                ProgressPoint(entry.id, entry.date, entry.kg),
-            ],
-          ),
-        ],
-        unit: isRu ? 'кг' : 'kg',
-        isRu: isRu,
+    final window = ProgressWindow(
+      days: analytics.periodDays,
+      now: DateTime(
+        analytics.periodStart.year,
+        analytics.periodStart.month,
+        analytics.periodStart.day + analytics.periodDays - 1,
       ),
     );
-  }
-
-  Widget _collectionState(WeightEntry? entry) {
-    final text = AppText(colors);
-    return Center(
-      key: const ValueKey('weightCollectionState'),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _CollectingWeightPoint(colors: colors, visible: entry != null),
-            if (entry != null) ...[
-              const SizedBox(height: 14),
-              FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Text(
-                  '${entry.kg.toStringAsFixed(1)} kg',
-                  maxLines: 1,
-                  style: text.fraunces(size: 24, weight: FontWeight.w800),
-                ),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                isRu
-                    ? '${analytics.actualWeights.length == 1 ? "Первое" : "Последнее"} измерение · ${_dateLong(entry.date, true)}'
-                    : '${analytics.actualWeights.length == 1 ? "First" : "Latest"} measurement · ${_dateLong(entry.date, false)}',
-                textAlign: TextAlign.center,
-                style: text.inter(size: 10, color: colors.muted),
-              ),
-            ] else ...[
-              const SizedBox(height: 14),
-              Text(
-                isRu
-                    ? 'Добавьте первое измерение'
-                    : 'Add your first measurement',
-                style: text.inter(size: 13, weight: FontWeight.w700),
+    final points = [
+      for (final entry in analytics.actualWeights)
+        ProgressPoint(entry.id, entry.date, entry.kg),
+    ];
+    final forecast = forecastInProgressView(
+      window,
+      points,
+      analytics.forecastPoints,
+    );
+    return KeyedSubtree(
+      key: const ValueKey('weightFullChart'),
+      child: Column(
+        children: [
+          ProgressChart(
+            window: window,
+            lines: [
+              ProgressLine(
+                label: isRu ? 'Вес' : 'Weight',
+                color: colors.accent,
+                points: points,
               ),
             ],
-            const SizedBox(height: 16),
-            _DataCollectionStory(colors: colors, isRu: isRu),
-          ],
-        ),
+            unit: isRu ? 'кг' : 'kg',
+            isRu: isRu,
+            forecast: forecast,
+            height: 202,
+          ),
+          const SizedBox(height: 12),
+          WeightForecastNote(
+            snapshot: analytics.forecast ?? const WeightForecastSnapshot(),
+            isRu: isRu,
+            active: forecast.isNotEmpty,
+            horizonDays: analytics.forecastPoints.length - 1,
+            displayedDays: forecast.length - 1,
+            emptyPeriod: points.isEmpty,
+            limitedPeriod:
+                analytics.forecastPoints.isNotEmpty && forecast.isEmpty,
+            onRetry: () =>
+                context.read<AppDataProvider>().refreshWeightForecast(),
+          ),
+        ],
       ),
     );
   }

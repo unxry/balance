@@ -13,6 +13,7 @@ import '../models/reminder_models.dart';
 import '../models/user_profile.dart';
 import '../models/daily_tip.dart';
 import '../services/daily_tips_service.dart';
+import '../services/weight_forecast_cache.dart';
 import '../services/achievement_engine.dart';
 import '../services/activity_motion_service.dart';
 import '../services/health_service.dart';
@@ -95,6 +96,26 @@ class AppDataProvider extends ChangeNotifier {
   final SmartReminderEngine _smartReminderEngine = const SmartReminderEngine();
   late DailyTipsService dailyTips;
   String? dailyTipsError;
+  WeightForecastCache? _weightForecastCache;
+  WeightForecastSnapshot weightForecast = const WeightForecastSnapshot();
+
+  Future<void> refreshWeightForecast({bool notify = true}) async {
+    final cache = _weightForecastCache;
+    if (cache == null) return;
+    final previous = weightForecast;
+    try {
+      weightForecast = await cache.refresh(weights: weightHistory, now: _now());
+    } catch (_) {
+      weightForecast = const WeightForecastSnapshot(
+        status: WeightForecastStatus.unreliable,
+        reason: 'storage',
+      );
+    }
+    if (!identical(previous, weightForecast)) {
+      _invalidateAnalytics();
+      if (notify && !_disposed) notifyListeners();
+    }
+  }
 
   TipContext _tipContext() {
     final cutoff = localDateKey(
@@ -340,6 +361,14 @@ class AppDataProvider extends ChangeNotifier {
 
     _updateStreak();
 
+    _weightForecastCache = WeightForecastCache(
+      read: () => _userBox.get(WeightForecastCache.storageKey),
+      write: (state) async {
+        await _userBox.put(WeightForecastCache.storageKey, state);
+        await _userBox.flush();
+      },
+    );
+    await refreshWeightForecast(notify: false);
     dailyTips = DailyTipsService(
       store: HiveDailyTipsStore(_userBox),
       now: _now,
@@ -605,6 +634,7 @@ class AppDataProvider extends ChangeNotifier {
   /// the year and intentionally follow the user's current local timezone.
   void refreshForCurrentDay() {
     if (!_loaded) return;
+    unawaited(refreshWeightForecast());
     final todayKey = localDateKey(_now());
     if (_activeDayKey == todayKey) return;
     unawaited(refreshDailyTip());
@@ -966,6 +996,7 @@ class AppDataProvider extends ChangeNotifier {
     _pendingWaterDerived.clear();
     await _waterCommitTail;
     await dailyTips.pending;
+    await _weightForecastCache?.pending;
     _stopActivityMotion();
     await _userBox.clear();
     await _foodBox.clear();
@@ -1164,6 +1195,7 @@ class AppDataProvider extends ChangeNotifier {
 
   Future<void> persistPendingMutations() async {
     if (_loaded) await dailyTips.pending;
+    await _weightForecastCache?.pending;
     if (_pendingBodyWrites > 0) await _bodyWrites;
     await Future.wait(
       {
@@ -1205,11 +1237,13 @@ class AppDataProvider extends ChangeNotifier {
     _userBox.put('waterDate', key);
   }
 
-  Future<void> _persistWeights() {
-    return _weightBox.put(
+  Future<void> _persistWeights() async {
+    weightForecast = const WeightForecastSnapshot();
+    await _weightBox.put(
       'history',
       weightHistory.map((entry) => entry.toJson()).toList(),
     );
+    await refreshWeightForecast(notify: false);
   }
 
   void _recordAutoCalorieChangeIfNeeded(int previousCalories) {
@@ -1369,12 +1403,6 @@ class AppDataProvider extends ChangeNotifier {
     );
     _invalidateAnalytics();
     if (!persist) return;
-    final forecast = isToday ? analyticsForDays(30).forecastPoints : const [];
-    if (isToday && forecast.isNotEmpty) {
-      _dailyBalances[key] = _dailyBalances[key]!.copyWith(
-        estimatedWeightKg: forecast.last.kg,
-      );
-    }
     unawaited(
       _userBox
           .put(
@@ -1410,11 +1438,11 @@ class AppDataProvider extends ChangeNotifier {
 
   WeightTrendEstimate? get weightTrend {
     final analytics = analyticsForDays(30);
-    final delta = analytics.estimatedWeeklyWeightTrendKg;
-    if (delta == null || analytics.forecastPoints.isEmpty) return null;
+    final slope = analytics.forecast?.slopePerDay;
+    if (slope == null || analytics.forecastPoints.isEmpty) return null;
     return WeightTrendEstimate(
-      daysUsed: analytics.loggedDays,
-      delta7DaysKg: delta,
+      daysUsed: analytics.forecast!.spanDays,
+      delta7DaysKg: slope * 7,
       predictedWeightKg: analytics.forecastPoints.last.kg,
     );
   }
@@ -1438,6 +1466,7 @@ class AppDataProvider extends ChangeNotifier {
         waterGoalLiters: _waterGoalLiters,
         calorieGoalHistory: calorieGoalHistory,
         previousAdviceType: _previousAdviceType(),
+        forecastSnapshot: weightForecast,
       ),
     );
   }

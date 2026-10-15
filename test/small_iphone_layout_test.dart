@@ -604,9 +604,10 @@ void main() {
       expect(find.byKey(const ValueKey('weightFullChart')), findsOneWidget);
       expect(find.byKey(const ValueKey('weightCollectionState')), findsNothing);
       final chart = tester.widget<LineChart>(find.byType(LineChart));
-      expect(chart.data.lineBarsData.single.spots, hasLength(2));
-      expect(chart.data.lineBarsData.first.isCurved, isTrue);
-      expect(chart.data.lineBarsData.first.preventCurveOverShooting, isTrue);
+      expect(chart.data.lineBarsData.single.spots.length, greaterThan(2));
+      expect(chart.data.lineBarsData.single.spots.first.y, 80);
+      expect(chart.data.lineBarsData.single.spots.last.y, 79.6);
+      expect(chart.data.lineBarsData.first.isCurved, isFalse);
       expect(chart.data.lineBarsData.first.isStrokeCapRound, isTrue);
     },
   );

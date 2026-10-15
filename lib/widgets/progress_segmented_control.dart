@@ -91,15 +91,22 @@ class ProgressSegmentedControl extends StatelessWidget {
                                 vertical: 10,
                               ),
                               child: Center(
-                                child: Text(
-                                  labels[index],
-                                  textAlign: TextAlign.center,
-                                  style: text.inter(
-                                    size: secondary ? 11 : 12,
-                                    weight: selected == index
-                                        ? FontWeight.w600
-                                        : FontWeight.w500,
-                                    color: selected == index ? c.accent : c.fg2,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    labels[index],
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    style: text.inter(
+                                      size: secondary ? 11 : 12,
+                                      weight: selected == index
+                                          ? FontWeight.w600
+                                          : FontWeight.w500,
+                                      color: selected == index
+                                          ? c.accent
+                                          : c.fg2,
+                                    ),
                                   ),
                                 ),
                               ),
