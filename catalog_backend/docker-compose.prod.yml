@@ -1,0 +1,104 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      POSTGRES_DB: balance_catalog
+      POSTGRES_USER: balance
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - balance_catalog_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U balance -d balance_catalog"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  migrate:
+    build: .
+    command: ["uv", "run", "python", "scripts/migrate.py"]
+    environment:
+      BALANCE_DATABASE_URL: postgresql://balance:${POSTGRES_PASSWORD}@postgres/balance_catalog
+    depends_on:
+      postgres:
+        condition: service_healthy
+    logging: *default-logging
+
+  validate:
+    build: .
+    command: ["uv", "run", "python", "-m", "scripts.validate_schema"]
+    environment:
+      BALANCE_DATABASE_URL: postgresql://balance:${POSTGRES_PASSWORD}@postgres/balance_catalog
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    logging: *default-logging
+
+  api:
+    build: .
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      BALANCE_DATABASE_URL: postgresql://balance:${POSTGRES_PASSWORD}@postgres/balance_catalog
+    expose: ["8080"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      validate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/health', timeout=3)"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  sync:
+    build: .
+    command: ["uv", "run", "python", "-m", "scripts.sync_daemon"]
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      BALANCE_DATABASE_URL: postgresql://balance:${POSTGRES_PASSWORD}@postgres/balance_catalog
+      BALANCE_OFF_EXPORT_URL: ${BALANCE_OFF_EXPORT_URL}
+      BALANCE_OFF_RECENT_URL: ${BALANCE_OFF_RECENT_URL}
+      BALANCE_SYNC_POLL_SECONDS: ${BALANCE_SYNC_POLL_SECONDS:-21600}
+    depends_on:
+      validate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "uv", "run", "python", "-m", "scripts.worker_health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      CATALOG_DOMAIN: ${CATALOG_DOMAIN:?set CATALOG_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  balance_catalog_data:
+  caddy_data:
+  caddy_config:

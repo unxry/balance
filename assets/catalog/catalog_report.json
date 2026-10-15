@@ -1,0 +1,110 @@
+{
+  "comparison": {
+    "added": 27620,
+    "bulkUniqueAdditions": 27620,
+    "bulkUniqueUsableAdditions": 3014,
+    "carriedForwardFromSearchSnapshot": 9870,
+    "current": 14941,
+    "matchedByBulk": 5071,
+    "new": 42561,
+    "removed": 0
+  },
+  "counts": {
+    "barcode": 32744,
+    "good": 16615,
+    "image": 24357,
+    "needsReview": 391,
+    "partial": 25555,
+    "products": 42561,
+    "relations": 888,
+    "usable": 17955
+  },
+  "coverage": {
+    "explicit_russia": 25801,
+    "invalid_gtin_or_name": 482673,
+    "missing_kcal": 29181,
+    "prefix_460_469": 21823,
+    "russia_union": 32691,
+    "scanned": 4532767,
+    "usable": 3510,
+    "valid_identity": 4050094
+  },
+  "integrity": {
+    "barcode_count": 32744,
+    "integrity_check": "ok",
+    "orphan_relations": 0,
+    "products": 42561,
+    "schema_version": 2,
+    "unique_barcodes": 32744,
+    "usable": 17955,
+    "valid": true
+  },
+  "manifest": {
+    "barcodeCount": 32744,
+    "buildDurationSeconds": 4.758,
+    "compressedArtifact": "assets/catalog/balance_ru_catalog.db.gz",
+    "compressedSize": 8898940,
+    "createdAt": "2026-09-09T09:35:21.879629+00:00",
+    "databaseArtifact": ".tools/catalog_output/balance_ru_catalog.db",
+    "productCount": 42561,
+    "retailerRelationCount": 888,
+    "schemaVersion": 2,
+    "sha256": "1566d349e12b53bca6b01d13c5efd2bface8b6fd105e69fcb6f1a5e68b5a3fc4",
+    "size": 77434880,
+    "sourceVersions": {
+      "off_bulk": "\"8d6629ac4d18f33e1ddec4cd9856f19d-77\"",
+      "off_bulk_last_modified": "Tue, 08 Sep 2026 11:57:06 GMT",
+      "off_searchalicious": "2026-09-09-last-known-good"
+    },
+    "usableCount": 17955,
+    "version": "2026-09-09-multi"
+  },
+  "merge": {
+    "added": 42561,
+    "seen": 47632,
+    "unchanged": 0,
+    "updated": 5071
+  },
+  "retailers": {
+    "fix_price": {
+      "sources": {
+        "off_store_tag": 30
+      },
+      "total": 30,
+      "usable": 15
+    },
+    "magnit": {
+      "sources": {
+        "off_store_tag": 244
+      },
+      "total": 244,
+      "usable": 131
+    },
+    "perekrestok": {
+      "sources": {
+        "off_store_tag": 130
+      },
+      "total": 130,
+      "usable": 51
+    },
+    "pobeda": {
+      "sources": {},
+      "total": 0,
+      "usable": 0
+    },
+    "pyaterochka": {
+      "sources": {
+        "off_store_tag": 318
+      },
+      "total": 318,
+      "usable": 157
+    },
+    "vkusvill": {
+      "sources": {
+        "off_store_tag": 166
+      },
+      "total": 166,
+      "usable": 83
+    }
+  }
+}

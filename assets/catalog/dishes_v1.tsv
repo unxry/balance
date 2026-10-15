@@ -1,0 +1,121 @@
+# id	name	cuisine	category	subcategory	variant	kcal	protein	fat	carbs	serving_g
+ru_borscht_classic	Борщ классический	russian	soups	борщ	классический	49	2.2	2.1	5.4	350
+ru_borscht_beef	Борщ с говядиной	russian	soups	борщ	с говядиной	56	3.8	2.5	5.0	350
+ru_borscht_pork	Борщ со свининой	russian	soups	борщ	со свининой	61	3.4	3.2	5.1	350
+ru_borscht_chicken	Борщ с курицей	russian	soups	борщ	с курицей	50	3.2	1.9	5.2	350
+ru_borscht_lean	Борщ постный	russian	soups	борщ	постный	34	1.2	0.8	5.8	350
+ru_borscht_sourcream	Борщ со сметаной	russian	soups	борщ	со сметаной	58	2.3	3.0	5.6	370
+ru_shchi_fresh	Щи из свежей капусты	russian	soups	щи		38	1.8	1.5	4.8	350
+ru_shchi_sour	Щи из квашеной капусты	russian	soups	щи		42	2.0	1.8	4.7	350
+ru_solyanka_meat	Солянка мясная сборная	russian	soups	солянка	мясная	74	5.2	5.0	2.6	320
+ru_rassolnik	Рассольник с перловкой	russian	soups	рассольник		47	2.2	1.7	6.2	350
+ru_ukha	Уха рыбная	russian	soups	рыбный суп		46	5.1	1.5	3.1	350
+ru_okroshka_kvass	Окрошка на квасе	russian	soups	холодный суп	на квасе	58	3.1	3.0	4.9	350
+ru_okroshka_kefir	Окрошка на кефире	russian	soups	холодный суп	на кефире	52	3.2	2.6	4.2	350
+ru_pea_soup	Гороховый суп	russian	soups	бобовый суп		66	3.8	2.3	8.0	350
+ru_chicken_noodle_soup	Куриный суп с лапшой	russian	soups	куриный суп		54	4.1	2.0	5.0	350
+ru_meatball_soup	Суп с фрикадельками	russian	soups	мясной суп		57	3.8	2.7	4.5	350
+ru_mushroom_soup	Грибной суп	russian	soups	грибной суп		42	1.8	2.0	4.4	350
+ru_pelmeni	Пельмени отварные	russian	mainCourses	тесто и мясо	отварные	245	10.5	12.0	24.5	250
+ru_pelmeni_sourcream	Пельмени со сметаной	russian	mainCourses	тесто и мясо	со сметаной	270	10.0	15.0	24.0	270
+ua_vareniki_potato	Вареники с картофелем	ukrainian	mainCourses	вареники	с картофелем	178	4.5	4.6	30.0	250
+ua_vareniki_cottage	Вареники с творогом	ukrainian	mainCourses	вареники	с творогом	195	9.0	5.2	28.0	250
+ru_cabbage_rolls	Голубцы с мясом и рисом	russian	mainCourses	голубцы		126	6.7	7.0	9.0	280
+ru_chicken_cutlet_fried	Котлеты куриные жареные	russian	mainCourses	котлеты	жареные	210	17.0	13.0	7.0	140
+ru_chicken_cutlet_steam	Котлеты куриные на пару	russian	mainCourses	котлеты	на пару	148	18.0	6.5	4.5	140
+ru_beef_cutlet	Котлеты говяжьи	russian	mainCourses	котлеты		235	16.0	17.0	5.5	140
+ru_pork_cutlet	Котлеты свиные	russian	mainCourses	котлеты		280	15.0	22.0	5.0	140
+ru_mixed_cutlet	Котлеты домашние смешанные	russian	mainCourses	котлеты	смешанные	250	15.5	19.0	5.5	140
+ru_meatballs_sauce	Тефтели в томатном соусе	russian	mainCourses	тефтели		158	9.2	9.0	10.0	220
+ru_roast_pork	Жаркое со свининой и картофелем	russian	mainCourses	жаркое		155	7.0	9.0	12.0	300
+eu_beef_goulash	Гуляш из говядины	european	mainCourses	тушёное мясо		148	13.0	9.0	4.0	220
+ru_navy_pasta	Макароны по-флотски	russian	mainCourses	паста		220	10.0	9.0	25.0	280
+ru_buckwheat_meat	Гречка с мясом	russian	mainCourses	крупа с мясом		165	8.0	6.5	19.0	280
+ru_fish_baked	Рыба запечённая	russian	mainCourses	рыба	запечённая	135	20.0	5.5	1.0	200
+ru_chicken_baked	Курица запечённая	russian	mainCourses	птица	запечённая	190	25.0	9.5	1.0	220
+ru_potato_casserole	Картофельная запеканка с мясом	russian	mainCourses	запеканка		168	7.5	9.0	14.0	280
+uz_plov_lamb	Плов с бараниной	uzbek	mainCourses	плов	с бараниной	225	7.0	11.0	25.0	300
+uz_plov_beef	Плов с говядиной	uzbek	mainCourses	плов	с говядиной	205	8.0	9.0	24.0	300
+uz_plov_chicken	Плов с курицей	uzbek	mainCourses	плов	с курицей	185	8.5	7.0	23.0	300
+uz_plov_vegetable	Плов овощной	uzbek	mainCourses	плов	овощной	142	3.0	4.5	23.0	300
+uz_manti	Манты с мясом	uzbek	mainCourses	тесто и мясо		215	9.0	10.0	23.0	250
+uz_lagman	Лагман	uzbek	mainCourses	лапша		125	6.0	5.0	14.0	400
+ge_khinkali	Хинкали с мясом	georgian	mainCourses	тесто и мясо		225	10.0	11.0	22.0	300
+ge_chakhokhbili	Чахохбили из курицы	georgian	mainCourses	птица		120	13.0	6.0	4.0	280
+ge_lobio	Лобио из красной фасоли	georgian	mainCourses	бобовые		135	6.5	5.0	16.0	250
+am_dolma	Долма с мясом	armenian	mainCourses	долма		165	8.5	10.0	10.0	250
+it_spaghetti_bolognese	Спагетти болоньезе	italian	mainCourses	паста		170	7.5	6.0	22.0	300
+it_carbonara	Паста карбонара	italian	mainCourses	паста		265	11.0	15.0	22.0	280
+it_lasagna	Лазанья мясная	italian	mainCourses	паста		190	9.0	10.0	16.0	300
+it_risotto_mushroom	Ризотто с грибами	italian	mainCourses	рис		145	4.0	5.0	21.0	280
+it_pizza_margherita	Пицца Маргарита	italian	mainCourses	пицца		240	9.0	8.0	33.0	250
+it_pizza_pepperoni	Пицца пепперони	italian	mainCourses	пицца		285	12.0	13.0	31.0	250
+us_beef_burger	Бургер с говядиной	american	mainCourses	бургер		255	13.0	13.0	22.0	220
+mx_taco_beef	Тако с говядиной	mexican	mainCourses	тако		210	10.0	11.0	18.0	180
+mx_burrito_chicken	Буррито с курицей	mexican	mainCourses	буррито		190	9.0	7.0	23.0	300
+in_chicken_curry	Карри с курицей	indian	mainCourses	карри		155	11.0	8.0	9.0	300
+in_dal	Дал из чечевицы	indian	mainCourses	бобовые		125	6.5	3.5	17.0	280
+jp_ramen_pork	Рамен со свининой	japanese	soups	азиатский суп		95	5.0	4.0	10.0	500
+jp_miso_soup	Мисо-суп	japanese	soups	азиатский суп		35	2.5	1.5	3.5	300
+jp_sushi_salmon	Суши с лососем	japanese	mainCourses	суши		155	7.0	3.0	25.0	180
+th_tom_yum	Том-ям с креветками	thai	soups	азиатский суп		58	5.0	2.5	4.0	400
+th_pad_thai	Пад-тай с курицей	thai	mainCourses	лапша		175	8.0	6.5	21.0	320
+vn_pho_bo	Фо-бо	vietnamese	soups	азиатский суп		67	5.0	2.0	7.5	500
+cn_fried_rice	Жареный рис с овощами	chinese	mainCourses	рис		165	4.0	5.5	25.0	280
+cn_sweet_sour_chicken	Курица в кисло-сладком соусе	chinese	mainCourses	птица		185	11.0	7.0	19.0	280
+kr_bibimbap	Пибимпап	korean	mainCourses	рис		145	6.0	5.0	20.0	350
+kr_kimchi_soup	Суп кимчи	korean	soups	азиатский суп		55	4.0	2.5	4.0	400
+gr_moussaka	Мусака	greek	mainCourses	запеканка		165	8.0	11.0	9.0	300
+tr_kebab_chicken	Кебаб из курицы	turkish	mainCourses	гриль		175	22.0	8.0	3.0	220
+me_falafel	Фалафель	middleEastern	snacks	закуска		330	13.0	18.0	31.0	180
+me_hummus	Хумус	middleEastern	snacks	закуска		235	8.0	14.0	18.0	100
+ru_mashed_potato	Картофельное пюре	russian	sideDishes	картофель		105	2.0	4.0	15.0	200
+ru_fried_potato	Картофель жареный	russian	sideDishes	картофель		190	3.0	10.0	22.0	200
+ru_boiled_potato	Картофель отварной	russian	sideDishes	картофель		82	2.0	0.4	17.0	200
+ru_buckwheat	Гречка отварная	russian	sideDishes	крупы		105	3.6	1.1	20.0	180
+eu_white_rice	Рис белый отварной	european	sideDishes	рис		130	2.7	0.3	28.0	180
+eu_brown_rice	Рис бурый отварной	european	sideDishes	рис		112	2.6	0.9	23.0	180
+eu_pasta_boiled	Макароны отварные	european	sideDishes	паста		140	5.0	1.0	27.0	180
+eu_grilled_vegetables	Овощи гриль	european	sideDishes	овощи		75	2.0	4.0	8.0	200
+ru_stewed_cabbage	Капуста тушёная	russian	sideDishes	овощи		70	2.0	3.0	9.0	200
+ru_olivier	Салат Оливье	russian	salads	с майонезом		195	5.5	15.0	10.0	180
+ru_herring_coat	Селёдка под шубой	russian	salads	с майонезом		190	6.5	15.0	8.0	180
+ru_vinaigrette	Винегрет	russian	salads	овощной		105	1.7	6.0	11.0	180
+ru_mimosa	Салат Мимоза	russian	salads	рыбный		205	8.0	17.0	6.0	180
+gr_greek_salad	Греческий салат	greek	salads	овощной		115	4.0	9.0	5.0	220
+us_caesar_chicken	Цезарь с курицей	american	salads	с птицей		175	11.0	12.0	6.0	220
+eu_vegetable_salad	Салат из свежих овощей	european	salads	без майонеза		45	1.2	3.0	4.0	200
+ru_oatmeal_milk	Овсяная каша на молоке	russian	breakfast	каша		110	3.5	3.5	16.0	250
+ru_buckwheat_milk	Гречневая каша на молоке	russian	breakfast	каша		118	4.2	3.4	18.0	250
+ru_rice_porridge	Рисовая каша на молоке	russian	breakfast	каша		125	3.0	3.5	21.0	250
+ru_semolina	Манная каша на молоке	russian	breakfast	каша		112	3.2	3.0	18.0	250
+eu_omelette	Омлет классический	european	breakfast	яйца		155	10.0	12.0	2.0	180
+eu_scrambled_eggs	Яичница-болтунья	european	breakfast	яйца		170	11.0	13.0	2.0	160
+ru_syrniki	Сырники творожные	russian	breakfast	творог		225	14.0	10.0	20.0	180
+ru_pancakes	Блины тонкие	russian	breakfast	блины		190	5.5	7.0	27.0	180
+ru_oladyi	Оладьи	russian	breakfast	оладьи		230	6.0	9.0	32.0	180
+eu_granola_yogurt	Гранола с йогуртом	european	breakfast	гранола		165	6.0	5.0	24.0	220
+eu_avocado_toast	Тост с авокадо	european	breakfast	тост		195	6.0	11.0	19.0	160
+ge_khachapuri_adjarian	Хачапури по-аджарски	georgian	bakery	хачапури		285	11.0	14.0	29.0	300
+ge_khachapuri_imereti	Хачапури по-имеретински	georgian	bakery	хачапури		300	12.0	15.0	30.0	250
+ru_pirozhok_cabbage	Пирожок с капустой	russian	bakery	пирожки		230	6.0	8.0	34.0	100
+ru_pirozhok_meat	Пирожок с мясом	russian	bakery	пирожки		275	10.0	13.0	29.0	100
+ru_charlotte	Шарлотка яблочная	russian	desserts	пирог		205	4.0	5.0	37.0	140
+ru_medovik	Торт Медовик	russian	desserts	торт		330	5.5	16.0	42.0	120
+ru_napoleon	Торт Наполеон	russian	desserts	торт		360	5.5	22.0	36.0	120
+it_tiramisu_classic	Тирамису классический	italian	desserts	тирамису	классический	310	5.5	21.0	25.0	120
+it_tiramisu_chocolate	Тирамису шоколадный	italian	desserts	тирамису	шоколадный	330	5.5	22.0	28.0	120
+it_panna_cotta	Панна-котта	italian	desserts	сливочный десерт		250	4.0	18.0	19.0	140
+us_cheesecake	Чизкейк классический	american	desserts	чизкейк		320	6.0	23.0	24.0	120
+us_brownie	Брауни шоколадный	american	desserts	выпечка		410	5.5	24.0	44.0	90
+jp_mochi	Моти	japanese	desserts	рисовый десерт		235	3.0	4.0	47.0	80
+tr_baklava	Пахлава	turkish	desserts	восточная сладость		430	7.0	27.0	42.0	70
+eu_ice_cream	Мороженое сливочное	european	desserts	мороженое		205	3.5	11.0	24.0	100
+ru_kisel	Кисель ягодный	russian	drinks	напиток		55	0.1	0.0	14.0	250
+ru_kompot	Компот из сухофруктов	russian	drinks	напиток		48	0.2	0.0	12.0	250
+mx_salsa	Сальса томатная	mexican	sauces	соус		35	1.5	0.3	7.0	50
+it_pesto	Соус песто	italian	sauces	соус		430	5.0	43.0	6.0	30
+fr_bechamel	Соус бешамель	french	sauces	соус		120	3.5	8.0	9.0	60
+it_bruschetta_tomato	Брускетта с томатами	italian	snacks	брускетта	с томатами	180	5.0	7.0	25.0	100
+jp_edamame	Эдамаме отварные	japanese	snacks	бобовые		125	12.0	5.0	9.0	150
+ru_lavash_roll	Рулет из лаваша с сыром и зеленью	russian	snacks	рулет		245	10.0	14.0	20.0	120

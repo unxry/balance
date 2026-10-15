@@ -1,0 +1,63 @@
+name: flutter_app
+description: "Balance — wellness weight management app"
+publish_to: 'none'
+
+version: 1.0.0+17
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  provider: 6.1.5+1
+  http: ^1.6.0
+  cached_network_image: ^3.4.1
+  flutter_cache_manager: ^3.4.1
+  mobile_scanner: ^7.4.0
+  sqflite: ^2.4.3
+  path: ^1.9.1
+  shared_preferences: ^2.5.5
+  hive: 2.2.3
+  hive_flutter: 1.1.0
+  image_picker: ^1.2.3
+  image: ^4.5.4
+  intl: ^0.19.0
+  fl_chart: ^0.69.0
+  flutter_local_notifications: ^20.1.0
+  timezone: ^0.10.1
+  flutter_timezone: ^5.1.0
+  url_launcher: ^6.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  sqflite_common_ffi: ^2.3.6
+
+flutter:
+  uses-material-design: true
+
+  shaders:
+    - shaders/water_material.frag
+
+  assets:
+    - assets/character/
+    - assets/icons/
+    - assets/catalog/dishes_v1.tsv
+    - assets/catalog/balance_ru_catalog.db.gz
+    - assets/catalog/catalog_manifest.json
+    - assets/catalog/catalog_report.json
+    - assets/catalog/README.md
+
+  fonts:
+    - family: Fraunces
+      fonts:
+        - asset: assets/fonts/Fraunces-Variable.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Variable.ttf
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono-Variable.ttf

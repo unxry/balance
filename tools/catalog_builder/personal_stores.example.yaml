@@ -1,0 +1,4 @@
+# Copy to personal_stores.yaml (gitignored) only after selecting stores through
+# a documented, permitted adapter flow. Never store credentials here.
+pyaterochka: []
+fix_price: []

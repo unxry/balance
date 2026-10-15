@@ -1,0 +1,5 @@
+# Daily incremental reconciliation from Open Food Facts recent changes.
+17 3 * * * cd /srv/balance/catalog_backend && uv run python -m scripts.import_off_recent
+
+# Weekly full reconciliation. The importer skips unchanged source revisions.
+31 3 * * 0 cd /srv/balance/catalog_backend && uv run python -m scripts.import_off_tsv --limit 0

@@ -1,0 +1,3 @@
+"NSPhotoLibraryUsageDescription" = "Balance uses the photo library only when you choose a profile photo.";
+"NSHealthShareUsageDescription" = "Balance reads your step count to show daily activity and improve the estimated weight trend.";
+"NSCameraUsageDescription" = "The camera is used to scan barcodes and find products by their packaging.";

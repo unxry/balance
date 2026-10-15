@@ -1,0 +1,92 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+catalog_backend/.env.production
+catalog_backend/backups/
+.tools/cache/catalog_sources/
+tools/catalog_builder/personal_stores.yaml
+assets/catalog/private/
+*.catalog.cookies
+*.catalog.token
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Local user data, credentials, backups and QA captures
+*.hive
+*.hive.lock
+*.sqlite
+*.sqlite3
+*.db
+*.db-wal
+*.db-shm
+*.xcappdata/
+*.xcarchive/
+*.ipa
+*.p12
+*.p8
+*.pem
+*.key
+*.mobileprovision
+.env
+.env.*
+!.env.example
+!.env.production.example
+**/balance_backups/
+**/backups/
+**/profile_photos/
+**/profile_images/
+**/personal/
+*.zip
+*.tar
+*.tar.gz
+.tools/
+test/evidence/
+docs/safe_physical_qa.md
+tool/inspect_balance_storage.dart
+tool/physical_qa_backup_test.dart
+test/qa_restore_sha256_test.dart
+
+/test/failures/

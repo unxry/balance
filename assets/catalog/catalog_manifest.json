@@ -1,0 +1,20 @@
+{
+  "barcodeCount": 32744,
+  "buildDurationSeconds": 4.758,
+  "compressedArtifact": "assets/catalog/balance_ru_catalog.db.gz",
+  "compressedSize": 8898940,
+  "createdAt": "2026-09-09T09:35:21.879629+00:00",
+  "databaseArtifact": ".tools/catalog_output/balance_ru_catalog.db",
+  "productCount": 42561,
+  "retailerRelationCount": 888,
+  "schemaVersion": 2,
+  "sha256": "1566d349e12b53bca6b01d13c5efd2bface8b6fd105e69fcb6f1a5e68b5a3fc4",
+  "size": 77434880,
+  "sourceVersions": {
+    "off_bulk": "\"8d6629ac4d18f33e1ddec4cd9856f19d-77\"",
+    "off_bulk_last_modified": "Tue, 08 Sep 2026 11:57:06 GMT",
+    "off_searchalicious": "2026-09-09-last-known-good"
+  },
+  "usableCount": 17955,
+  "version": "2026-09-09-multi"
+}
