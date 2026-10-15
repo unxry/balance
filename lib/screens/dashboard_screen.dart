@@ -7,10 +7,9 @@ import 'package:intl/intl.dart' as intl;
 import 'package:provider/provider.dart';
 
 import '../models/user_profile.dart';
-import '../models/history_models.dart';
+import '../models/daily_tip.dart';
 import '../providers/app_data_provider.dart';
 import '../providers/settings_provider.dart';
-import '../services/balance_analytics_service.dart';
 import '../services/water_save_trace.dart';
 import '../widgets/balance_feedback.dart';
 import '../services/health_service.dart';
@@ -263,7 +262,9 @@ class _DashboardScreenState extends State<DashboardScreen>
                       c,
                       t,
                       s,
-                      data.analyticsForDays(30).advice,
+                      data.dailyTipsError == null
+                          ? data.dailyTips.currentTip
+                          : null,
                       day,
                       data.isTodaySelected,
                       widget.onOpenAdvice,
@@ -973,17 +974,16 @@ class _DashboardScreenState extends State<DashboardScreen>
     dynamic c,
     AppText t,
     S s,
-    BalanceAdvice advice,
+    DailyTip? advice,
     DashboardDaySnapshot day,
     bool isToday,
     VoidCallback onTap,
   ) {
+    final copy = advice?.copy(s.isRu);
     final content = isToday
-        ? advice.type == AdviceType.dataIncomplete
-              ? (s.isRu
-                    ? 'Пока данных немного.\nЗаполняйте питание ещё несколько дней — Balance подготовит персональный совет.'
-                    : 'There is not much data yet.\nKeep logging food for a few more days and Balance will prepare a personal tip.')
-              : (s.isRu ? advice.ru : advice.en)
+        ? (copy == null
+              ? (s.isRu ? 'Откройте совет дня' : 'Open today’s tip')
+              : '${copy.title}\n${copy.body}')
         : _daySummary(day, s);
     return Semantics(
       key: const ValueKey('adviceCard'),
@@ -1011,6 +1011,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             MonoLabel(s.adviceToday),
+                            if (isToday && advice != null) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                advice.category.label(s.isRu),
+                                style: t.inter(size: 9, color: c.accent),
+                              ),
+                            ],
                             if (!isToday) ...[
                               const SizedBox(height: 3),
                               Text(
@@ -1024,7 +1031,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                         ),
                       ),
                       _AdviceStar(
-                        changeKey: '${day.dateKey}:${advice.type}:$content',
+                        changeKey: '${day.dateKey}:${advice?.id}:$content',
                       ),
                     ],
                   ),

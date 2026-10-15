@@ -8,7 +8,7 @@
   "LEFT_max_forward_frame": "R15",
   "RIGHT_ankle_forward_px": 71.94704001889505,
   "LEFT_ankle_forward_px": 71.94704001889505,
-  "source": "/Users/bendasroman/Downloads/mob.project/test/goldens/run_motion_v7/final/approved_source_native.png",
+  "source": "test/goldens/run_motion_v7/final/approved_source_native.png",
   "canvas": [
     256,
     342

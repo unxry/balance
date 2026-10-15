@@ -80,7 +80,7 @@ class _BalanceAppState extends State<BalanceApp> with WidgetsBindingObserver {
         boxes: boxes,
         appVersion: const String.fromEnvironment(
           'BALANCE_APP_VERSION',
-          defaultValue: '1.0.0+17',
+          defaultValue: '1.0.0+20',
         ),
         readExtras: () async => {
           'settings': _settings.exportSettings(),
@@ -186,8 +186,16 @@ class _BalanceAppState extends State<BalanceApp> with WidgetsBindingObserver {
   void _scheduleDayRollover() {
     _dayRolloverTimer?.cancel();
     final now = DateTime.now();
+    final untilMidnight = DateTime(
+      now.year,
+      now.month,
+      now.day + 1,
+    ).difference(now);
+    // Recheck the civil clock while foregrounded after a timezone/clock change.
     _dayRolloverTimer = Timer(
-      DateTime(now.year, now.month, now.day + 1).difference(now),
+      untilMidnight < const Duration(minutes: 1)
+          ? untilMidnight
+          : const Duration(minutes: 1),
       () {
         if (!mounted) return;
         _data.refreshForCurrentDay();
