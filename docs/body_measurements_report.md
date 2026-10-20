@@ -1,7 +1,7 @@
 # Balance: замеры тела и графики
 
-Проект: `/Users/bendasroman/Downloads/mob.project`.
-Оригиналы изменённых файлов: `/Users/bendasroman/Downloads/mob.project_backups/body_measurements_20261015`.
+Проект: исходный Flutter-проект Balance.
+Перед доработкой сохранены оригиналы изменённых файлов локально.
 
 ## Реализация
 

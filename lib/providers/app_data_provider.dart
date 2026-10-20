@@ -11,6 +11,11 @@ import '../models/body_measurement.dart';
 import '../models/recipe_models.dart';
 import '../models/reminder_models.dart';
 import '../models/user_profile.dart';
+import '../models/daily_tip.dart';
+import '../models/weight_trend_insight.dart';
+import '../services/weight_trend_insights_service.dart';
+import '../services/daily_tips_service.dart';
+import '../services/weight_forecast_cache.dart';
 import '../services/achievement_engine.dart';
 import '../services/activity_motion_service.dart';
 import '../services/health_service.dart';
@@ -91,6 +96,180 @@ class AppDataProvider extends ChangeNotifier {
   String? _analyticsCacheDay;
   final AchievementEngine _achievementEngine = const AchievementEngine();
   final SmartReminderEngine _smartReminderEngine = const SmartReminderEngine();
+  late DailyTipsService dailyTips;
+  String? dailyTipsError;
+  WeightForecastCache? _weightForecastCache;
+  WeightForecastSnapshot weightForecast = const WeightForecastSnapshot();
+
+  Future<void> refreshWeightForecast({bool notify = true}) async {
+    final cache = _weightForecastCache;
+    if (cache == null) return;
+    final previous = weightForecast;
+    try {
+      weightForecast = await cache.refresh(weights: weightHistory, now: _now());
+    } catch (_) {
+      weightForecast = const WeightForecastSnapshot(
+        status: WeightForecastStatus.unreliable,
+        reason: 'storage',
+      );
+    }
+    if (!identical(previous, weightForecast)) {
+      _invalidateAnalytics();
+      if (notify && !_disposed) notifyListeners();
+    }
+  }
+
+  TipSafetyProfile get tipsSafety {
+    final raw = _userBox.get('profile');
+    final age = raw is Map && raw['onboarded'] == true ? raw['age'] : null;
+    return TipSafetyProfile.fromJson(
+      _userBox.get('tipsSafetyV1'),
+      age: age is int && age >= 0 && age <= 100 ? age : null,
+    );
+  }
+
+  Future<void> setTipsSafety(TipSafetyProfile value) async {
+    await _userBox.put('tipsSafetyV1', value.toJson());
+    await _userBox.flush();
+    _invalidateAnalytics();
+    await refreshDailyTip();
+  }
+
+  WeightTrendInsight get weightInsight =>
+      const WeightTrendInsightsService().analyze(
+        weights: weightHistory,
+        now: _now(),
+        goal: _userBox.containsKey('profile') ? profile.goal : null,
+        targetKg: _userBox.containsKey('profile')
+            ? profile.targetWeightKg
+            : null,
+        safety: tipsSafety,
+      );
+
+  TipContext get tipContext {
+    final cutoff = localDateKey(
+      DateTime(today.year, today.month, today.day - 6),
+    );
+    final foodDays = _foodHistory.entries.where(
+      (entry) =>
+          entry.key.compareTo(cutoff) >= 0 &&
+          entry.key.compareTo(localDateKey(today)) <= 0 &&
+          entry.value.isNotEmpty,
+    );
+    final previousWeek = _foodHistory.entries
+        .where(
+          (entry) =>
+              entry.key.compareTo(
+                    localDateKey(
+                      DateTime(today.year, today.month, today.day - 7),
+                    ),
+                  ) >=
+                  0 &&
+              entry.key.compareTo(localDateKey(today)) < 0 &&
+              entry.value.isNotEmpty,
+        )
+        .toList();
+    final lowDays = previousWeek.where((entry) {
+      final goal = calorieGoalForDate(entry.key);
+      final logged = entry.value.fold<int>(0, (sum, food) => sum + food.kcal);
+      return goal > 0 && logged < goal * .75;
+    }).length;
+    final insight = weightInsight;
+    final foods = previousWeek.expand((day) => day.value).toList();
+    final repeats = <String, int>{};
+    for (final food in foods) {
+      final key = food.productId ?? food.name.trim().toLowerCase();
+      repeats[key] = (repeats[key] ?? 0) + 1;
+    }
+    return TipContext(
+      hasFood: foodDays.isNotEmpty,
+      hasWater: _waterHistory.entries.any(
+        (entry) =>
+            entry.key.compareTo(cutoff) >= 0 &&
+            entry.key.compareTo(localDateKey(today)) <= 0 &&
+            entry.value > 0,
+      ),
+      hasSteps:
+          activityAvailable ||
+          dailyBalances.any(
+            (day) =>
+                day.dateKey.compareTo(cutoff) >= 0 &&
+                day.dateKey.compareTo(localDateKey(today)) <= 0 &&
+                day.stepCount != null,
+          ),
+      hasWeightTrend:
+          insight.measuredDays >= 4 &&
+          insight.spanDays >= 7 &&
+          insight.state != WeightInsightState.uncertainTrend &&
+          insight.state != WeightInsightState.insufficientData,
+      lowLoggedIntake: lowDays >= 3,
+      diaryGaps: previousWeek.length < 7,
+      repeatedLoggedFoods:
+          previousWeek.length >= 3 && foods.length >= 6 && repeats.length <= 3,
+      sparseWeight:
+          insight.measuredDays > 0 &&
+          insight.rejectedRecords == 0 &&
+          (insight.state == WeightInsightState.insufficientData ||
+              insight.reason == 'coverage'),
+      loggedFoodDays: previousWeek.length,
+      distinctFoods: foods
+          .map((e) => e.productId ?? e.name.trim().toLowerCase())
+          .toSet()
+          .length,
+      loggedProteinG: foods.isEmpty
+          ? null
+          : foods.fold<double>(0, (sum, e) => sum + e.proteinG),
+      loggedFatG: foods.isEmpty
+          ? null
+          : foods.fold<double>(0, (sum, e) => sum + e.fatG),
+      loggedCarbsG: foods.isEmpty
+          ? null
+          : foods.fold<double>(0, (sum, e) => sum + e.carbsG),
+      hasBody: bodyMeasurements.any(
+        (e) =>
+            localDateKey(e.date).compareTo(cutoff) >= 0 &&
+            localDateKey(e.date).compareTo(localDateKey(today)) <= 0,
+      ),
+      maintenance:
+          profile.goal == Goal.hold ||
+          insight.state == WeightInsightState.maintenance ||
+          (profile.goal == Goal.lose &&
+              weightHistory.isNotEmpty &&
+              weightHistory.last.kg <= profile.targetWeightKg * 1.005),
+      insight: insight,
+      safety: tipsSafety,
+    );
+  }
+
+  Future<void> refreshDailyTip() async {
+    try {
+      await dailyTips.refresh(context: tipContext);
+      dailyTipsError = null;
+    } catch (_) {
+      dailyTipsError = 'storage';
+    }
+    if (!_disposed) notifyListeners();
+  }
+
+  Future<void> setTipsPersonalized(bool value) async {
+    await dailyTips.setPersonalized(value);
+    if (!_disposed) notifyListeners();
+  }
+
+  Future<void> chooseTipAlternative(String? id) async {
+    await dailyTips.chooseAlternative(id);
+    if (!_disposed) notifyListeners();
+  }
+
+  Future<void> toggleSavedTip(String id) async {
+    await dailyTips.toggleSaved(id);
+    if (!_disposed) notifyListeners();
+  }
+
+  Future<void> setTipCompleted(String date, bool value, {String? tipId}) async {
+    await dailyTips.setCompleted(date, value, tipId: tipId);
+    if (!_disposed) notifyListeners();
+  }
 
   UserProfile profile = UserProfile();
 
@@ -217,6 +396,7 @@ class AppDataProvider extends ChangeNotifier {
   final Map<String, DateTime> _achievementUnlocks = {};
 
   Future<void> load() async {
+    _loaded = false;
     _userBox = _injectedUserBox ?? Hive.box<dynamic>(LocalStore.userBox);
     _foodBox = _injectedFoodBox ?? Hive.box<dynamic>(LocalStore.foodBox);
     _weightBox = _injectedWeightBox ?? Hive.box<dynamic>(LocalStore.weightBox);
@@ -274,9 +454,22 @@ class AppDataProvider extends ChangeNotifier {
 
     _updateStreak();
 
+    _weightForecastCache = WeightForecastCache(
+      read: () => _userBox.get(WeightForecastCache.storageKey),
+      write: (state) async {
+        await _userBox.put(WeightForecastCache.storageKey, state);
+        await _userBox.flush();
+      },
+    );
+    await refreshWeightForecast(notify: false);
+    dailyTips = DailyTipsService(
+      store: HiveDailyTipsStore(_userBox),
+      now: _now,
+    );
     _loaded = true;
     _syncDailyBalance();
     await refreshSteps();
+    await refreshDailyTip();
     notifyListeners();
   }
 
@@ -534,8 +727,10 @@ class AppDataProvider extends ChangeNotifier {
   /// the year and intentionally follow the user's current local timezone.
   void refreshForCurrentDay() {
     if (!_loaded) return;
+    unawaited(refreshWeightForecast());
     final todayKey = localDateKey(_now());
     if (_activeDayKey == todayKey) return;
+    unawaited(refreshDailyTip());
 
     final followedActiveDay = selectedDateKey == _activeDayKey;
 
@@ -893,6 +1088,8 @@ class AppDataProvider extends ChangeNotifier {
     _waterDerivedTimer?.cancel();
     _pendingWaterDerived.clear();
     await _waterCommitTail;
+    await dailyTips.pending;
+    await _weightForecastCache?.pending;
     _stopActivityMotion();
     await _userBox.clear();
     await _foodBox.clear();
@@ -1090,6 +1287,8 @@ class AppDataProvider extends ChangeNotifier {
   }
 
   Future<void> persistPendingMutations() async {
+    if (_loaded) await dailyTips.pending;
+    await _weightForecastCache?.pending;
     if (_pendingBodyWrites > 0) await _bodyWrites;
     await Future.wait(
       {
@@ -1131,11 +1330,13 @@ class AppDataProvider extends ChangeNotifier {
     _userBox.put('waterDate', key);
   }
 
-  Future<void> _persistWeights() {
-    return _weightBox.put(
+  Future<void> _persistWeights() async {
+    weightForecast = const WeightForecastSnapshot();
+    await _weightBox.put(
       'history',
       weightHistory.map((entry) => entry.toJson()).toList(),
     );
+    await refreshWeightForecast(notify: false);
   }
 
   void _recordAutoCalorieChangeIfNeeded(int previousCalories) {
@@ -1295,12 +1496,6 @@ class AppDataProvider extends ChangeNotifier {
     );
     _invalidateAnalytics();
     if (!persist) return;
-    final forecast = isToday ? analyticsForDays(30).forecastPoints : const [];
-    if (isToday && forecast.isNotEmpty) {
-      _dailyBalances[key] = _dailyBalances[key]!.copyWith(
-        estimatedWeightKg: forecast.last.kg,
-      );
-    }
     unawaited(
       _userBox
           .put(
@@ -1336,11 +1531,11 @@ class AppDataProvider extends ChangeNotifier {
 
   WeightTrendEstimate? get weightTrend {
     final analytics = analyticsForDays(30);
-    final delta = analytics.estimatedWeeklyWeightTrendKg;
-    if (delta == null || analytics.forecastPoints.isEmpty) return null;
+    final slope = analytics.forecast?.slopePerDay;
+    if (slope == null || analytics.forecastPoints.isEmpty) return null;
     return WeightTrendEstimate(
-      daysUsed: analytics.loggedDays,
-      delta7DaysKg: delta,
+      daysUsed: analytics.forecast!.spanDays,
+      delta7DaysKg: slope * 7,
       predictedWeightKg: analytics.forecastPoints.last.kg,
     );
   }
@@ -1364,6 +1559,7 @@ class AppDataProvider extends ChangeNotifier {
         waterGoalLiters: _waterGoalLiters,
         calorieGoalHistory: calorieGoalHistory,
         previousAdviceType: _previousAdviceType(),
+        forecastSnapshot: weightForecast,
       ),
     );
   }
@@ -1376,7 +1572,10 @@ class AppDataProvider extends ChangeNotifier {
     return null;
   }
 
-  void _invalidateAnalytics() => _analyticsCache.clear();
+  void _invalidateAnalytics() {
+    _analyticsCache.clear();
+    if (_loaded) dailyTips.context = tipContext;
+  }
 
   DateTime? get latestActualWeightDate =>
       weightHistory.isEmpty ? null : weightHistory.last.date;
@@ -1449,7 +1648,9 @@ class AppDataProvider extends ChangeNotifier {
         waterGoalLiters: waterGoalLiters,
         steps: todaySteps,
         latestWeightDate: latestActualWeightDate,
-        advice: analyticsForDays(30).advice.ru,
+        advice:
+            dailyTips.currentTip?.ru.body ??
+            'Откройте Balance, чтобы посмотреть идею дня.',
         manualReminders: manualReminders,
       ),
     );

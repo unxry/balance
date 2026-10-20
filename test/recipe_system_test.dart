@@ -251,7 +251,7 @@ void main() {
       food: food,
       weight: weight,
     );
-    expect(user.get(LocalStore.schemaVersionKey), 5);
+    expect(user.get(LocalStore.schemaVersionKey), LocalStore.schemaVersion);
     expect(user.get('waterHistory'), {'2026-09-05': 1.8});
     expect(backup, contains('userRecipes'));
     expect(backup, contains('nutritionSnapshot'));

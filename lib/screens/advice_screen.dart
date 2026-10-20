@@ -1,472 +1,575 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import '../models/user_profile.dart';
+
+import '../models/daily_tip.dart';
+import '../models/weight_trend_insight.dart';
 import '../providers/app_data_provider.dart';
 import '../providers/settings_provider.dart';
 import '../theme/app_text_styles.dart';
-import '../theme/app_colors.dart';
-import '../theme/i18n.dart';
 import '../widgets/common.dart';
-import '../widgets/food_thumb.dart';
+import '../widgets/daily_tip_card.dart';
+import 'weight_insights_screen.dart';
 
 class AdviceDetailSheet extends StatelessWidget {
   const AdviceDetailSheet({super.key});
-
   @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    final t = AppText(c);
-    final s = S(context.watch<SettingsProvider>().lang);
-    final data = context.watch<AppDataProvider>();
-    final analytics = data.analyticsForDays(30);
-    final advice = analytics.advice;
-    final day = data.dashboardDay();
-    final sparse = analytics.loggedDays < 3;
-    final date =
-        '${day.date.day.toString().padLeft(2, '0')}.'
-        '${day.date.month.toString().padLeft(2, '0')}.${day.date.year}';
-    final basis = <String>[
-      s.isRu ? 'Питание' : 'Nutrition',
-      s.isRu ? 'Вода' : 'Water',
-      s.isRu ? 'Шаги' : 'Steps',
-      '${s.isRu ? "Дата" : "Date"} · $date',
-      if (analytics.loggedDays >= 3) s.isRu ? 'Тренды' : 'Trends',
-    ];
-    return SafeArea(
-      key: const ValueKey('adviceDetailSheet'),
-      top: false,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 10, 20, 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 38,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: c.line2,
-                  borderRadius: BorderRadius.circular(99),
-                ),
-              ),
+  Widget build(BuildContext context) => SafeArea(
+    key: const ValueKey('adviceDetailSheet'),
+    top: false,
+    child: SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+      child: Column(
+        children: [
+          Container(
+            width: 38,
+            height: 4,
+            decoration: BoxDecoration(
+              color: context.colors.line2,
+              borderRadius: BorderRadius.circular(99),
             ),
-            const SizedBox(height: 18),
-            MonoLabel(s.isRu ? 'СОВЕТ ДНЯ' : 'TIP OF THE DAY'),
-            const SizedBox(height: 12),
-            Text(
-              sparse
-                  ? (s.isRu
-                        ? 'Набираем контекст — спокойно и без догадок'
-                        : 'Building context, calmly and without guesses')
-                  : (s.isRu ? 'Фокус на сегодня' : 'Today’s focus'),
-              style: t.fraunces(
-                size: 23,
-                weight: FontWeight.w800,
-                height: 1.25,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              s.isRu ? advice.ru : advice.en,
-              style: t.inter(size: 12, color: c.fg2, height: 1.5),
-            ),
-            const SizedBox(height: 22),
-            Text(
-              s.isRu ? 'На основе' : 'Based on',
-              style: t.inter(size: 12, weight: FontWeight.w700),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 7,
-              runSpacing: 7,
-              children: [
-                for (final item in basis)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 11,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: c.accentSoft.withValues(alpha: .72),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: c.accent.withValues(alpha: .12),
-                      ),
-                    ),
-                    child: Text(
-                      item,
-                      style: t.inter(
-                        size: 10,
-                        weight: FontWeight.w600,
-                        color: c.accent,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 18),
-            Text(
-              s.isRu
-                  ? 'Почему Balance советует это'
-                  : 'Why Balance recommends this',
-              style: t.inter(size: 12, weight: FontWeight.w700),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              s.isRu
-                  ? sparse
-                        ? 'Пока данных немного. Продолжайте записывать питание и вес — советы станут точнее.'
-                        : 'Совет учитывает записи за выбранный день и только устойчивые изменения последних недель.'
-                  : sparse
-                  ? 'There is not much data yet. Keep logging food and weight so tips can become more precise.'
-                  : 'The tip reflects this day and only stable changes from recent weeks.',
-              style: t.inter(size: 11, color: c.muted, height: 1.4),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              s.isRu
-                  ? 'На что обратить внимание сегодня'
-                  : 'What to notice today',
-              style: t.inter(size: 12, weight: FontWeight.w700),
-            ),
-            const SizedBox(height: 8),
-            _observation(
-              c,
-              t,
-              Icons.restaurant_outlined,
-              day.foodEntries.isEmpty
-                  ? (s.isRu ? 'Питание пока не записано' : 'No food logged yet')
-                  : '${day.caloriesConsumed} / ${day.calorieGoal} ${s.isRu ? "ккал" : "kcal"}',
-            ),
-            _observation(
-              c,
-              t,
-              Icons.water_drop_outlined,
-              '${(day.waterConsumedLiters * 1000).round()} ${s.isRu ? "мл воды" : "ml water"}',
-            ),
-            _observation(
-              c,
-              t,
-              Icons.directions_walk_rounded,
-              day.steps == null
-                  ? (s.isRu ? 'Нет данных активности' : 'No activity data')
-                  : '${day.steps} ${s.isRu ? "шагов" : "steps"}',
-            ),
-            const SizedBox(height: 14),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: c.accentSoft.withValues(alpha: .62),
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: c.accent.withValues(alpha: .10)),
-              ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.auto_awesome_rounded, size: 16, color: c.accent),
-                  const SizedBox(width: 9),
-                  Expanded(
-                    child: Text(
-                      s.isRu
-                          ? 'Один аккуратно заполненный день полезнее неточной догадки.'
-                          : 'One carefully logged day is more useful than an inaccurate guess.',
-                      style: t.inter(size: 11, color: c.accent, height: 1.4),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 22),
+          const _DailyTipsContent(),
+        ],
       ),
-    );
-  }
-
-  Widget _observation(AppColors c, AppText t, IconData icon, String label) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5),
-        child: Row(
-          children: [
-            Icon(icon, size: 16, color: c.accent),
-            const SizedBox(width: 9),
-            Expanded(
-              child: Text(label, style: t.inter(size: 11, color: c.fg2)),
-            ),
-          ],
-        ),
-      );
+    ),
+  );
 }
 
 class AdviceScreen extends StatelessWidget {
   const AdviceScreen({super.key});
+  @override
+  Widget build(BuildContext context) => const SafeArea(
+    child: SingleChildScrollView(
+      key: ValueKey('tipsAdviceScroll'),
+      padding: EdgeInsets.fromLTRB(20, 16, 20, 110),
+      child: _DailyTipsContent(),
+    ),
+  );
+}
 
+class _DailyTipsContent extends StatelessWidget {
+  const _DailyTipsContent();
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    final t = AppText(c);
-    final lang = context.watch<SettingsProvider>().lang;
-    final s = S(lang);
+    final text = AppText(c);
+    final ru = context.watch<SettingsProvider>().lang == AppLang.ru;
     final data = context.watch<AppDataProvider>();
-    final profile = data.profile;
-    final advice = data.analyticsForDays(30).advice;
-
-    final goalText = profile.goal == Goal.lose
-        ? (s.isRu
-              ? 'СБРОСИТЬ ${(profile.weightKg - profile.targetWeightKg).abs().round()} KG'
-              : 'LOSE ${(profile.weightKg - profile.targetWeightKg).abs().round()} KG')
-        : profile.goal == Goal.gain
-        ? (s.isRu
-              ? 'НАБРАТЬ ${(profile.targetWeightKg - profile.weightKg).abs().round()} KG'
-              : 'GAIN ${(profile.targetWeightKg - profile.weightKg).abs().round()} KG')
-        : (s.isRu ? 'УДЕРЖАТЬ ВЕС' : 'MAINTAIN WEIGHT');
-
-    return SafeArea(
-      bottom: false,
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 110),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MonoLabel(s.adviceScreen),
-            const SizedBox(height: 14),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [c.accent, c.accent3],
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${s.isRu ? "ДЛЯ ТВОЕЙ ЦЕЛИ" : "FOR YOUR GOAL"} · $goalText',
-                    style: const TextStyle(
-                      fontFamily: 'JetBrainsMono',
-                      fontSize: 10,
-                      color: Colors.white70,
-                      letterSpacing: 1.2,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    s.isRu ? advice.ru : advice.en,
-                    style: const TextStyle(
-                      fontFamily: 'Fraunces',
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                      height: 1.25,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Balance Coach · ${s.isRu ? "сегодня" : "today"}',
-                    style: const TextStyle(
-                      fontFamily: 'JetBrainsMono',
-                      fontSize: 9,
-                      color: Colors.white70,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 18),
-            Text(
-              s.recommendedToday,
-              style: t.fraunces(size: 17, weight: FontWeight.w700),
-            ),
-            const SizedBox(height: 10),
-            _recCard(
-              c,
-              t,
-              s,
-              1,
-              s.isRu
-                  ? 'Лосось на пару с брокколи'
-                  : 'Steamed salmon & broccoli',
-              s.isRu ? 'Б32 Ж14 У8' : 'P32 F14 C8',
-              s.isRu ? '↑ омега-3, ↓ калорийность' : '↑ omega-3, ↓ calories',
-            ),
-            const SizedBox(height: 8),
-            _recCard(
-              c,
-              t,
-              s,
-              2,
-              s.isRu ? 'Салат с нутом и авокадо' : 'Chickpea avocado salad',
-              s.isRu ? 'Б14 Ж18 У30' : 'P14 F18 C30',
-              s.isRu ? '↑ клетчатка, долгая сытость' : '↑ fiber, long satiety',
-            ),
-            const SizedBox(height: 20),
-            Row(
+    final service = data.dailyTips;
+    final tip = service.currentTip;
+    final visit = service.displayVisit;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (tip != null && visit != null && data.dailyTipsError == null)
+          DailyTipCard(tip: tip, visit: visit)
+        else
+          SectionCard(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: _rulesColumn(c, t, s.doEat, c.accent, [
-                    '🥩 ${s.isRu ? "Белок в каждый приём" : "Protein at every meal"}',
-                    '🥦 ${s.isRu ? "Половина тарелки — овощи" : "Half the plate — veggies"}',
-                    '🌾 ${s.isRu ? "Цельные крупы" : "Whole grains"}',
-                    '💧 ${s.isRu ? "2,5 л воды в день" : "2.5 L water per day"}',
-                  ]),
+                Text(
+                  ru ? 'Совет пока недоступен' : 'Tip unavailable',
+                  style: text.fraunces(size: 24),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _rulesColumn(c, t, s.avoid, c.accent2, [
-                    '🍟 ${s.isRu ? "Фастфуд и трансжиры" : "Fast food & trans fats"}',
-                    '🥤 ${s.isRu ? "Сладкие напитки" : "Sugary drinks"}',
-                    '🌙 ${s.isRu ? "Плотный ужин после 21:00" : "Heavy dinner after 9pm"}',
-                    '🍯 ${s.isRu ? "Скрытый сахар в соусах" : "Hidden sugar in sauces"}',
-                  ]),
+                const SizedBox(height: 8),
+                Text(
+                  ru
+                      ? 'Не удалось прочитать или сохранить локальные данные.'
+                      : 'Could not read or save local data.',
+                  style: text.inter(size: 13),
+                ),
+                TextButton(
+                  onPressed: data.refreshDailyTip,
+                  child: Text(ru ? 'Повторить' : 'Retry'),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+          ),
+        if (tip != null &&
+            (service.alternativeOptions.isNotEmpty ||
+                service.currentVisit?.selectedId != null))
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              key: const ValueKey('chooseTipAlternative'),
+              icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+              label: Text(
+                ru ? 'Другой совет на сегодня' : 'Choose another action today',
+              ),
+              onPressed: () => showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height * .85,
+                ),
+                backgroundColor: c.page,
+                builder: (sheetContext) => SafeArea(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            ru
+                                ? 'Выберите выполнимое действие'
+                                : 'Choose a manageable action',
+                            style: text.fraunces(size: 22),
+                          ),
+                        ),
+                        for (final option in service.alternativeOptions)
+                          ListTile(
+                            key: ValueKey('chooseTip-${option.id}'),
+                            title: Text(option.copy(ru).title),
+                            subtitle: Text(option.copy(ru).task ?? ''),
+                            onTap: () {
+                              Navigator.pop(sheetContext);
+                              tipAction(
+                                context,
+                                () => data.chooseTipAlternative(option.id),
+                              );
+                            },
+                          ),
+                        if (service.currentVisit?.selectedId != null)
+                          ListTile(
+                            key: const ValueKey('restoreDailyTip'),
+                            title: Text(
+                              ru
+                                  ? 'Вернуть первоначальный совет'
+                                  : 'Return to the original action',
+                            ),
+                            onTap: () {
+                              Navigator.pop(sheetContext);
+                              tipAction(
+                                context,
+                                () => data.chooseTipAlternative(null),
+                              );
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        if (service.currentVisit?.selectedId != null)
+          Text(
+            ru
+                ? 'Выбранный вариант сохранён на сегодня. Первоначальное назначение остаётся в истории.'
+                : 'Your choice is saved for today. The original assignment stays in history.',
+            style: text.inter(size: 11, color: c.fg2),
+          ),
+        const SizedBox(height: 14),
+        SectionCard(
+          radius: 24,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                ru ? 'Понять свой прогресс' : 'Understand your progress',
+                style: text.fraunces(size: 24),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                data.weightInsight.title(ru),
+                style: text.inter(size: 13, color: c.accent),
+              ),
+              TextButton.icon(
+                key: const ValueKey('openWeightInsights'),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const WeightInsightsScreen(),
+                  ),
+                ),
+                icon: Icon(Icons.insights_rounded, color: c.accent),
+                label: Text(
+                  ru ? 'Почему вес стоит?' : 'Why is weight not changing?',
+                ),
+              ),
+              TextButton.icon(
+                key: const ValueKey('openTipLibrary'),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const TipLibraryScreen(),
+                  ),
+                ),
+                icon: Icon(Icons.restaurant_outlined, color: c.accent),
+                label: Text(
+                  ru
+                      ? 'Питание и практические идеи'
+                      : 'Food and practical ideas',
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: [
+            TextButton.icon(
+              key: const ValueKey('tipHistory'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const DailyTipsHistoryScreen(),
+                ),
+              ),
+              icon: Icon(Icons.history_rounded, size: 19, color: c.accent),
+              label: Text(
+                ru ? 'История' : 'History',
+                style: text.inter(size: 12, color: c.accent),
+              ),
+            ),
+            TextButton.icon(
+              key: const ValueKey('savedTips'),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<void>(
+                  builder: (_) => const DailyTipsHistoryScreen(savedOnly: true),
+                ),
+              ),
+              icon: Icon(Icons.bookmarks_outlined, size: 18, color: c.accent),
+              label: Text(
+                ru ? 'Сохранённые' : 'Saved',
+                style: text.inter(size: 12, color: c.accent),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+        SectionCard(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Material(
+                type: MaterialType.transparency,
+                child: SwitchListTile.adaptive(
+                  key: const ValueKey('tipPersonalization'),
+                  value: service.personalized,
+                  contentPadding: EdgeInsets.zero,
+                  activeTrackColor: c.accent,
+                  title: Text(
+                    ru ? 'Учитывать мои записи' : 'Use my logged data',
+                    style: text.inter(size: 13, weight: FontWeight.w600),
+                  ),
+                  onChanged: (value) =>
+                      tipAction(context, () => data.setTipsPersonalized(value)),
+                ),
+              ),
+              Text(
+                ru
+                    ? 'Только на устройстве, без отправки данных. Настройка влияет на будущие советы; сегодняшний остаётся прежним.'
+                    : 'On your device, without sharing data. This affects future tips; today’s tip stays the same.',
+                style: text.inter(size: 11, color: c.fg2, height: 1.5),
+              ),
+              const SizedBox(height: 14),
+              Text(
+                ru ? 'На основе' : 'Based on',
+                style: text.inter(size: 11, weight: FontWeight.w600),
+              ),
+              const SizedBox(height: 5),
+              Text(
+                (ru ? visit?.reasonRu : visit?.reasonEn) ??
+                    _basis(visit?.basis ?? TipBasis.universal, ru),
+                style: text.inter(size: 11, color: c.accent, height: 1.5),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        const TipsSafetyCard(),
+      ],
+    );
+  }
+}
+
+String _basis(TipBasis basis, bool ru) => switch (basis) {
+  TipBasis.plateau ||
+  TipBasis.maintenance ||
+  TipBasis.diary ||
+  TipBasis.body ||
+  TipBasis.variety ||
+  TipBasis.observation =>
+    ru
+        ? 'Основание старой записи не сохранено; актуальная оценка доступна в анализе динамики.'
+        : 'The old assignment has no saved rationale; see trend insights for the current assessment.',
+  TipBasis.universal =>
+    ru
+        ? 'Универсальная идея · личные данные не использовались'
+        : 'A universal idea · no personal data used',
+  TipBasis.food =>
+    ru
+        ? 'Есть записи питания · без оценки полноты рациона'
+        : 'Food entries are available · not an assessment of your diet',
+  TipBasis.water =>
+    ru
+        ? 'Есть записи воды · без оценки гидратации'
+        : 'Water entries are available · not an assessment of hydration',
+  TipBasis.steps =>
+    ru
+        ? 'Есть реальные данные шагов · без обязательной нормы'
+        : 'Real step data is available · no required target',
+  TipBasis.weight =>
+    ru
+        ? 'Есть история веса · важен контекст нескольких измерений'
+        : 'Weight history is available · readings need context',
+  TipBasis.gentleFuel =>
+    ru
+        ? 'В записях питания есть дни ниже цели · дневник может быть неполным'
+        : 'Some food logs are below target · entries may be incomplete',
+};
+
+class TipsSafetyCard extends StatelessWidget {
+  const TipsSafetyCard({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final data = context.watch<AppDataProvider>();
+    final s = data.tipsSafety;
+    final ru = context.watch<SettingsProvider>().lang == AppLang.ru;
+    final t = AppText(context.colors);
+    Future<void> save({
+      bool? pregnant,
+      bool? breastfeeding,
+      bool? eating,
+      bool? medical,
+      bool checked = false,
+    }) => tipAction(
+      context,
+      () => data.setTipsSafety(
+        TipSafetyProfile(
+          age: s.age,
+          checked: checked,
+          pregnant: pregnant ?? s.pregnant,
+          breastfeeding: breastfeeding ?? s.breastfeeding,
+          eatingDisorderRisk: eating ?? s.eatingDisorderRisk,
+          medicalRestriction: medical ?? s.medicalRestriction,
+        ),
+      ),
+    );
+    return SectionCard(
+      radius: 24,
+      child: Material(
+        type: MaterialType.transparency,
+        child: ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          title: Text(
+            ru ? 'Применимость советов' : 'Advice suitability',
+            style: t.inter(size: 14, weight: FontWeight.w600),
+          ),
+          subtitle: Text(
+            s.allowsWeightManagement
+                ? (ru ? 'Контекст уточнён' : 'Context checked')
+                : (ru
+                      ? 'Общие материалы без персональных норм'
+                      : 'General information without personal targets'),
+            style: t.inter(size: 11, color: context.colors.fg2),
+          ),
+          children: [
             Text(
-              s.howToEat,
-              style: t.fraunces(size: 17, weight: FontWeight.w700),
+              ru
+                  ? 'Необязательная настройка только на устройстве. Ничего не выводится по полу. При неизвестном возрасте, несовершеннолетии или неуточнённых ограничениях советы по снижению веса отключены.'
+                  : 'Optional and stored only on this device. Nothing is inferred from sex. Weight-loss suggestions are disabled for unknown age, minors or unchecked restrictions.',
+              style: t.inter(size: 12, height: 1.5),
             ),
-            const SizedBox(height: 12),
-            _timelineRow(
-              c,
-              t,
-              '08:00',
-              s.isRu ? 'Плотный завтрак' : 'Hearty breakfast',
-              '30%',
-              isFirst: true,
+            for (final item in [
+              (
+                ru ? 'Беременность' : 'Pregnancy',
+                s.pregnant,
+                (bool v) => save(pregnant: v),
+              ),
+              (
+                ru ? 'Грудное вскармливание' : 'Breastfeeding',
+                s.breastfeeding,
+                (bool v) => save(breastfeeding: v),
+              ),
+              (
+                ru
+                    ? 'Риск или история нарушений питания'
+                    : 'Eating-disorder risk or history',
+                s.eatingDisorderRisk,
+                (bool v) => save(eating: v),
+              ),
+              (
+                ru ? 'Медицинские ограничения' : 'Medical restrictions',
+                s.medicalRestriction,
+                (bool v) => save(medical: v),
+              ),
+            ])
+              SwitchListTile.adaptive(
+                contentPadding: EdgeInsets.zero,
+                title: Text(item.$1, style: t.inter(size: 12)),
+                value: item.$2,
+                onChanged: item.$3,
+              ),
+            TextButton(
+              key: const ValueKey('confirmTipsSafety'),
+              onPressed: () => save(checked: true),
+              child: Text(
+                ru
+                    ? 'Подтвердить указанный контекст'
+                    : 'Confirm the context above',
+              ),
             ),
-            _timelineRow(
-              c,
-              t,
-              '13:00',
-              s.isRu ? 'Основной обед' : 'Main lunch',
-              '40%',
-            ),
-            _timelineRow(
-              c,
-              t,
-              '19:00',
-              s.isRu ? 'Лёгкий ужин' : 'Light dinner',
-              '30%',
-              isLast: true,
-            ),
+            if (!s.adult)
+              Text(
+                ru
+                    ? 'Возраст не подтверждён как взрослый. Настройка не снимает это ограничение.'
+                    : 'Adult age is not confirmed. This setting does not override that restriction.',
+                style: t.inter(size: 11, color: context.colors.fg2),
+              ),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _recCard(
-    dynamic c,
-    AppText t,
-    S s,
-    int seed,
-    String name,
-    String macros,
-    String why,
-  ) {
-    return SectionCard(
-      radius: 18,
-      child: Row(
-        children: [
-          FoodThumb(seed: seed, size: 66, radius: 16),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(name, style: t.inter(size: 13, weight: FontWeight.w700)),
-                Text(macros, style: t.mono(size: 9)),
-                const SizedBox(height: 4),
-                Text(
-                  why,
-                  style: t.inter(
-                    size: 11,
-                    weight: FontWeight.w600,
-                    color: c.accent,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _rulesColumn(
-    dynamic c,
-    AppText t,
-    String title,
-    Color color,
-    List<String> rules,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        MonoLabel(title, color: color),
-        const SizedBox(height: 8),
-        ...rules.map(
-          (r) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Text(r, style: t.inter(size: 12, weight: FontWeight.w500)),
-          ),
+class DailyTipsHistoryScreen extends StatelessWidget {
+  final bool savedOnly;
+  const DailyTipsHistoryScreen({super.key, this.savedOnly = false});
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final text = AppText(c);
+    final ru = context.watch<SettingsProvider>().lang == AppLang.ru;
+    final data = context.watch<AppDataProvider>();
+    final service = data.dailyTips;
+    final seen = <String>{};
+    final visits =
+        service.readingHistory.reversed
+            .where(
+              (visit) =>
+                  service.tipById(visit.tipId) != null &&
+                  (!savedOnly ||
+                      (service.saved.contains(visit.tipId) &&
+                          seen.add(visit.tipId))),
+            )
+            .toList()
+          ..sort((a, b) => b.dateKey.compareTo(a.dateKey));
+    if (savedOnly) {
+      for (final id in service.saved) {
+        if (service.tipById(id) != null && seen.add(id)) {
+          visits.add(TipVisit(dateKey: '', tipId: id));
+        }
+      }
+    }
+    return Scaffold(
+      backgroundColor: c.page,
+      appBar: AppBar(
+        backgroundColor: c.page,
+        foregroundColor: c.fg,
+        title: Text(
+          savedOnly
+              ? (ru ? 'Сохранённые идеи' : 'Saved ideas')
+              : (ru ? 'История советов' : 'Tip history'),
+          style: text.fraunces(size: 23, weight: FontWeight.w700),
         ),
-      ],
-    );
-  }
-
-  Widget _timelineRow(
-    dynamic c,
-    AppText t,
-    String time,
-    String name,
-    String pct, {
-    bool isFirst = false,
-    bool isLast = false,
-  }) {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(width: 50, child: Text(time, style: t.mono(size: 10))),
-          Column(
-            children: [
-              Container(
-                width: 10,
-                height: 10,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: c.accent, width: 2),
+      ),
+      body: visits.isEmpty
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Text(
+                  savedOnly
+                      ? (ru
+                            ? 'Сохраняйте идеи, к которым хочется вернуться.'
+                            : 'Save ideas you would like to return to.')
+                      : (ru
+                            ? 'Здесь появятся показанные советы.'
+                            : 'Your daily tips will appear here.'),
+                  textAlign: TextAlign.center,
+                  style: text.inter(size: 14, color: c.fg2),
                 ),
               ),
-              if (!isLast)
-                Expanded(child: Container(width: 1.5, color: c.line)),
-            ],
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      name,
-                      style: t.inter(size: 13, weight: FontWeight.w600),
+            )
+          : ListView.separated(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 32),
+              itemCount: visits.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final visit = visits[index];
+                final tip = service.tipById(visit.tipId)!;
+                return SectionCard(
+                  key: ValueKey('tipHistory-${visit.dateKey}-${visit.tipId}'),
+                  padding: const EdgeInsets.all(8),
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
+                      leading: Icon(
+                        visit.completed
+                            ? Icons.check_circle_outline_rounded
+                            : tipIcon(tip.category),
+                        color: c.accent,
+                      ),
+                      title: Text(
+                        tip.copy(ru).title,
+                        style: text.inter(size: 14, weight: FontWeight.w600),
+                      ),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(top: 6),
+                        child: Text(
+                          '${visit.dateKey.isEmpty ? (ru ? 'Из библиотеки' : 'From the library') : DateFormat('d MMM y', ru ? 'ru' : 'en').format(DateTime.parse(visit.dateKey))} · ${tip.category.label(ru)}${visit.completed ? (ru ? ' · Выполнено' : ' · Completed') : ''}',
+                          style: text.inter(
+                            size: 10,
+                            color: c.fg2,
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                      trailing: IconButton(
+                        tooltip: service.saved.contains(tip.id)
+                            ? (ru
+                                  ? 'Убрать из сохранённых'
+                                  : 'Remove from saved')
+                            : (ru ? 'Сохранить' : 'Save'),
+                        icon: Icon(
+                          service.saved.contains(tip.id)
+                              ? Icons.bookmark_rounded
+                              : Icons.bookmark_border_rounded,
+                          color: c.accent,
+                        ),
+                        onPressed: () => tipAction(
+                          context,
+                          () => data.toggleSavedTip(tip.id),
+                        ),
+                      ),
+                      onTap: () => showModalBottomSheet<void>(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: c.surface,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(28),
+                          ),
+                        ),
+                        builder: (_) => SafeArea(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.all(20),
+                            child: DailyTipCard(
+                              tip: tip,
+                              visit: visit,
+                              assigned: visit.dateKey.isNotEmpty,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  Text(pct, style: t.mono(size: 10)),
-                ],
-              ),
+                );
+              },
             ),
-          ),
-        ],
-      ),
     );
   }
 }

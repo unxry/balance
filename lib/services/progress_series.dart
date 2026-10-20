@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import '../models/weight_forecast.dart';
 import '../utils/calendar_date.dart';
 
 /// Rolling local calendar days, including today: 7 / 30 / 90 / 365.
@@ -70,6 +71,49 @@ class ProgressPoint {
   const ProgressPoint(this.id, this.date, this.value);
 }
 
+/// A uniform civil-time scale, cropped to the real dates in the chosen period.
+class ProgressDomain {
+  final double origin;
+  final double span;
+  const ProgressDomain(this.origin, this.span);
+
+  factory ProgressDomain.forPoints(
+    ProgressWindow window,
+    Iterable<ProgressPoint> points, {
+    List<WeightForecastPoint> forecast = const [],
+  }) {
+    final dates = points
+        .where((p) => window.contains(p.date))
+        .map((p) => window.x(p.date))
+        .toList();
+    if (dates.isEmpty) return const ProgressDomain(0, 0);
+    final first = dates.reduce(min);
+    final last = [
+      ...dates,
+      ...forecast.map((p) => window.x(p.date)),
+    ].reduce(max);
+    return ProgressDomain(first, max(0, last - first));
+  }
+
+  double get minX => span == 0 ? -.06 : -span * .05;
+  double get maxX => span == 0 ? .94 : span * 1.05;
+  double x(ProgressWindow window, DateTime date) => window.x(date) - origin;
+  DateTime dateAt(ProgressWindow window, double x) => window.dateAt(origin + x);
+}
+
+/// Limit the visible continuation rather than distort real time intervals.
+List<WeightForecastPoint> forecastInProgressView(
+  ProgressWindow window,
+  List<ProgressPoint> actual,
+  List<WeightForecastPoint> forecast,
+) {
+  if (actual.isEmpty || forecast.isEmpty) return const [];
+  final dates = actual.map((p) => window.x(p.date)).toList();
+  final span = dates.reduce(max) - dates.reduce(min);
+  if (span < 1 - 1e-9) return const [];
+  return List.unmodifiable(forecast.take((span + 1e-9).floor() + 1));
+}
+
 List<ProgressPoint> pointsInWindow(
   Iterable<ProgressPoint> source,
   ProgressWindow window,
@@ -116,13 +160,16 @@ class ProgressScale {
             ? 1
             : normalized <= 2
             ? 2
+            : normalized <= 2.5
+            ? 2.5
             : normalized <= 5
             ? 5
             : 10) *
         magnitude;
     final center = (low + high) / 2;
-    final bottom = max(0.0, ((center - span / 2) / step).floor() * step);
-    final top = ((center + span / 2) / step).ceil() * step;
+    final quantum = step / 5;
+    final bottom = max(0.0, ((center - span / 2) / quantum).floor() * quantum);
+    final top = ((center + span / 2) / quantum).ceil() * quantum;
     return ProgressScale(bottom, top, step);
   }
 }

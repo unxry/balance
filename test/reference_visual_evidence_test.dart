@@ -9,6 +9,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter_app/models/food_product.dart';
+import 'package:flutter_app/models/daily_tip.dart';
 import 'package:flutter_app/models/food_models.dart';
 import 'package:flutter_app/models/recipe_models.dart';
 import 'package:flutter_app/models/user_profile.dart';
@@ -77,6 +78,22 @@ void main() {
     userBox = await Hive.openBox<dynamic>('visual_user_$sequence');
     foodBox = await Hive.openBox<dynamic>('visual_food_$sequence');
     weightBox = await Hive.openBox<dynamic>('visual_weight_$sequence');
+    // Keep the build 22 reading fixed so catalog growth does not change UI goldens.
+    await userBox.put('dailyTipsV1', {
+      'version': 1,
+      'personalized': false,
+      'saved': <String>[],
+      'history': [
+        TipVisit(
+          dateKey: '2026-09-09',
+          tipId: 'meal-dinner',
+          basis: TipBasis.universal,
+          catalogVersion: 4,
+          reasonRu: const TipContext().reason(TipBasis.universal, true),
+          reasonEn: const TipContext().reason(TipBasis.universal, false),
+        ).toJson(),
+      ],
+    });
     data = AppDataProvider(
       now: () => DateTime(2026, 9, 9, 12),
       userBox: userBox,

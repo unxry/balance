@@ -475,6 +475,7 @@ void main() {
           activityLevel: ActivityLevel.light,
           goal: Goal.lose,
           onboarded: true,
+          joinedAt: now,
         ),
       );
 
@@ -508,7 +509,9 @@ void main() {
       expect(trend!.daysUsed, 15);
       expect(trend.delta7DaysKg, lessThan(0));
       expect(trend.predictedWeightKg, lessThan(data.profile.weightKg));
-      expect(data.dailyBalances.last.estimatedWeightKg, isNotNull);
+      expect(data.dailyBalances.last.estimatedWeightKg, isNull);
+      expect(data.weightForecast.ready, isTrue);
+      expect(data.weightHistory.length, 4);
     },
   );
 

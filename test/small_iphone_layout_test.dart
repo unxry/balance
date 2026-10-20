@@ -536,11 +536,18 @@ void main() {
       final firstChart = tester.widget<LineChart>(find.byType(LineChart));
       expect(firstChart.data.lineBarsData.single.spots, hasLength(1));
       await tester.tap(find.byKey(const ValueKey('weightRange-week')));
-      await tester.pump();
+      await tester.pumpAndSettle();
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('weightWeeklyOverview')),
+        160,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(
         find.byKey(const ValueKey('weightWeeklyOverview')),
         findsOneWidget,
       );
+      await tester.drag(find.byType(CustomScrollView), const Offset(0, 700));
+      await tester.pumpAndSettle();
       final collection = find.byKey(const ValueKey('weightCollectionState'));
       expect(
         find.descendant(
@@ -597,7 +604,9 @@ void main() {
       expect(find.byKey(const ValueKey('weightFullChart')), findsOneWidget);
       expect(find.byKey(const ValueKey('weightCollectionState')), findsNothing);
       final chart = tester.widget<LineChart>(find.byType(LineChart));
-      expect(chart.data.lineBarsData.single.spots, hasLength(2));
+      expect(chart.data.lineBarsData.single.spots.length, greaterThan(2));
+      expect(chart.data.lineBarsData.single.spots.first.y, 80);
+      expect(chart.data.lineBarsData.single.spots.last.y, 79.6);
       expect(chart.data.lineBarsData.first.isCurved, isFalse);
       expect(chart.data.lineBarsData.first.isStrokeCapRound, isTrue);
     },
@@ -1124,6 +1133,21 @@ void main() {
     expect(indicator.width, 50);
   });
 
+  testWidgets('home action stays usable at 200 percent text', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(320, 568));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(app(const RootShell(), textScale: 2));
+    await tester.pumpAndSettle();
+    final button = find.byKey(const ValueKey('tryTodayFromHome'));
+    await tester.ensureVisible(button);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+    expect(find.text('Что сделать сегодня'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('whole Advice card opens the contextual detail sheet', (
     tester,
   ) async {
@@ -1140,11 +1164,15 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('adviceCard')));
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('adviceDetailSheet')), findsOneWidget);
-    expect(find.text('СОВЕТ ДНЯ'), findsWidgets);
+    expect(find.text('Что сделать сегодня'), findsWidgets);
     expect(find.text('На основе'), findsOneWidget);
-    expect(find.text('Питание'), findsOneWidget);
-    expect(find.text('Вода'), findsOneWidget);
-    expect(find.text('Шаги'), findsOneWidget);
+    expect(
+      find.text(
+        'Практическая идея на сегодня. Выберите подходящий вам вариант.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('tipPersonalization')), findsOneWidget);
   });
 
   testWidgets('Diary action ends above the glass navigation', (tester) async {

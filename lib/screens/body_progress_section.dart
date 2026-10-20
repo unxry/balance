@@ -1,8 +1,10 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/body_measurement.dart';
+import '../models/weight_forecast.dart';
 import '../providers/app_data_provider.dart';
 import '../services/progress_series.dart';
 import '../theme/app_colors.dart';
@@ -10,18 +12,25 @@ import '../theme/app_text_styles.dart';
 import '../utils/calendar_date.dart';
 import '../widgets/common.dart';
 import '../widgets/progress_chart.dart';
+import '../widgets/weight_forecast_note.dart';
 
 String bodyTypeLabel(BodyMeasurementType type, bool isRu) => switch (type) {
   BodyMeasurementType.chest => isRu ? 'Грудь' : 'Chest',
+  BodyMeasurementType.waist => isRu ? 'Талия' : 'Waist',
   BodyMeasurementType.hips => isRu ? 'Бёдра' : 'Hips',
 };
 
-Color _bodyColor(BodyMeasurementType type, AppColors colors) =>
-    type == BodyMeasurementType.chest
-    ? colors.accent
-    : colors.brightness == Brightness.dark
-    ? const Color(0xFFD5A28D)
-    : const Color(0xFFA96D58);
+Color _bodyColor(BodyMeasurementType type, AppColors colors) => switch (type) {
+  BodyMeasurementType.chest => colors.accent,
+  BodyMeasurementType.waist =>
+    colors.brightness == Brightness.dark
+        ? const Color(0xFFA4C1C5)
+        : const Color(0xFF66858A),
+  BodyMeasurementType.hips =>
+    colors.brightness == Brightness.dark
+        ? const Color(0xFFD5A28D)
+        : const Color(0xFFA96D58),
+};
 
 Future<void> showBodyMeasurementEditor(
   BuildContext context, {
@@ -93,14 +102,36 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
       ),
       window,
     );
-    final chest = bodyPoints(BodyMeasurementType.chest);
-    final hips = bodyPoints(BodyMeasurementType.hips);
+    final body = {
+      for (final type in BodyMeasurementType.values) type: bodyPoints(type),
+    };
     final dates = <String, DateTime>{};
-    for (final point in [...weights, ...chest, ...hips]) {
+    for (final point in [
+      ...weights,
+      ...body.values.expand((points) => points),
+    ]) {
       dates[localDateKey(point.date)] = point.date.toLocal();
     }
     final keys = dates.keys.toList()..sort();
-    final selectedDay = _selectedDay != null && window.contains(_selectedDay!)
+    final fullForecast = data.analyticsForDays(widget.days).forecastPoints;
+    final forecast = weights.isEmpty
+        ? <WeightForecastPoint>[]
+        : forecastInProgressView(window, [
+            ...weights,
+            ...body.values.expand((points) => points),
+          ], fullForecast);
+    final domain = ProgressDomain.forPoints(window, [
+      ...weights,
+      ...body.values.expand((points) => points),
+    ], forecast: forecast);
+    final maxX = math.max(
+      widget.days + .15,
+      forecast.isEmpty ? 0.0 : window.x(forecast.last.date) + .6,
+    );
+    final selectedDay =
+        _selectedDay != null &&
+            !(_selectedDay!.isBefore(window.start)) &&
+            window.x(_selectedDay!) <= maxX
         ? _selectedDay
         : (keys.isEmpty ? null : dates[keys.last]);
     final history = measurements
@@ -109,32 +140,6 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
         .reversed
         .toList();
 
-    Widget chartCard(String title, List<ProgressLine> lines, String unit) =>
-        SectionCard(
-          radius: 24,
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '$title · $unit',
-                style: text.inter(size: 13, weight: FontWeight.w700),
-              ),
-              const SizedBox(height: 16),
-              ProgressChart(
-                key: ValueKey('bodyChart-$unit'),
-                window: window,
-                lines: lines,
-                unit: unit,
-                isRu: ru,
-                selectedDay: widget.comparison ? selectedDay : null,
-                onSelectDay: widget.comparison
-                    ? (day) => setState(() => _selectedDay = day)
-                    : null,
-              ),
-            ],
-          ),
-        );
     final bodyLines = [
       for (final type in BodyMeasurementType.values)
         if (_visible.contains(type))
@@ -142,10 +147,137 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
             label: bodyTypeLabel(type, ru),
             color: _bodyColor(type, colors),
             dashed: type == BodyMeasurementType.hips,
-            points: type == BodyMeasurementType.chest ? chest : hips,
+            points: body[type]!,
           ),
     ];
-
+    Widget legend() => Wrap(
+      spacing: 7,
+      runSpacing: 4,
+      children: [
+        for (final type in BodyMeasurementType.values)
+          FilterChip(
+            key: ValueKey('bodyLegend-${type.name}'),
+            selected: _visible.contains(type),
+            selectedColor: _bodyColor(type, colors).withValues(alpha: .07),
+            backgroundColor: Colors.transparent,
+            showCheckmark: false,
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            side: BorderSide(
+              color: _bodyColor(
+                type,
+                colors,
+              ).withValues(alpha: _visible.contains(type) ? .22 : .08),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(11),
+            ),
+            avatar: Icon(
+              switch (type) {
+                BodyMeasurementType.chest => Icons.circle,
+                BodyMeasurementType.waist => Icons.diamond_rounded,
+                BodyMeasurementType.hips => Icons.square,
+              },
+              size: 7,
+              color: _bodyColor(type, colors),
+            ),
+            label: Text(
+              bodyTypeLabel(type, ru),
+              style: text.inter(
+                size: 10,
+                color: _visible.contains(type) ? colors.fg2 : colors.muted,
+                weight: FontWeight.w500,
+              ),
+            ),
+            onSelected: (visible) => setState(
+              () => visible ? _visible.add(type) : _visible.remove(type),
+            ),
+          ),
+      ],
+    );
+    Widget chart(
+      List<ProgressLine> lines,
+      String unit, {
+      bool weight = false,
+    }) => ProgressChart(
+      key: ValueKey('bodyChart-$unit'),
+      window: window,
+      lines: lines,
+      unit: unit,
+      isRu: ru,
+      forecast: weight ? forecast : const [],
+      sharedDomain: widget.comparison ? domain : null,
+      selectedDay: widget.comparison ? selectedDay : null,
+      onSelectDay: widget.comparison
+          ? (day) => setState(() => _selectedDay = day)
+          : null,
+      height: widget.comparison ? 126 : 184,
+      showSelection: !widget.comparison,
+      showXAxis: !weight || !widget.comparison,
+    );
+    Widget selectedDate() => Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(12, 6, 12, 10),
+      decoration: BoxDecoration(
+        color: colors.accentSoft.withValues(alpha: .28),
+        borderRadius: BorderRadius.circular(17),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextButton.icon(
+            key: const ValueKey('comparisonDate'),
+            style: TextButton.styleFrom(
+              foregroundColor: colors.accent,
+              padding: EdgeInsets.zero,
+              alignment: Alignment.centerLeft,
+            ),
+            icon: const Icon(Icons.calendar_today_outlined, size: 13),
+            label: Text(
+              selectedDay == null
+                  ? (ru ? 'Выберите дату' : 'Select date')
+                  : DateFormat('d MMM y', ru ? 'ru' : 'en').format(selectedDay),
+              style: text.inter(
+                size: 11,
+                color: colors.accent,
+                weight: FontWeight.w600,
+              ),
+            ),
+            onPressed: () async {
+              final date = await showDatePicker(
+                context: context,
+                initialDate: selectedDay ?? data.today,
+                firstDate: window.start,
+                lastDate: forecast.isEmpty
+                    ? window.dateAt(widget.days - 1)
+                    : forecast.last.date,
+              );
+              if (date != null && mounted) setState(() => _selectedDay = date);
+            },
+          ),
+          if (selectedDay != null &&
+              lastPointOnDay(weights, selectedDay) == null &&
+              forecast.any((p) => isSameLocalCalendarDay(p.date, selectedDay)))
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4),
+              child: Text(
+                '${ru ? 'Вес' : 'Weight'}: ≈ ${progressNumber(forecast.lastWhere((p) => isSameLocalCalendarDay(p.date, selectedDay)).kg, ru, digits: 1)} $kg · ${ru ? 'Прогноз' : 'Forecast'}',
+                key: ValueKey('comparisonValue-${ru ? 'Вес' : 'Weight'}'),
+                style: text.inter(size: 12, color: colors.accent),
+              ),
+            )
+          else
+            _dayRow(text, ru ? 'Вес' : 'Weight', weights, selectedDay, kg),
+          for (final type in BodyMeasurementType.values)
+            _dayRow(
+              text,
+              bodyTypeLabel(type, ru),
+              body[type]!,
+              selectedDay,
+              cm,
+            ),
+        ],
+      ),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -153,10 +285,114 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
           ru
               ? (widget.comparison ? 'Сравнение' : 'Замеры тела')
               : (widget.comparison ? 'Comparison' : 'Body measurements'),
-          style: text.fraunces(size: 32, weight: FontWeight.w800),
+          style: text.fraunces(size: 30, weight: FontWeight.w700),
         ),
-        const SizedBox(height: 14),
-        if (!widget.comparison) ...[
+        const SizedBox(height: 6),
+        Text(
+          '${DateFormat('d MMM', ru ? 'ru' : 'en').format(window.start)} — ${DateFormat('d MMM y', ru ? 'ru' : 'en').format(window.dateAt(widget.days - 1))}',
+          style: text.inter(size: 10, color: colors.muted, height: 1.5),
+        ),
+        const SizedBox(height: 16),
+        if (widget.comparison) ...[
+          _comparisonSummary(context, [
+            (ru ? 'Вес' : 'Weight', weights, kg, colors.accent),
+            for (final type in BodyMeasurementType.values)
+              (
+                bodyTypeLabel(type, ru),
+                body[type]!,
+                cm,
+                _bodyColor(type, colors),
+              ),
+          ]),
+          const SizedBox(height: 12),
+          SectionCard(
+            radius: 26,
+            padding: const EdgeInsets.fromLTRB(12, 18, 12, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        ru ? 'Вес' : 'Weight',
+                        style: text.fraunces(size: 18),
+                      ),
+                    ),
+                    if (forecast.isNotEmpty)
+                      Text(
+                        ru ? '┄  Прогноз' : '┄  Forecast',
+                        style: text.inter(size: 10, color: colors.accent),
+                      ),
+                    const SizedBox(width: 10),
+                    Text(kg, style: text.inter(size: 10, color: colors.muted)),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                chart(
+                  [
+                    ProgressLine(
+                      label: ru ? 'Вес' : 'Weight',
+                      color: colors.accent,
+                      points: weights,
+                    ),
+                  ],
+                  kg,
+                  weight: true,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Divider(
+                    height: 1,
+                    color: colors.line.withValues(alpha: .5),
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(child: legend()),
+                    Text(cm, style: text.inter(size: 10, color: colors.muted)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                chart(bodyLines, cm),
+                const SizedBox(height: 12),
+                selectedDate(),
+                const SizedBox(height: 10),
+                Text(
+                  ru
+                      ? 'Общая дата · отдельные шкалы. Пропуски остаются пустыми.'
+                      : 'Shared date · separate scales. Missing readings stay empty.',
+                  style: text.inter(size: 9, color: colors.fg2, height: 1.5),
+                ),
+                if (forecast.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      ru
+                          ? 'Пунктир — прогноз веса. Подложка — разброс оценок темпа, не гарантия.${forecast.length < fullForecast.length ? ' Показана ближайшая часть прогноза.' : ''}'
+                          : 'Dashes show the weight forecast. Shading shows trend variation, not a guarantee.${forecast.length < fullForecast.length ? ' Only the nearest part of the forecast is shown.' : ''}',
+                      style: text.inter(
+                        size: 9,
+                        color: colors.fg2,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+          if (forecast.isEmpty) ...[
+            const SizedBox(height: 10),
+            WeightForecastNote(
+              snapshot: data.weightForecast,
+              isRu: ru,
+              active: false,
+              compact: true,
+              limitedPeriod: fullForecast.isNotEmpty,
+              emptyPeriod: weights.isEmpty,
+            ),
+          ],
+        ] else ...[
           LayoutBuilder(
             builder: (context, constraints) {
               final cards = [
@@ -173,158 +409,65 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
                         .toList(),
                   ),
               ];
-              if (constraints.maxWidth < 300 ||
-                  MediaQuery.textScalerOf(context).scale(1) > 1.3) {
-                return Column(
-                  children: [cards[0], const SizedBox(height: 10), cards[1]],
-                );
-              }
-              return Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(child: cards[0]),
-                  const SizedBox(width: 10),
-                  Expanded(child: cards[1]),
-                ],
-              );
+              return constraints.maxWidth < 360 ||
+                      MediaQuery.textScalerOf(context).scale(1) > 1.35
+                  ? Column(
+                      children: [
+                        for (var i = 0; i < cards.length; i++) ...[
+                          if (i > 0) const SizedBox(height: 10),
+                          cards[i],
+                        ],
+                      ],
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (var i = 0; i < cards.length; i++) ...[
+                          if (i > 0) const SizedBox(width: 10),
+                          Expanded(child: cards[i]),
+                        ],
+                      ],
+                    );
             },
           ),
-          const SizedBox(height: 18),
-        ],
-        Text(
-          '${DateFormat('d MMM y', ru ? 'ru' : 'en').format(window.start)} — '
-          '${DateFormat('d MMM y', ru ? 'ru' : 'en').format(window.dateAt(widget.days - 1))}',
-          style: text.inter(size: 11, color: colors.muted),
-        ),
-        const SizedBox(height: 10),
-        Wrap(
-          spacing: 8,
-          runSpacing: 4,
-          children: [
-            for (final type in BodyMeasurementType.values)
-              FilterChip(
-                key: ValueKey('bodyLegend-${type.name}'),
-                selected: _visible.contains(type),
-                selectedColor: colors.card2,
-                checkmarkColor: _bodyColor(type, colors),
-                avatar: Icon(
-                  type == BodyMeasurementType.chest
-                      ? Icons.circle
-                      : Icons.square,
-                  size: 9,
-                  color: _bodyColor(type, colors),
+          const SizedBox(height: 14),
+          SectionCard(
+            radius: 26,
+            padding: const EdgeInsets.fromLTRB(12, 18, 12, 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  ru ? 'Динамика обхватов' : 'Measurement trends',
+                  style: text.fraunces(size: 19),
                 ),
-                label: Text(
-                  bodyTypeLabel(type, ru),
-                  style: text.inter(size: 12),
-                ),
-                onSelected: (visible) => setState(
-                  () => visible ? _visible.add(type) : _visible.remove(type),
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        if (widget.comparison) ...[
-          chartCard(ru ? 'Вес' : 'Weight', [
-            ProgressLine(
-              label: ru ? 'Вес' : 'Weight',
-              color: colors.accent,
-              points: weights,
+                const SizedBox(height: 8),
+                legend(),
+                const SizedBox(height: 10),
+                chart(bodyLines, cm),
+              ],
             ),
-          ], kg),
-          const SizedBox(height: 14),
-        ],
-        chartCard(ru ? 'Обхваты' : 'Circumferences', bodyLines, cm),
-        const SizedBox(height: 14),
-        SectionCard(
-          radius: 20,
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                ru ? 'Изменение за период' : 'Change in this period',
-                style: text.inter(size: 13, weight: FontWeight.w700),
-              ),
-              const SizedBox(height: 8),
-              if (widget.comparison)
-                _summaryRow(text, ru ? 'Вес' : 'Weight', weights, kg),
-              _summaryRow(
-                text,
-                bodyTypeLabel(BodyMeasurementType.chest, ru),
-                chest,
-                cm,
-              ),
-              _summaryRow(
-                text,
-                bodyTypeLabel(BodyMeasurementType.hips, ru),
-                hips,
-                cm,
-              ),
-              const SizedBox(height: 6),
-              Text(
-                ru
-                    ? 'От первой до последней записи. Для изменения нужны две записи.'
-                    : 'First to last reading. Change requires two readings.',
-                style: text.inter(size: 10, color: colors.muted, height: 1.4),
-              ),
-            ],
           ),
-        ),
-        if (widget.comparison) ...[
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
           SectionCard(
             radius: 20,
             padding: const EdgeInsets.all(14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                OutlinedButton.icon(
-                  key: const ValueKey('comparisonDate'),
-                  icon: const Icon(Icons.calendar_today_outlined, size: 16),
-                  label: Text(
-                    selectedDay == null
-                        ? (ru ? 'Выберите дату' : 'Select date')
-                        : DateFormat(
-                            'd MMM y',
-                            ru ? 'ru' : 'en',
-                          ).format(selectedDay),
-                  ),
-                  onPressed: () async {
-                    final date = await showDatePicker(
-                      context: context,
-                      initialDate:
-                          selectedDay ?? window.dateAt(widget.days - 1),
-                      firstDate: window.start,
-                      lastDate: window.dateAt(widget.days - 1),
-                    );
-                    if (date != null && mounted) {
-                      setState(() => _selectedDay = date);
-                    }
-                  },
+                Text(
+                  ru ? 'Изменение за период' : 'Change in this period',
+                  style: text.inter(size: 12, weight: FontWeight.w600),
                 ),
-                _dayRow(text, ru ? 'Вес' : 'Weight', weights, selectedDay, kg),
-                _dayRow(
-                  text,
-                  bodyTypeLabel(BodyMeasurementType.chest, ru),
-                  chest,
-                  selectedDay,
-                  cm,
-                ),
-                _dayRow(
-                  text,
-                  bodyTypeLabel(BodyMeasurementType.hips, ru),
-                  hips,
-                  selectedDay,
-                  cm,
-                ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
+                for (final type in BodyMeasurementType.values)
+                  _summaryRow(text, bodyTypeLabel(type, ru), body[type]!, cm),
+                const SizedBox(height: 6),
                 Text(
                   ru
-                      ? 'Последняя реальная запись каждого показателя за выбранный день. Пропуски не заполняются.'
-                      : 'Last real reading of each metric on the selected day. Missing readings stay empty.',
-                  style: text.inter(size: 10, color: colors.muted, height: 1.4),
+                      ? 'От первой до последней реальной записи.'
+                      : 'First to last real reading.',
+                  style: text.inter(size: 9, color: colors.muted),
                 ),
               ],
             ),
@@ -374,7 +517,7 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
                 ),
                 subtitle: Text(
                   DateFormat(
-                    'd MMM y · HH:mm',
+                    'd MMM y',
                     ru ? 'ru' : 'en',
                   ).format(entry.date.toLocal()),
                   style: text.inter(size: 10, color: colors.muted),
@@ -430,9 +573,62 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Text(
-        '$label: ${point == null ? (widget.isRu ? 'нет данных' : 'no data') : '${progressNumber(point.value, widget.isRu)} $unit · ${DateFormat('HH:mm').format(point.date.toLocal())}'}',
+        '$label: ${point == null ? (widget.isRu ? 'нет данных' : 'no data') : '${progressNumber(point.value, widget.isRu, digits: 1)} $unit'}',
         key: ValueKey('comparisonValue-$label'),
         style: text.inter(size: 13),
+      ),
+    );
+  }
+
+  Widget _comparisonSummary(
+    BuildContext context,
+    List<(String, List<ProgressPoint>, String, Color)> metrics,
+  ) {
+    final c = context.colors;
+    final t = AppText(c);
+    Widget item(int index, {bool row = false}) {
+      final metric = metrics[index];
+      final label = Text(metric.$1, style: t.inter(size: 10, color: c.fg2));
+      final value = Text(
+        progressDelta(progressChange(metric.$2), widget.isRu, metric.$3),
+        key: ValueKey('comparisonDelta-$index'),
+        style: t.fraunces(size: 21, color: metric.$4),
+      );
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: row
+            ? Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: 14,
+                runSpacing: 5,
+                children: [label, value],
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [label, const SizedBox(height: 5), value],
+              ),
+      );
+    }
+
+    return SectionCard(
+      radius: 20,
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final singleColumn =
+              MediaQuery.textScalerOf(context).scale(1) > 1.35 ||
+              constraints.maxWidth < 260;
+          return Wrap(
+            children: [
+              for (var i = 0; i < metrics.length; i++)
+                SizedBox(
+                  width: constraints.maxWidth / (singleColumn ? 1 : 2),
+                  child: item(i, row: singleColumn),
+                ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -442,70 +638,100 @@ class _BodyProgressSectionState extends State<BodyProgressSection> {
     BodyMeasurementType type,
     List<BodyMeasurement> entries,
   ) {
-    final colors = context.colors;
-    final text = AppText(colors);
+    final c = context.colors;
+    final t = AppText(c);
     final ru = widget.isRu;
     final last = entries.isEmpty ? null : entries.last;
     final previous = entries.length < 2 ? null : entries[entries.length - 2];
     final delta = previous == null ? null : last!.cm - previous.cm;
-    final unit = ru ? 'см' : 'cm';
+    final color = _bodyColor(type, c);
     return SectionCard(
-      radius: 20,
-      padding: const EdgeInsets.all(14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            bodyTypeLabel(type, ru),
-            style: text.inter(size: 13, weight: FontWeight.w700),
-          ),
-          const SizedBox(height: 12),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              last == null ? '—' : '${progressNumber(last.cm, ru)} $unit',
-              style: text.fraunces(size: 30),
+      key: ValueKey('bodyMetric-${type.name}'),
+      radius: 23,
+      padding: const EdgeInsets.all(13),
+      child: LayoutBuilder(
+        builder: (context, constraints) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 5,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(
+                      type == BodyMeasurementType.chest ? 5 : 1,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 7),
+                Expanded(
+                  child: Text(
+                    bodyTypeLabel(type, ru),
+                    style: t.inter(
+                      size: 11,
+                      weight: FontWeight.w600,
+                      color: c.fg2,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Icon(
-                delta == null || delta == 0
-                    ? Icons.remove_rounded
-                    : delta > 0
-                    ? Icons.north_east_rounded
-                    : Icons.south_east_rounded,
-                size: 14,
-                color: colors.fg2,
-              ),
-              const SizedBox(width: 4),
-              Expanded(
-                child: Text(
-                  progressDelta(delta, ru, unit),
-                  style: text.inter(size: 12),
+            const SizedBox(height: 10),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: last == null
+                          ? '—'
+                          : progressNumber(last.cm, ru, digits: 1),
+                      style: t.fraunces(
+                        size: constraints.maxWidth < 140 ? 28 : 32,
+                      ),
+                    ),
+                    TextSpan(
+                      text: ' ${ru ? 'см' : 'cm'}',
+                      style: t.inter(size: 11, color: c.muted),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: 5),
-          Text(
-            previous == null
-                ? (ru ? 'Нет предыдущего' : 'No previous reading')
-                : '${ru ? 'Было' : 'Previous'} ${progressNumber(previous.cm, ru)} $unit',
-            style: text.inter(size: 10, color: colors.muted),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            last == null
-                ? (ru ? 'Добавьте замер' : 'Add a measurement')
-                : DateFormat(
-                    'd MMM y',
-                    ru ? 'ru' : 'en',
-                  ).format(last.date.toLocal()),
-            style: text.inter(size: 10, color: colors.muted),
-          ),
-        ],
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: .075),
+                borderRadius: BorderRadius.circular(9),
+              ),
+              child: Text(
+                progressDelta(delta, ru, ru ? 'см' : 'cm'),
+                style: t.inter(size: 11, color: color, weight: FontWeight.w600),
+              ),
+            ),
+            const SizedBox(height: 7),
+            Text(
+              previous == null
+                  ? (ru ? 'Первый замер' : 'First reading')
+                  : '${ru ? 'Было' : 'Previous'} ${progressNumber(previous.cm, ru, digits: 1)}',
+              style: t.inter(size: 9, color: c.muted),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              last == null
+                  ? (ru ? 'Добавьте замер' : 'Add a reading')
+                  : DateFormat(
+                      'd MMM y',
+                      ru ? 'ru' : 'en',
+                    ).format(last.date.toLocal()),
+              style: t.inter(size: 9, color: c.muted),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -671,6 +897,7 @@ class _BodyMeasurementEditorState extends State<_BodyMeasurementEditor> {
                   children: [
                     for (final type in BodyMeasurementType.values)
                       ChoiceChip(
+                        key: ValueKey('bodyType-${type.name}'),
                         label: Text(bodyTypeLabel(type, ru)),
                         selected: _type == type,
                         onSelected: widget.entry == null
@@ -727,27 +954,6 @@ class _BodyMeasurementEditorState extends State<_BodyMeasurementEditor> {
                               _date.second,
                               _date.millisecond,
                               _date.microsecond,
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                    TextButton.icon(
-                      icon: const Icon(Icons.schedule_rounded, size: 17),
-                      label: Text(DateFormat('HH:mm').format(_date)),
-                      onPressed: () async {
-                        final time = await showTimePicker(
-                          context: context,
-                          initialTime: TimeOfDay.fromDateTime(_date),
-                        );
-                        if (time != null && mounted) {
-                          setState(
-                            () => _date = DateTime(
-                              _date.year,
-                              _date.month,
-                              _date.day,
-                              time.hour,
-                              time.minute,
                             ),
                           );
                         }
