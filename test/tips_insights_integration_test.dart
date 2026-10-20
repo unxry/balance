@@ -25,7 +25,7 @@ void main() {
           reason: tip.id,
         );
         expect(tip.evidenceLevel, isNot(TipEvidenceLevel.unverified));
-        expect(tip.version, 3);
+        expect(tip.version, 4);
         expect(tip.safetyTags, isNotEmpty);
         expect(tip.contraindicationRules, isNotEmpty);
         for (final copy in [tip.ru, tip.en]) {
@@ -141,7 +141,7 @@ void main() {
       final plateau = activeDailyTips.singleWhere(
         (t) => t.id == 'insight-stable',
       );
-      final general = activeDailyTips.singleWhere((t) => t.id == 'progress-12');
+      final general = activeDailyTips.singleWhere((t) => t.id == 'progress-16');
       final result = WeightTrendInsight(
         state: WeightInsightState.possiblePlateau,
         calculatedAt: DateTime(2026),
@@ -200,7 +200,7 @@ void main() {
       final protein = activeDailyTips.singleWhere(
         (t) => t.id == 'food-protein',
       );
-      final general = activeDailyTips.singleWhere((t) => t.id == 'progress-12');
+      final general = activeDailyTips.singleWhere((t) => t.id == 'progress-16');
       for (final complete in [false, true]) {
         final s = DailyTipsService(
           store: MemoryTipStore(),
@@ -210,6 +210,7 @@ void main() {
         await s.refresh(
           context: TipContext(
             hasFood: true,
+            repeatedLoggedFoods: true,
             distinctFoods: complete ? 2 : 1,
             loggedProteinG: complete ? 45 : null,
             loggedFatG: complete ? 30 : null,
@@ -266,6 +267,66 @@ void main() {
       await Hive.close();
       await directory.delete(recursive: true);
     });
+    test(
+      'repetition uses several completed logged days without claiming a complete diet',
+      () async {
+        for (var i = 0; i < 3; i++) {
+          for (var j = 0; j < 2; j++) {
+            final date = DateTime(2026, 10, 25 + i, 12 + j);
+            await data.addFoodForDate(
+              FoodEntry(
+                id: 'repeat-$i-$j',
+                name: j == 0 ? 'Rice' : 'Beans',
+                grams: 100,
+                kcal: 200,
+                proteinG: 5,
+                fatG: 2,
+                carbsG: 25,
+                meal: MealType.lunch,
+                time: date,
+              ),
+              '2026-10-${25 + i}',
+            );
+          }
+        }
+        expect(data.tipContext.repeatedLoggedFoods, isTrue);
+        expect(data.tipContext.distinctFoods, 2);
+        expect(data.tipContext.loggedFoodDays, 3);
+        expect(
+          data.tipContext.reason(TipBasis.variety, false),
+          contains('not your full diet'),
+        );
+        expect(data.dailyTips.personalized, isFalse);
+      },
+    );
+    test(
+      'today alone cannot establish recurring logged foods; sparse weights use actual entries',
+      () async {
+        for (var i = 0; i < 6; i++) {
+          await data.addFoodForDate(
+            FoodEntry(
+              id: 'today-$i',
+              name: 'Rice',
+              grams: 100,
+              kcal: 100,
+              proteinG: 4,
+              fatG: 2,
+              carbsG: 12,
+              meal: MealType.lunch,
+              time: DateTime(2026, 10, 28, 9 + i),
+            ),
+            '2026-10-28',
+          );
+        }
+        expect(data.tipContext.hasFood, isTrue);
+        expect(data.tipContext.repeatedLoggedFoods, isFalse);
+        expect(data.tipContext.sparseWeight, isFalse);
+        await data.addWeightEntry(80, date: DateTime(2026, 10, 26, 8));
+        await data.addWeightEntry(80, date: DateTime(2026, 10, 27, 8));
+        expect(data.tipContext.sparseWeight, isTrue);
+        expect(data.tipContext.insight!.measuredDays, 2);
+      },
+    );
     test('no entries, unknown age, food and step signals are not invented', () {
       final c = data.tipContext;
       expect(c.hasFood, isFalse);

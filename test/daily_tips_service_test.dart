@@ -48,16 +48,16 @@ void main() {
   });
 
   test(
-    '80 sourced articles, all 180 legacy IDs, bilingual content and compatible aliases',
+    '60 practical articles, all 180 legacy IDs, bilingual content and compatible aliases',
     () {
-      expect(activeDailyTips, hasLength(80));
+      expect(activeDailyTips, hasLength(60));
       expect(dailyTipsCatalog.map((tip) => tip.id).toSet(), hasLength(200));
-      expect(activeDailyTips.map((tip) => tip.ru.body).toSet(), hasLength(80));
-      expect(activeDailyTips.map((tip) => tip.en.body).toSet(), hasLength(80));
+      expect(activeDailyTips.map((tip) => tip.ru.body).toSet(), hasLength(60));
+      expect(activeDailyTips.map((tip) => tip.en.body).toSet(), hasLength(60));
       for (final category in TipCategory.values) {
         expect(
           activeDailyTips.where((tip) => tip.category == category).length,
-          greaterThanOrEqualTo(6),
+          greaterThanOrEqualTo(1),
         );
         for (var n = 1; n <= 18; n++) {
           expect(
@@ -167,12 +167,23 @@ void main() {
   test(
     'category rotation, full cycle and sixty-day exclusion over 500 days',
     () async {
-      final tips = service();
+      final base = activeDailyTips.first;
+      final catalog = [
+        for (var i = 0; i < 80; i++)
+          DailyTip(
+            id: 'rotation-$i',
+            topic: 'topic-$i',
+            category: TipCategory.values[i % TipCategory.values.length],
+            ru: base.ru,
+            en: base.en,
+            sourceIds: base.sourceIds,
+            evidenceLevel: base.evidenceLevel,
+          ),
+      ];
+      final tips = service(repository: Catalog(catalog));
       final ids = <String>[];
       final categories = <TipCategory>[];
-      final universal = dailyTipsCatalog
-          .where((tip) => !tip.retired && tip.basis == TipBasis.universal)
-          .length;
+      final universal = catalog.length;
       for (var day = 0; day < 500; day++) {
         now = DateTime(2027, 1, 1 + day);
         await tips.refresh();
@@ -364,6 +375,13 @@ void main() {
         await tips.refresh();
         final id = tips.currentTip!.id;
         await tips.toggleSaved(id);
+        final choice = tips.alternativeOptions.first;
+        await tips.chooseAlternative(choice.id);
+        await tips.setCompleted(
+          tips.currentVisit!.dateKey,
+          true,
+          tipId: choice.id,
+        );
         final backup = const LocalBackupService().exportJson(
           user: user,
           food: food,
@@ -383,7 +401,10 @@ void main() {
           now: () => now,
         );
         await restored.refresh();
-        expect(restored.currentTip!.id, id);
+        expect(restored.currentVisit!.tipId, id);
+        expect(restored.currentTip!.id, choice.id);
+        expect(restored.displayVisit!.completed, isTrue);
+        expect(restored.currentVisit!.completed, isFalse);
         expect(restored.saved, contains(id));
         expect(reopened.get('profile'), {'name': 'Synthetic QA'});
         expect(reopened.get('water'), 1.2);

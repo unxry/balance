@@ -28,6 +28,21 @@ Future<void> main() async {
 
   enableFlutterDriverExtension(
     handler: (message) async {
+      if (message == 'action-breakfast' || message == 'action-plateau') {
+        final plateau = message == 'action-plateau';
+        await data.setTipsPersonalized(plateau);
+        await data.chooseTipAlternative(
+          plateau ? 'insight-stable' : 'meal-breakfast',
+        );
+        if (!plateau) {
+          await data.setTipCompleted(
+            data.dailyTips.displayVisit!.dateKey,
+            false,
+            tipId: 'meal-breakfast',
+          );
+        }
+      }
+      if (message == 'await-tips') await data.dailyTips.pending;
       if (message == 'screen-home') {
         navigator.currentState!.popUntil((r) => r.isFirst);
       }

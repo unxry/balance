@@ -59,7 +59,7 @@ class _DailyTipsContent extends StatelessWidget {
     final data = context.watch<AppDataProvider>();
     final service = data.dailyTips;
     final tip = service.currentTip;
-    final visit = service.currentVisit;
+    final visit = service.displayVisit;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -87,6 +87,81 @@ class _DailyTipsContent extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+        if (tip != null &&
+            (service.alternativeOptions.isNotEmpty ||
+                service.currentVisit?.selectedId != null))
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              key: const ValueKey('chooseTipAlternative'),
+              icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+              label: Text(
+                ru ? 'Другой совет на сегодня' : 'Choose another action today',
+              ),
+              onPressed: () => showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.sizeOf(context).height * .85,
+                ),
+                backgroundColor: c.page,
+                builder: (sheetContext) => SafeArea(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            ru
+                                ? 'Выберите выполнимое действие'
+                                : 'Choose a manageable action',
+                            style: text.fraunces(size: 22),
+                          ),
+                        ),
+                        for (final option in service.alternativeOptions)
+                          ListTile(
+                            key: ValueKey('chooseTip-${option.id}'),
+                            title: Text(option.copy(ru).title),
+                            subtitle: Text(option.copy(ru).task ?? ''),
+                            onTap: () {
+                              Navigator.pop(sheetContext);
+                              tipAction(
+                                context,
+                                () => data.chooseTipAlternative(option.id),
+                              );
+                            },
+                          ),
+                        if (service.currentVisit?.selectedId != null)
+                          ListTile(
+                            key: const ValueKey('restoreDailyTip'),
+                            title: Text(
+                              ru
+                                  ? 'Вернуть первоначальный совет'
+                                  : 'Return to the original action',
+                            ),
+                            onTap: () {
+                              Navigator.pop(sheetContext);
+                              tipAction(
+                                context,
+                                () => data.chooseTipAlternative(null),
+                              );
+                            },
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        if (service.currentVisit?.selectedId != null)
+          Text(
+            ru
+                ? 'Выбранный вариант сохранён на сегодня. Первоначальное назначение остаётся в истории.'
+                : 'Your choice is saved for today. The original assignment stays in history.',
+            style: text.inter(size: 11, color: c.fg2),
           ),
         const SizedBox(height: 14),
         SectionCard(
@@ -217,7 +292,12 @@ class _DailyTipsContent extends StatelessWidget {
 }
 
 String _basis(TipBasis basis, bool ru) => switch (basis) {
-  TipBasis.plateau || TipBasis.maintenance || TipBasis.diary || TipBasis.body =>
+  TipBasis.plateau ||
+  TipBasis.maintenance ||
+  TipBasis.diary ||
+  TipBasis.body ||
+  TipBasis.variety ||
+  TipBasis.observation =>
     ru
         ? 'Основание старой записи не сохранено; актуальная оценка доступна в анализе динамики.'
         : 'The old assignment has no saved rationale; see trend insights for the current assessment.',
@@ -364,7 +444,7 @@ class DailyTipsHistoryScreen extends StatelessWidget {
     final service = data.dailyTips;
     final seen = <String>{};
     final visits =
-        service.history.reversed
+        service.readingHistory.reversed
             .where(
               (visit) =>
                   service.tipById(visit.tipId) != null &&

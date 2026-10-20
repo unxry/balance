@@ -39,3 +39,25 @@ Today’s assignment ID remains stable. Its original bilingual rationale and cat
 ## Evidence boundary
 
 [NIDDK](https://www.niddk.nih.gov/health-information/weight-management/adult-overweight-obesity/eating-physical-activity) supports changing energy needs and sustainable habits. [Mayo Clinic](https://www.mayoclinic.org/healthy-lifestyle/weight-loss/in-depth/weight-loss-plateau/art-20044615) discusses plateaus and water/glycogen; its calorie-cut instructions are deliberately not implemented. [NHS weighing guidance](https://www.england.nhs.uk/wp-content/uploads/2021/06/PRN00916-how-to-record-your-weight.pdf) supports comparable conditions and optional regular intervals. [NIDDK planner restrictions](https://www.niddk.nih.gov/health-information/weight-management/body-weight-planner) inform adult/pregnancy/breastfeeding scope. Detailed content-to-source mapping and exclusions are in `DAILY_TIPS_EVIDENCE.md`.
+
+## Daily Tips 3.0 action layer
+
+The numeric classifier is unchanged in build 22. Its next step now depends on the
+state: check actual dates/conditions for short histories; review one completed
+food-log day for stable weight; keep one manageable maintenance habit after a
+reached/maintenance goal; review known record errors for uncertain history.
+Repeated low logs override the action with a completeness/adequacy review and
+support, never tighter restriction. Examples and substitutions are practical
+illustrations without nutrient calculations.
+
+Recurring logged-food eligibility uses at least three completed logged days,
+six entries and no more than three distinct logged foods. These are UI relevance
+rules, not a diagnosis of poor variety or nutrient deficiency. Macro-based advice
+also needs finite nonnegative recorded totals. Sparse observation advice requires
+at least one actual measured day; missing records never prove that weighing did
+not happen. Current-day records do not establish a completed-day pattern.
+
+Explicit alternatives and task-version completion are additive fields under the
+existing version-1 tip state. An unsafe historical loss action cannot lend its
+completion to a replacement support action. Users can explicitly select that
+support action under its own ID. Old completions remain intact.

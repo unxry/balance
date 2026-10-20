@@ -100,7 +100,11 @@ class WeightInsightsScreen extends StatelessWidget {
             ),
             paragraph(
               ru ? 'Что можно сделать?' : 'What can you do?',
-              insight.action(ru),
+              signals.lowLoggedIntake
+                  ? (ru
+                        ? 'Сначала проверьте полноту одного низко заполненного дня. Уточните только известные записи. Если питание действительно долго ограничено, выберите регулярную полноценную еду и профессиональную поддержку. Новое сокращение еды не предлагается.'
+                        : 'First review completeness of one low-log day. Clarify only known entries. If eating has been persistently restricted, prioritize regular adequate meals and professional support. Further food restriction is not suggested.')
+                  : insight.action(ru),
             ),
             paragraph(
               ru ? 'Что известно из дневника' : 'What the log can tell us',
@@ -163,16 +167,16 @@ class WeightInsightsScreen extends StatelessWidget {
                       ),
                       children: [
                         Text(
-                          activeDailyTips
-                              .singleWhere((tip) => tip.id == article.$1)
+                          data.dailyTips
+                              .tipById(article.$1)!
                               .copy(ru)
                               .explanation!,
                           style: t.inter(size: 13, color: c.fg2, height: 1.6),
                         ),
                         const SizedBox(height: 12),
                         TipSourcesPanel(
-                          sourceIds: activeDailyTips
-                              .singleWhere((tip) => tip.id == article.$1)
+                          sourceIds: data.dailyTips
+                              .tipById(article.$1)!
                               .sourceIds,
                         ),
                       ],

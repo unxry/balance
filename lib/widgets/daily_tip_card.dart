@@ -7,6 +7,7 @@ import '../providers/settings_provider.dart';
 import '../theme/app_text_styles.dart';
 import 'common.dart';
 import 'tip_sources_panel.dart';
+import 'tip_navigation.dart';
 
 IconData tipIcon(TipCategory category) => switch (category) {
   TipCategory.nutrition => Icons.restaurant_outlined,
@@ -57,15 +58,14 @@ class DailyTipCard extends StatefulWidget {
 }
 
 class _DailyTipCardState extends State<DailyTipCard> {
-  bool _showTask = false;
-  bool _busy = false;
-
+  bool _showTask = false, _showAlternative = false, _busy = false;
   @override
   void didUpdateWidget(covariant DailyTipCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.tip.id != widget.tip.id ||
         oldWidget.visit.dateKey != widget.visit.dateKey) {
       _showTask = false;
+      _showAlternative = false;
     }
   }
 
@@ -78,235 +78,284 @@ class _DailyTipCardState extends State<DailyTipCard> {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
-    final text = AppText(c);
+    final c = context.colors, t = AppText(context.colors);
     final ru = context.watch<SettingsProvider>().lang == AppLang.ru;
     final data = context.watch<AppDataProvider>();
-    final suitable = data.dailyTips.isSuitable(widget.tip);
-    final copy = suitable
-        ? widget.tip.copy(ru)
-        : TipCopy(
-            ru ? 'Сейчас — общая поддержка' : 'General support for now',
-            ru
-                ? 'Цель или ограничения изменились. Этот материал о снижении веса сейчас не подходит; дальнейшие ограничения не предлагаются.'
-                : 'Your goal or safety context changed. This weight-loss material is currently unsuitable; further restriction is not suggested.',
-          );
+    final original = data.dailyTips.tipById(widget.tip.id) ?? widget.tip;
+    final suitable = data.dailyTips.isSuitable(original);
+    final effective = suitable
+        ? widget.tip
+        : data.dailyTips.tipById('care-context')!;
+    final copy = effective.copy(ru);
     final saved = data.dailyTips.saved.contains(widget.tip.id);
-    final completed = data.dailyTips.history.any(
-      (v) => v.dateKey == widget.visit.dateKey && v.completed,
+    final chosen = data.dailyTips.displayVisit;
+    final assigned = widget.assigned || chosen?.tipId == widget.tip.id;
+    final visit = !widget.assigned && chosen?.tipId == widget.tip.id
+        ? chosen!
+        : widget.visit;
+    final completed = data.dailyTips.readingHistory.any(
+      (v) =>
+          v.dateKey == visit.dateKey && v.tipId == visit.tipId && v.completed,
     );
-    return AnimatedSwitcher(
-      duration: MediaQuery.disableAnimationsOf(context)
-          ? Duration.zero
-          : const Duration(milliseconds: 220),
-      child: SectionCard(
-        key: ValueKey('dailyTip-${widget.tip.id}'),
-        radius: 28,
-        padding: const EdgeInsets.all(22),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(11),
-                  decoration: BoxDecoration(
-                    color: c.accentSoft,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: Icon(
-                    tipIcon(widget.tip.category),
-                    color: c.accent,
-                    size: 20,
-                  ),
+    Widget block(String title, String body, {bool primary = false, Key? key}) =>
+        Container(
+          key: key,
+          width: double.infinity,
+          margin: const EdgeInsets.only(top: 14),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: primary
+                ? c.accentSoft.withValues(alpha: .65)
+                : c.page.withValues(alpha: .55),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: t.inter(
+                  size: 11,
+                  weight: FontWeight.w600,
+                  color: c.accent,
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MonoLabel(ru ? 'СОВЕТ ДНЯ' : 'TIP OF THE DAY', size: 9),
-                      const SizedBox(height: 4),
-                      Text(
-                        widget.tip.category.label(ru),
-                        style: text.inter(
-                          size: 12,
-                          color: c.accent,
-                          weight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
+              ),
+              const SizedBox(height: 7),
+              Text(
+                body,
+                style: t.inter(
+                  size: primary ? 17 : 13,
+                  weight: primary ? FontWeight.w600 : FontWeight.w400,
+                  height: 1.5,
                 ),
-                IconButton(
-                  key: ValueKey('saveTip-${widget.tip.id}'),
-                  tooltip: saved
-                      ? (ru ? 'Убрать из сохранённых' : 'Remove from saved')
-                      : (ru ? 'Сохранить' : 'Save'),
-                  isSelected: saved,
-                  onPressed: _busy
-                      ? null
-                      : () => _act(() => data.toggleSavedTip(widget.tip.id)),
-                  icon: Icon(
-                    saved
-                        ? Icons.bookmark_rounded
-                        : Icons.bookmark_border_rounded,
-                    color: c.accent,
-                  ),
+              ),
+            ],
+          ),
+        );
+    return SectionCard(
+      key: ValueKey('dailyTip-${widget.tip.id}'),
+      radius: 28,
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(tipIcon(effective.category), color: c.accent),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  effective.category.label(ru),
+                  style: t.inter(size: 12, color: c.accent),
                 ),
-              ],
+              ),
+              IconButton(
+                key: ValueKey('saveTip-${widget.tip.id}'),
+                tooltip: saved
+                    ? (ru ? 'Убрать из сохранённых' : 'Remove from saved')
+                    : (ru ? 'Сохранить' : 'Save'),
+                onPressed: _busy
+                    ? null
+                    : () => _act(() => data.toggleSavedTip(widget.tip.id)),
+                icon: Icon(
+                  saved
+                      ? Icons.bookmark_rounded
+                      : Icons.bookmark_border_rounded,
+                  color: c.accent,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            copy.title,
+            style: t.fraunces(size: 26, weight: FontWeight.w700, height: 1.15),
+          ),
+          const SizedBox(height: 9),
+          Text(copy.body, style: t.inter(size: 13, color: c.fg2, height: 1.5)),
+          if (copy.task != null)
+            block(
+              ru ? 'Что сделать сегодня' : 'One action today',
+              copy.task!,
+              primary: true,
+              key: ValueKey('todayAction-${widget.tip.id}'),
             ),
-            const SizedBox(height: 24),
-            Text(
-              copy.title,
-              style: text.fraunces(
-                size: 28,
-                weight: FontWeight.w700,
-                height: 1.15,
+          if (copy.example != null)
+            block(
+              ru ? 'Например' : 'For example',
+              _showAlternative && copy.alternative != null
+                  ? copy.alternative!
+                  : copy.example!,
+            ),
+          if (copy.alternative != null)
+            TextButton.icon(
+              key: ValueKey('tipSubstitute-${widget.tip.id}'),
+              onPressed: () =>
+                  setState(() => _showAlternative = !_showAlternative),
+              icon: const Icon(Icons.swap_horiz_rounded, size: 18),
+              label: Text(
+                _showAlternative
+                    ? (ru ? 'Вернуть пример' : 'Original example')
+                    : (ru ? 'Более простой вариант' : 'Another way to do it'),
               ),
             ),
+          if (copy.why != null)
+            block(
+              ru ? 'Почему это может помочь' : 'Why this may help',
+              copy.why!,
+            ),
+          if (copy.task != null) ...[
             const SizedBox(height: 14),
-            Text(
-              copy.body,
-              style: text.inter(size: 14, color: c.fg2, height: 1.6),
-            ),
-            if (widget.tip.retired) ...[
-              const SizedBox(height: 10),
-              Text(
-                ru
-                    ? 'Материал обновлён; прежний идентификатор, история и избранное сохранены.'
-                    : 'Content updated; the previous ID, history and saved status are preserved.',
-                style: text.inter(size: 10, color: c.muted),
+            if (!_showTask && !completed)
+              OutlinedButton.icon(
+                key: ValueKey('tryTip-${widget.tip.id}'),
+                onPressed: () => setState(() => _showTask = true),
+                icon: const Icon(Icons.arrow_outward_rounded, size: 18),
+                label: Text(ru ? 'Попробовать сегодня' : 'Try today'),
               ),
-            ],
-            if (copy.explanation != null) ...[
-              const SizedBox(height: 18),
-              Text(
-                ru ? 'Что происходит?' : 'What is happening?',
-                style: text.inter(size: 13, weight: FontWeight.w600),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                copy.explanation!,
-                style: text.inter(size: 13, color: c.fg2, height: 1.6),
-              ),
-            ],
-            if (widget.visit.basis != TipBasis.universal &&
-                widget.assigned) ...[
-              const SizedBox(height: 18),
-              Text(
-                ru
-                    ? 'Почему Balance показывает этот совет'
-                    : 'Why Balance shows this advice',
-                style: text.inter(size: 13, weight: FontWeight.w600),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                (ru ? widget.visit.reasonRu : widget.visit.reasonEn) ??
-                    (ru
-                        ? 'Основание старой записи не сохранено; новые причины не приписываются.'
-                        : 'The old assignment has no saved rationale; new reasons are not invented.'),
-                style: text.inter(size: 12, color: c.fg2, height: 1.5),
-              ),
-              Text(
-                ru
-                    ? 'Основание относится к дате назначения; после правок записей актуальную оценку смотрите в анализе динамики.'
-                    : 'This rationale describes the assignment date; after edits, see the trend page for the current assessment.',
-                style: text.inter(size: 10, color: c.muted, height: 1.5),
-              ),
-            ],
-            if (copy.why != null) ...[
-              const SizedBox(height: 20),
-              Text(
-                ru ? 'Почему такое бывает?' : 'Why might this happen?',
-                style: text.inter(size: 12, weight: FontWeight.w600),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                copy.why!,
-                style: text.inter(size: 12, color: c.fg2, height: 1.5),
-              ),
-            ],
-            if (copy.task != null) ...[
-              const SizedBox(height: 22),
-              if (!_showTask && !completed)
-                OutlinedButton.icon(
-                  key: ValueKey('tryTip-${widget.tip.id}'),
-                  onPressed: () => setState(() => _showTask = true),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: c.accent,
-                    side: BorderSide(color: c.accent.withValues(alpha: .3)),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  icon: const Icon(Icons.arrow_outward_rounded, size: 17),
-                  label: Text(
-                    ru ? 'Попробовать сегодня' : 'Try it today',
-                    style: text.inter(
-                      size: 12,
-                      color: c.accent,
-                      weight: FontWeight.w600,
-                    ),
-                  ),
+            if (_showTask || completed) ...[
+              if (copy.steps.isNotEmpty) ...[
+                Text(
+                  ru ? 'Как это сделать' : 'How to do it',
+                  style: t.inter(size: 13, weight: FontWeight.w600),
                 ),
-              if ((_showTask || completed) && !widget.assigned)
-                Text(copy.task!, style: text.inter(size: 13, height: 1.5)),
-              if ((_showTask || completed) && widget.assigned)
+                for (var i = 0; i < copy.steps.length; i++)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${i + 1}.',
+                          style: t.inter(size: 13, color: c.accent),
+                        ),
+                        const SizedBox(width: 9),
+                        Expanded(
+                          child: Text(
+                            copy.steps[i],
+                            style: t.inter(size: 13, height: 1.5),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+              if (copy.doneWhen != null)
+                block(ru ? 'Готово, когда' : 'Done when', copy.doneWhen!),
+              if (assigned)
                 Material(
-                  color: c.accentSoft.withValues(alpha: .6),
-                  borderRadius: BorderRadius.circular(18),
+                  color: Colors.transparent,
                   child: CheckboxListTile(
-                    key: ValueKey('completeTip-${widget.visit.dateKey}'),
-                    value: completed,
-                    activeColor: c.accent,
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 8,
-                    ),
+                    key: ValueKey('completeTip-${visit.dateKey}'),
+                    contentPadding: EdgeInsets.zero,
                     controlAffinity: ListTileControlAffinity.leading,
+                    activeColor: c.accent,
+                    value: suitable && completed,
                     title: Text(
-                      copy.task!,
-                      style: text.inter(size: 12, height: 1.45),
+                      !suitable
+                          ? (ru
+                                ? 'Исходное действие сейчас не подходит'
+                                : 'The original action is currently unsuitable')
+                          : completed &&
+                                visit.completionVersion < widget.tip.version
+                          ? (ru
+                                ? 'Отметка прежней версии сохранена'
+                                : 'Previous content completion preserved')
+                          : (completed
+                                ? (ru ? 'Выполнено' : 'Completed')
+                                : (ru
+                                      ? 'Я выполнил(а) действие'
+                                      : 'I did this action')),
+                      style: t.inter(size: 13),
                     ),
-                    subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 5),
-                      child: Text(
-                        completed
-                            ? (widget.visit.catalogVersion < widget.tip.version
-                                  ? (ru
-                                        ? 'Отметка прежней версии сохранена'
-                                        : 'Previous content completion preserved')
-                                  : (ru ? 'Выполнено' : 'Completed'))
-                            : (ru
-                                  ? 'Отметьте, когда сделаете'
-                                  : 'Check when you have done it'),
-                        style: text.inter(size: 10, color: c.fg2),
-                      ),
-                    ),
-                    onChanged: _busy
+                    onChanged: _busy || !suitable
                         ? null
-                        : (value) => _act(
+                        : (v) => _act(
                             () => data.setTipCompleted(
-                              widget.visit.dateKey,
-                              value ?? false,
+                              visit.dateKey,
+                              v ?? false,
+                              tipId: visit.tipId,
                             ),
                           ),
                   ),
                 ),
             ],
-            const SizedBox(height: 22),
-            TipSourcesPanel(
-              sourceIds: suitable
-                  ? widget.tip.sourceIds
-                  : const ['niddk-planner'],
-            ),
           ],
-        ),
+          if ((!widget.assigned || !suitable) &&
+              chosen?.tipId != effective.id &&
+              data.dailyTips.canChoose(effective.id))
+            FilledButton.icon(
+              key: ValueKey('useTipToday-${effective.id}'),
+              onPressed: _busy
+                  ? null
+                  : () async {
+                      await _act(() => data.chooseTipAlternative(effective.id));
+                      if (mounted &&
+                          data.dailyTips.displayVisit?.tipId == effective.id) {
+                        setState(() => _showTask = true);
+                      }
+                    },
+              icon: const Icon(Icons.playlist_add_check_rounded),
+              label: Text(
+                ru ? 'Выбрать на сегодня' : 'Make this today’s action',
+              ),
+            ),
+          if (effective.destination != TipDestination.none)
+            TextButton.icon(
+              key: ValueKey('tipDestination-${widget.tip.id}'),
+              onPressed: () =>
+                  openTipDestination(context, effective.destination),
+              icon: Icon(
+                effective.destination == TipDestination.food
+                    ? Icons.menu_book_outlined
+                    : Icons.show_chart_rounded,
+              ),
+              label: Text(
+                effective.destination == TipDestination.food
+                    ? (ru ? 'Открыть дневник' : 'Open food diary')
+                    : (effective.destination == TipDestination.insights
+                          ? (ru ? 'Проверить динамику' : 'Review the trend')
+                          : (ru ? 'Открыть графики' : 'Open graphs')),
+              ),
+            ),
+          if (suitable && assigned && widget.visit.basis != TipBasis.universal)
+            block(
+              ru ? 'Почему показан этот совет' : 'Why this was shown',
+              '${(ru ? widget.visit.reasonRu : widget.visit.reasonEn) ?? (ru ? 'У старой записи нет сохранённого основания.' : 'No rationale was saved for this old assignment.')} ${ru ? 'Это контекст даты назначения; текущие данные смотрите в анализе.' : 'This describes the assignment date; insights show current data.'}',
+            ),
+          if (widget.tip.retired)
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text(
+                ru
+                    ? 'Материал обновлён. Прежний ID, история и сохранение остаются.'
+                    : 'Updated content. The previous ID, history and saved status remain.',
+                style: t.inter(size: 10, color: c.muted),
+              ),
+            ),
+          const SizedBox(height: 12),
+          Material(
+            type: MaterialType.transparency,
+            child: ExpansionTile(
+              tilePadding: EdgeInsets.zero,
+              title: Text(
+                ru ? 'Объяснение и источники' : 'Background and sources',
+                style: t.inter(size: 12, color: c.accent),
+              ),
+              children: [
+                if (copy.explanation != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      copy.explanation!,
+                      style: t.inter(size: 12, color: c.fg2, height: 1.5),
+                    ),
+                  ),
+                TipSourcesPanel(sourceIds: effective.sourceIds),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

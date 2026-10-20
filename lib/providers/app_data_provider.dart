@@ -176,6 +176,11 @@ class AppDataProvider extends ChangeNotifier {
     }).length;
     final insight = weightInsight;
     final foods = previousWeek.expand((day) => day.value).toList();
+    final repeats = <String, int>{};
+    for (final food in foods) {
+      final key = food.productId ?? food.name.trim().toLowerCase();
+      repeats[key] = (repeats[key] ?? 0) + 1;
+    }
     return TipContext(
       hasFood: foodDays.isNotEmpty,
       hasWater: _waterHistory.entries.any(
@@ -199,6 +204,13 @@ class AppDataProvider extends ChangeNotifier {
           insight.state != WeightInsightState.insufficientData,
       lowLoggedIntake: lowDays >= 3,
       diaryGaps: previousWeek.length < 7,
+      repeatedLoggedFoods:
+          previousWeek.length >= 3 && foods.length >= 6 && repeats.length <= 3,
+      sparseWeight:
+          insight.measuredDays > 0 &&
+          insight.rejectedRecords == 0 &&
+          (insight.state == WeightInsightState.insufficientData ||
+              insight.reason == 'coverage'),
       loggedFoodDays: previousWeek.length,
       distinctFoods: foods
           .map((e) => e.productId ?? e.name.trim().toLowerCase())
@@ -244,13 +256,18 @@ class AppDataProvider extends ChangeNotifier {
     if (!_disposed) notifyListeners();
   }
 
+  Future<void> chooseTipAlternative(String? id) async {
+    await dailyTips.chooseAlternative(id);
+    if (!_disposed) notifyListeners();
+  }
+
   Future<void> toggleSavedTip(String id) async {
     await dailyTips.toggleSaved(id);
     if (!_disposed) notifyListeners();
   }
 
-  Future<void> setTipCompleted(String date, bool value) async {
-    await dailyTips.setCompleted(date, value);
+  Future<void> setTipCompleted(String date, bool value, {String? tipId}) async {
+    await dailyTips.setCompleted(date, value, tipId: tipId);
     if (!_disposed) notifyListeners();
   }
 

@@ -215,7 +215,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                 RootSwipeGuard(
                   child: SizedBox(
                     key: const ValueKey('dashboardHeroViewport'),
-                    height: 345,
+                    height:
+                        345 +
+                        (MediaQuery.textScalerOf(context).scale(12) / 12 - 1)
+                                .clamp(0, 2) *
+                            150,
                     child: PageView.builder(
                       key: const ValueKey('dashboardDayPager'),
                       controller: _dayController,
@@ -252,7 +256,11 @@ class _DashboardScreenState extends State<DashboardScreen>
                   physics: const NeverScrollableScrollPhysics(),
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
-                  mainAxisExtent: 180,
+                  mainAxisExtent:
+                      180 +
+                      (MediaQuery.textScalerOf(context).scale(12) / 12 - 1)
+                              .clamp(0, 2) *
+                          220,
                   children: [
                     _stepsTile(context, c, t, s, data, day, widget.onOpenSteps),
                     _weightTile(context, c, t, s, data, widget.onOpenWeight),
@@ -374,30 +382,39 @@ class _DashboardScreenState extends State<DashboardScreen>
                         child: const SizedBox.expand(),
                       ),
                     ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        BalanceAnimatedNumber(
-                          value: eaten.toDouble(),
-                          formatter: (value) => intl.NumberFormat(
-                            '#,###',
-                            'ru',
-                          ).format(value.round()).replaceAll(',', ' '),
-                          style: t.fraunces(size: 42, weight: FontWeight.w800),
-                        ),
-                        Text('/ $target ${s.kcalLbl}', style: t.mono(size: 11)),
-                        const SizedBox(height: 8),
-                        Pill(
-                          text: day.caloriesAboveGoal > 0
-                              ? (s.isRu
-                                    ? 'выше цели на ${day.caloriesAboveGoal}'
-                                    : '${day.caloriesAboveGoal} above goal')
-                              : '${s.remainingWord} ${day.caloriesRemaining}',
-                          bg: c.accentSoft,
-                          fg: c.accent,
-                          mono: true,
-                        ),
-                      ],
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          BalanceAnimatedNumber(
+                            value: eaten.toDouble(),
+                            formatter: (value) => intl.NumberFormat(
+                              '#,###',
+                              'ru',
+                            ).format(value.round()).replaceAll(',', ' '),
+                            style: t.fraunces(
+                              size: 42,
+                              weight: FontWeight.w800,
+                            ),
+                          ),
+                          Text(
+                            '/ $target ${s.kcalLbl}',
+                            style: t.mono(size: 11),
+                          ),
+                          const SizedBox(height: 8),
+                          Pill(
+                            text: day.caloriesAboveGoal > 0
+                                ? (s.isRu
+                                      ? 'выше цели на ${day.caloriesAboveGoal}'
+                                      : '${day.caloriesAboveGoal} above goal')
+                                : '${s.remainingWord} ${day.caloriesRemaining}',
+                            bg: c.accentSoft,
+                            fg: c.accent,
+                            mono: true,
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -542,8 +559,7 @@ class _DashboardScreenState extends State<DashboardScreen>
         children: [
           Row(
             children: [
-              MonoLabel(s.steps),
-              const Spacer(),
+              Expanded(child: MonoLabel(s.steps)),
               data.stepsLoading
                   ? SizedBox(
                       width: 14,
@@ -673,8 +689,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               children: [
                 Row(
                   children: [
-                    MonoLabel(s.water),
-                    const Spacer(),
+                    Expanded(child: MonoLabel(s.water)),
                     Container(
                       width: 28,
                       height: 28,
@@ -980,92 +995,108 @@ class _DashboardScreenState extends State<DashboardScreen>
     VoidCallback onTap,
   ) {
     final copy = advice?.copy(s.isRu);
-    final content = isToday
-        ? (copy == null
-              ? (s.isRu ? 'Откройте совет дня' : 'Open today’s tip')
-              : '${copy.title}\n${copy.body}')
+    final title = isToday
+        ? (copy?.title ??
+              (s.isRu ? 'Откройте действие дня' : 'Open today’s action'))
+        : (s.isRu ? 'Итоги дня' : 'Day summary');
+    final action = isToday
+        ? (copy?.task ?? copy?.body ?? '')
         : _daySummary(day, s);
+    final tips = context.watch<AppDataProvider>().dailyTips;
+    final recorded = tips.tipById(tips.displayVisit?.tipId ?? '');
+    final completed =
+        isToday &&
+        tips.displayVisit?.completed == true &&
+        recorded != null &&
+        tips.isSuitable(recorded) &&
+        tips.displayVisit!.completionVersion >= (advice?.version ?? 0);
     return Semantics(
       key: const ValueKey('adviceCard'),
       button: isToday,
-      label: isToday ? '${s.adviceToday}. $content' : s.adviceToday,
-      hint: isToday ? (s.isRu ? 'Открыть подробности' : 'Open details') : null,
-      child: ExcludeSemantics(
-        child: _tile(
-          context,
-          onTap: isToday ? onTap : null,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              BalanceSparkleField(
-                colors: c,
-                previewProgress: widget.dashboardMotionPreviewProgress,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            MonoLabel(s.adviceToday),
-                            if (isToday && advice != null) ...[
-                              const SizedBox(height: 4),
-                              Text(
-                                '${advice.category.label(s.isRu)}${advice.basis == TipBasis.universal ? '' : (s.isRu ? ' · Для вас' : ' · For you')}',
-                                style: t.inter(size: 9, color: c.accent),
-                              ),
-                            ],
-                            if (!isToday) ...[
-                              const SizedBox(height: 3),
-                              Text(
-                                s.isRu
-                                    ? 'По данным ${_shortDate(day.date, s)}'
-                                    : 'For ${_shortDate(day.date, s)}',
-                                style: t.mono(size: 7, color: c.muted),
-                              ),
-                            ],
-                          ],
+      label: '${s.adviceToday}. $title. $action',
+      child: _tile(
+        context,
+        onTap: isToday ? onTap : null,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            BalanceSparkleField(
+              colors: c,
+              previewProgress: widget.dashboardMotionPreviewProgress,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        isToday && advice != null
+                            ? advice.category.label(s.isRu)
+                            : s.adviceToday,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: t.inter(
+                          size: 9,
+                          color: c.accent,
+                          weight: FontWeight.w600,
                         ),
                       ),
-                      _AdviceStar(
-                        changeKey: '${day.dateKey}:${advice?.id}:$content',
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  AnimatedSwitcher(
-                    duration: BalanceMotion.resolve(
-                      context,
-                      BalanceMotion.card,
                     ),
-                    switchInCurve: Curves.easeOutCubic,
-                    switchOutCurve: Curves.easeInCubic,
-                    child: Text(
-                      content,
-                      key: ValueKey(content),
-                      maxLines: 5,
-                      overflow: TextOverflow.ellipsis,
-                      style: t.fraunces(
-                        size: 12,
-                        weight: FontWeight.w600,
-                        height: 1.18,
-                      ),
-                    ),
-                  ),
-                  if (isToday) ...[
-                    const SizedBox(height: 5),
-                    Text(
-                      s.isRu ? 'Подробнее →' : 'Read more →',
-                      style: t.inter(size: 9, color: c.accent),
-                    ),
+                    if (completed)
+                      Icon(
+                        Icons.check_circle_rounded,
+                        size: 17,
+                        color: c.accent,
+                      )
+                    else
+                      _AdviceStar(changeKey: '${day.dateKey}:${advice?.id}'),
                   ],
-                ],
-              ),
-            ],
-          ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: t.fraunces(
+                    size: 13,
+                    weight: FontWeight.w600,
+                    height: 1.15,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Expanded(
+                  child: Text(
+                    action,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: t.inter(size: 10, height: 1.3, color: c.fg2),
+                  ),
+                ),
+                if (isToday)
+                  TextButton(
+                    key: const ValueKey('tryTodayFromHome'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: c.accent,
+                      padding: EdgeInsets.zero,
+                      minimumSize: const Size(48, 40),
+                      alignment: Alignment.centerLeft,
+                    ),
+                    onPressed: onTap,
+                    child: Text(
+                      completed
+                          ? (s.isRu ? 'Посмотреть →' : 'View action →')
+                          : (s.isRu ? 'Попробовать →' : 'Try today →'),
+                      style: t.inter(
+                        size: 10,
+                        color: c.accent,
+                        weight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -11,9 +11,9 @@ typography and accessible light/dark themes. Russian and English are supported.
 - Weight and chest/waist/hip measurement histories, calendar periods and synchronized
   comparison charts. Missing readings stay missing; no values are invented.
 - Local profile, achievements, versioned backup/restore and automatic snapshots.
-- Daily Tips: **80 evidence-linked bilingual articles** in ten categories,
+- Daily Tips: **60 practical bilingual action plans** in ten categories,
   saved ideas, dated history and explicitly checked optional tasks. All 180 legacy
-  IDs remain readable through revised articles and 120 retired aliases.
+  IDs remain readable through revised articles and 140 retired aliases.
 
 Step data is unavailable in the current HealthService implementation. The UI and
 tip selector never invent steps. An optional meal-photo recognition flow sends
@@ -21,6 +21,15 @@ sanitized images to the configured HTTPS service; this is separate from daily
 tips and is not required for their operation.
 
 ## Daily Tips and weight insights
+
+Each plan starts with one action, a usable example, a substitution, two or three
+steps and a self-reported completion criterion. Background and sources are folded
+below the practical content. Plans can open the existing food diary or real charts.
+
+The original daily assignment stays in history. An explicitly chosen alternative
+is stored alongside it for that date, with separate completion and version data.
+Returning to the original or restarting does not discard either completion.
+Library reading and saving never fabricate a visit or a completed task.
 
 Tips work entirely offline, without an AI API or paid service. The service writes
 the selected ID and the local calendar date together in one versioned Hive record
@@ -32,16 +41,23 @@ Returning to a previously visited date after timezone travel restores that date'
 selection. Foreground civil-clock checks and resume handling cover day and
 clock/timezone changes; the timer also fires at local midnight.
 
-The selector rotates categories, excludes IDs seen within 60 calendar days when
+The selector rotates categories, excludes IDs and related topics seen within 60 calendar days when
 sufficient eligible tips exist, prefers unseen tips throughout a full cycle, and
-then uses older eligible tips. Completed actions are deprioritized after the cycle.
+then uses older eligible tips. The current library has 47 universal plans, so a
+strict 60-day article/topic exclusion is impossible when personalization is off.
+The finite fallback still avoids adjacent articles and related topics when choices
+exist; catalog size is not inflated to satisfy a repeat counter. Completed actions are deprioritized after the cycle.
 Small catalogs use a finite fallback and avoid the immediately previous ID whenever
 another eligible ID exists. Store operations are serialized across service instances
 sharing a Hive box. A failed write is retryable and cannot poison the queue.
 
 Personalization is **off by default**. Opting in allows only contextual tips backed
 by actual food/water logs, available steps, body measurements or dated weight readings.
-The displayed explanation records which kind of data informed selection. Lower
+The displayed explanation records which kind of data informed selection.
+A repetition signal requires at least three completed logged days, six entries and
+at most three distinct logged foods. It describes records rather than the full
+diet. Sparse-weight advice requires actual readings; missing records never prove
+an absent habit. Lower
 food logs are treated as potentially incomplete, with gentle reminders about
 regular meals and no additional food restriction. No diagnostic inference is made.
 All selection and history remain on the device; daily tips send no network requests.
@@ -61,7 +77,8 @@ Sources, claim limits and remaining clinical review are recorded in
 [DAILY_TIPS_EVIDENCE](docs/DAILY_TIPS_EVIDENCE.md). See the
 [algorithm](docs/WEIGHT_PLATEAU_ALGORITHM.md),
 [redesign report](docs/DAILY_TIPS_REDESIGN_REPORT.md) and
-[validation results](docs/TEST_RESULTS.md).
+[validation results](docs/TEST_RESULTS.md) and
+[practical-content audit](docs/DAILY_TIPS_ACTION_AUDIT.md).
 
 ## Weight forecast and progress
 
@@ -107,7 +124,7 @@ fl_chart, local notifications and Flutter's iOS Swift Package Manager integratio
 | Path | Contents |
 | --- | --- |
 | `lib/models` | Validated domain and persistence models |
-| `lib/data/daily_tips_catalog.dart` | 80 RU/EN articles and 120 legacy aliases |
+| `lib/data/daily_tips_catalog.dart` | 60 action plans and 140 legacy aliases |
 | `lib/services` | Tip selection/storage, analytics, backup, catalog and networking |
 | `lib/providers` | Session state and backward-compatible local persistence |
 | `lib/screens`, `lib/widgets` | App screens and shared UI |

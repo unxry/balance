@@ -151,9 +151,28 @@ class WeightTrendInsight {
       ? '${preliminary ? 'Предварительное наблюдение. ' : ''}Только реальные записи за последние 28 дней; не диагноз. Полнота питания, сон, стресс, жидкость и гормональный контекст не устанавливаются по графику.'
       : '${preliminary ? 'Preliminary observation. ' : ''}Only actual readings from the last 28 days; not a diagnosis. The chart cannot establish food-log completeness, sleep, stress, fluid or hormonal context.';
 
-  String action(bool ru) => ru
-      ? 'Не меняйте резко питание по одной цифре. Проверьте записи и условия измерений; при длительных затруднениях обсудите план с врачом или квалифицированным диетологом. Частые измерения не обязательны.'
-      : 'Avoid abrupt eating changes based on one number. Review records and measuring conditions; discuss persistent difficulties with a clinician or registered dietitian. Frequent weighing is optional.';
+  String action(bool ru) => switch (state) {
+    WeightInsightState.insufficientData =>
+      ru
+          ? 'Сначала откройте записи и проверьте даты. Затем выберите похожие условия для следующего планового измерения: те же весы, ровная поверхность, удобное похожее время. Чаще взвешиваться ради анализа не требуется.'
+          : 'First open the records and check dates. Then choose similar conditions for the next planned reading: the same scale, level floor and a convenient similar time. Extra weigh-ins to qualify are unnecessary.',
+    WeightInsightState.possiblePlateau || WeightInsightState.stableTrend =>
+      ru
+          ? 'Сначала проверьте один завершённый день питания: что известно о блюдах, напитках и дополнениях? Уточните одну известную деталь, не угадывая неизвестное. Если дневника нет, начните с проверки дат измерений. Питание автоматически не сокращайте; длительные затруднения обсудите со специалистом.'
+          : 'First review one completed food-log day: what is known about meals, drinks and additions? Clarify one known detail without guessing. Without a diary, start by checking measurement dates. Do not automatically cut food; discuss persistent concerns with a professional.',
+    WeightInsightState.maintenance =>
+      ru
+          ? 'Выберите одну привычку для поддержания: удобный обед, регулярную возможность поесть или посильное движение. Наметьте простой вариант для загруженного дня. Новая цель снижения не назначается.'
+          : 'Choose one maintenance habit: a convenient lunch, a regular chance to eat or manageable movement. Plan a simpler version for a demanding day. No further-loss goal is prescribed.',
+    WeightInsightState.uncertainTrend =>
+      ru
+          ? 'Сначала проверьте даты, повторы и известные ошибки в записях. Исправьте только известное; пропуски не заполняйте догадками. При коротком периоде продолжите удобный ритм наблюдений без резкой смены питания.'
+          : 'First check dates, duplicates and known recording errors. Correct only what is known; do not fill gaps by guessing. With a short window, keep a manageable observation routine without abrupt eating changes.',
+    WeightInsightState.decreasingTrend || WeightInsightState.increasingTrend =>
+      ru
+          ? 'Откройте график за месяц и посмотрите реальные даты, а не одну последнюю цифру. Отметьте известное различие условий, если оно есть. Не подгоняйте питание под отдельное показание; неожиданное изменение или плохое самочувствие обсудите с врачом.'
+          : 'Open the monthly graph and review actual dates rather than the latest number alone. Note a known difference in conditions if any. Do not adjust food for one reading; discuss unexplained changes or feeling unwell with a clinician.',
+  };
 
   String evidence(bool ru) => ru
       ? '$measuredDays дней с измерениями · период $spanDays дн. · наибольший промежуток $maxGapDays дн.${rejectedRecords > 0 ? ' · спорных записей: $rejectedRecords' : ''}'

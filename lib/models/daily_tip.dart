@@ -29,9 +29,13 @@ enum TipBasis {
   maintenance,
   diary,
   body,
+  variety,
+  observation,
 }
 
 enum TipEvidenceLevel { guidance, practicalIdea, unverified }
+
+enum TipDestination { none, food, weight, insights }
 
 class TipCopy {
   final String title;
@@ -39,7 +43,21 @@ class TipCopy {
   final String? why;
   final String? task;
   final String? explanation;
-  const TipCopy(this.title, this.body, {this.why, this.task, this.explanation});
+  final List<String> steps;
+  final String? example;
+  final String? alternative;
+  final String? doneWhen;
+  const TipCopy(
+    this.title,
+    this.body, {
+    this.why,
+    this.task,
+    this.explanation,
+    this.steps = const [],
+    this.example,
+    this.alternative,
+    this.doneWhen,
+  });
 }
 
 class DailyTip {
@@ -57,6 +75,8 @@ class DailyTip {
   final String? canonicalId;
   final int version;
   final bool usesLoggedMacros;
+  final String? topic;
+  final TipDestination destination;
   const DailyTip({
     required this.id,
     required this.category,
@@ -70,9 +90,12 @@ class DailyTip {
     this.weightManagementOnly = false,
     this.retired = false,
     this.canonicalId,
-    this.version = 3,
+    this.version = 4,
     this.usesLoggedMacros = false,
+    this.topic,
+    this.destination = TipDestination.none,
   });
+  String get topicKey => topic ?? canonicalId ?? id;
   TipCopy copy(bool isRu) => isRu ? ru : en;
   List<String> get requiredSignals => [
     if (basis != TipBasis.universal) basis.name,
@@ -96,6 +119,9 @@ class DailyTip {
     usesLoggedMacros: usesLoggedMacros,
     retired: true,
     canonicalId: id,
+    topic: topicKey,
+    destination: destination,
+    version: version,
   );
 }
 
@@ -115,6 +141,8 @@ class TipContext {
   final double? loggedProteinG;
   final double? loggedFatG;
   final double? loggedCarbsG;
+  final bool repeatedLoggedFoods;
+  final bool sparseWeight;
   const TipContext({
     this.hasFood = false,
     this.hasSteps = false,
@@ -131,6 +159,8 @@ class TipContext {
     this.loggedProteinG,
     this.loggedFatG,
     this.loggedCarbsG,
+    this.repeatedLoggedFoods = false,
+    this.sparseWeight = false,
   });
 
   bool supports(TipBasis basis) => switch (basis) {
@@ -146,13 +176,15 @@ class TipContext {
     TipBasis.maintenance => maintenance,
     TipBasis.diary => hasFood && diaryGaps,
     TipBasis.body => hasBody && hasWeightTrend,
+    TipBasis.variety => hasFood && repeatedLoggedFoods,
+    TipBasis.observation => sparseWeight,
   };
 
   String reason(TipBasis basis, bool ru) => switch (basis) {
     TipBasis.universal =>
       ru
-          ? 'Общий материал; личная причина не устанавливалась.'
-          : 'General information; no personal cause was established.',
+          ? 'Практическая идея на сегодня. Выберите подходящий вам вариант.'
+          : 'A practical idea for today. Choose an option that suits you.',
     TipBasis.food =>
       ru
           ? 'В последние 7 дней есть записи питания. Полнота рациона неизвестна.'
@@ -186,6 +218,14 @@ class TipContext {
       ru
           ? 'Есть реальные записи веса и обхватов. По ним нельзя определить состав тела.'
           : 'Actual weight and circumference readings exist. These cannot establish body composition.',
+    TipBasis.variety =>
+      ru
+          ? 'В $loggedFoodDays завершённых днях среди записей повторяются продукты; разных записанных продуктов: $distinctFoods. Это описание записей, а не всего рациона.'
+          : 'Across $loggedFoodDays completed logged days, foods recur; distinct logged foods: $distinctFoods. This describes records, not your full diet.',
+    TipBasis.observation =>
+      ru
+          ? 'В окне анализа ${insight?.measuredDays ?? 0} дней с измерениями. Для устойчивого вывода этого покрытия пока недостаточно; отсутствие записи не означает отсутствие взвешивания.'
+          : 'The analysis window has ${insight?.measuredDays ?? 0} measured days. Coverage is insufficient for a robust conclusion; a missing entry does not prove no weigh-in happened.',
   };
 }
 
@@ -197,6 +237,9 @@ class TipVisit {
   final String? reasonRu;
   final String? reasonEn;
   final int catalogVersion;
+  final int completedVersion;
+  final String? selectedId;
+  final List<TipVisit> alternatives;
   const TipVisit({
     required this.dateKey,
     required this.tipId,
@@ -205,7 +248,38 @@ class TipVisit {
     this.reasonRu,
     this.reasonEn,
     this.catalogVersion = 0,
+    this.completedVersion = 0,
+    this.selectedId,
+    this.alternatives = const [],
   });
+  TipVisit get displayed {
+    for (final choice in alternatives) {
+      if (choice.tipId == selectedId) return choice;
+    }
+    return this;
+  }
+
+  int get completionVersion =>
+      completedVersion > 0 ? completedVersion : catalogVersion;
+
+  TipVisit copyWith({
+    bool? completed,
+    int? completedVersion,
+    String? selectedId,
+    bool clearSelection = false,
+    List<TipVisit>? alternatives,
+  }) => TipVisit(
+    dateKey: dateKey,
+    tipId: tipId,
+    basis: basis,
+    completed: completed ?? this.completed,
+    reasonRu: reasonRu,
+    reasonEn: reasonEn,
+    catalogVersion: catalogVersion,
+    completedVersion: completedVersion ?? this.completedVersion,
+    selectedId: clearSelection ? null : selectedId ?? this.selectedId,
+    alternatives: alternatives ?? this.alternatives,
+  );
 
   Map<String, Object> toJson() => {
     'date': dateKey,
@@ -215,5 +289,9 @@ class TipVisit {
     if (reasonRu != null) 'reasonRu': reasonRu!,
     if (reasonEn != null) 'reasonEn': reasonEn!,
     if (catalogVersion > 0) 'catalogVersion': catalogVersion,
+    if (completedVersion > 0) 'completedVersion': completedVersion,
+    if (selectedId != null) 'selectedId': selectedId!,
+    if (alternatives.isNotEmpty)
+      'alternatives': alternatives.map((v) => v.toJson()).toList(),
   };
 }

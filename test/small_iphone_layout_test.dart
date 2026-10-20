@@ -1133,6 +1133,21 @@ void main() {
     expect(indicator.width, 50);
   });
 
+  testWidgets('home action stays usable at 200 percent text', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(320, 568));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(app(const RootShell(), textScale: 2));
+    await tester.pumpAndSettle();
+    final button = find.byKey(const ValueKey('tryTodayFromHome'));
+    await tester.ensureVisible(button);
+    await tester.pumpAndSettle();
+    expect(tester.takeException(), isNull);
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+    expect(find.text('Что сделать сегодня'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('whole Advice card opens the contextual detail sheet', (
     tester,
   ) async {
@@ -1149,10 +1164,12 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('adviceCard')));
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('adviceDetailSheet')), findsOneWidget);
-    expect(find.text('СОВЕТ ДНЯ'), findsWidgets);
+    expect(find.text('Что сделать сегодня'), findsWidgets);
     expect(find.text('На основе'), findsOneWidget);
     expect(
-      find.text('Общий материал; личная причина не устанавливалась.'),
+      find.text(
+        'Практическая идея на сегодня. Выберите подходящий вам вариант.',
+      ),
       findsOneWidget,
     );
     expect(find.byKey(const ValueKey('tipPersonalization')), findsOneWidget);
