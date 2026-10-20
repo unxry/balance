@@ -100,6 +100,9 @@ class DailyTipsService {
   bool canChoose(String id) =>
       _catalog != null && _eligible(context).any((t) => t.id == id);
 
+  List<DailyTip> get eligiblePlans =>
+      List.unmodifiable(_catalog == null ? <DailyTip>[] : _eligible(context));
+
   List<DailyTip> get alternativeOptions {
     final shown = currentTip;
     final seen = readingHistory
@@ -322,6 +325,13 @@ class DailyTipsService {
         .where((t) => !recentTopics.contains(t.topicKey))
         .toList();
     if (freshTopics.isNotEmpty) eligible = freshTopics;
+    final previous = _history.isEmpty
+        ? null
+        : tipById(_history.last.displayed.tipId)?.category;
+    final differentCategories = eligible
+        .where((tip) => tip.category != previous)
+        .toList();
+    if (differentCategories.isNotEmpty) eligible = differentCategories;
     final unseen = eligible
         .where((tip) => !lastSeen.containsKey(tip.id))
         .toList();
@@ -333,9 +343,6 @@ class DailyTipsService {
           .toList();
       if (unfinished.isNotEmpty) eligible = unfinished;
     }
-    final previous = _history.isEmpty
-        ? null
-        : tipById(_history.last.displayed.tipId)?.category;
     if (_personalized &&
         (_history.isEmpty ||
             _history.last.displayed.basis == TipBasis.universal)) {

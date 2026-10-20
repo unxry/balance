@@ -8,14 +8,14 @@ import 'daily_tips_service_test.dart' show MemoryTipStore, Catalog;
 
 void main() {
   test('every active plan has distinct actionable content in both languages', () {
-    expect(activeDailyTips, hasLength(60));
-    expect(legacyTipAliases, hasLength(140));
-    expect(dailyTipsCatalog.map((t) => t.id).toSet(), hasLength(200));
+    expect(activeDailyTips, hasLength(150));
+    expect(legacyTipAliases, hasLength(145));
+    expect(dailyTipsCatalog.map((t) => t.id).toSet(), hasLength(295));
     for (final ru in [true, false]) {
       final copies = activeDailyTips.map((t) => t.copy(ru));
-      expect(copies.map((c) => c.task).toSet(), hasLength(60));
-      expect(copies.map((c) => c.example).toSet(), hasLength(60));
-      expect(copies.map((c) => c.why).toSet(), hasLength(60));
+      expect(copies.map((c) => c.task).toSet(), hasLength(150));
+      expect(copies.map((c) => c.example).toSet(), hasLength(150));
+      expect(copies.map((c) => c.why).toSet(), hasLength(150));
       for (final copy in copies) {
         expect(copy.steps.length, inInclusiveRange(2, 3), reason: copy.title);
         expect(copy.example, isNotEmpty, reason: copy.title);
@@ -44,7 +44,7 @@ void main() {
       'insight-stable': ['завершённый день', 'масло', 'Нет дневника'],
     };
     for (final e in expectations.entries) {
-      final tip = activeDailyTips.singleWhere((t) => t.id == e.key);
+      final tip = dailyTipsCatalog.singleWhere((t) => t.id == e.key);
       expect(tip.ru.task!.toLowerCase(), contains(e.value[0].toLowerCase()));
       expect(tip.ru.example!.toLowerCase(), contains(e.value[1].toLowerCase()));
       expect(
@@ -190,7 +190,7 @@ void main() {
   );
 
   test(
-    'reduced real library avoids adjacent article and topic repetition for 500 days',
+    'expanded real library avoids adjacent article and topic repetition for 500 days',
     () async {
       var now = DateTime(2026, 1, 1);
       final s = DailyTipsService(store: MemoryTipStore(), now: () => now);

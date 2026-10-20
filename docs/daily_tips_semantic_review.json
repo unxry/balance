@@ -1,0 +1,3229 @@
+{
+  "edition": "3.1",
+  "method": "Авторская семантическая проверка задач, ситуаций, шагов, альтернатив и RU/EN; не независимая клиническая или редакторская проверка. Автоматические текстовые проверки только дополняют этот аудит.",
+  "consolidated": {
+    "nutrition-09": "today-15",
+    "macros-02": "meal-lunch",
+    "activity-02": "today-07",
+    "meal-dinner": "meal-lunch",
+    "food-fibre": "nutrition-01"
+  },
+  "build22Audit": [
+    {
+      "id": "nutrition-01",
+      "task": "Дополните сегодняшний ужин овощами.",
+      "context": "Оставьте привычное блюдо и добавьте один доступный овощ.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Нет свежих овощей — подойдёт подходящая замороженная смесь.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "nutrition-02",
+      "task": "Добавьте подходящую овощную смесь к одному блюду.",
+      "context": "Не начинайте с нового рецепта: используйте знакомую основу.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Нет смеси — подойдут овощи, которые уже есть дома.",
+      "similar": [
+        "meal-dinner"
+      ],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "nutrition-05",
+      "task": "Добавьте немного чечевицы в привычный суп или соус.",
+      "context": "Начните с небольшого дополнения, если бобовые вам подходят.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Быстрее — подходящая готовая фасоль; при лечебной диете сначала уточните замену.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "nutrition-09",
+      "task": "Соедините готовые бобовые, хлеб и овощи.",
+      "context": "Консервы могут стать основой обычного обеда.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Нет бобовых — подойдут яйцо или готовая рыба, если подходят вам.",
+      "similar": [
+        "today-15"
+      ],
+      "outcome": "consolidated into today-15",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "macros-01",
+      "task": "Для одного блюда выберите привычный или новый подходящий источник белка.",
+      "context": "Разнообразие можно начать с одной замены.",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "limitations": "Яйцо или недорогая фасоль тоже подойдут; дорогой продукт не обязателен.",
+      "similar": [
+        "food-protein"
+      ],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "macros-02",
+      "task": "Добавьте к привычному гарниру овощи и подходящий белковый продукт.",
+      "context": "Хлеб, рис или картофель могут остаться в меню.",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "limitations": "Если нет времени, подойдут готовые подходящие компоненты.",
+      "similar": [
+        "meal-lunch"
+      ],
+      "outcome": "consolidated into meal-lunch",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "macros-03",
+      "task": "Выберите подходящее масло, семена или орехи для одного блюда.",
+      "context": "Не нужно делать всё меню обезжиренным.",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "limitations": "При аллергии на орехи используйте подходящее масло; при лечебной диете следуйте своему плану.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "macros-04",
+      "task": "Подготовьте один подходящий перекус из двух компонентов.",
+      "context": "Если хочется есть между приёмами пищи, можно выбрать удобную еду.",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "limitations": "Подойдёт готовый перекус, если сейчас нет возможности собирать пару.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "macros-13",
+      "task": "Выберите йогурт по подходящему составу и удобству.",
+      "context": "Молочные и растительные варианты отличаются по составу.",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "limitations": "Если йогурт не подходит, выберите хлеб с яйцом или фасолевой намазкой.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "hydration-03",
+      "task": "При желании приготовьте привычную воду с подходящей добавкой.",
+      "context": "Добавка нужна только для вкуса, а не для похудения.",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "limitations": "Не подходят кислые добавки — обычная вода равноценный выбор для этой задачи.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "hydration-04",
+      "task": "Проверьте одну известную запись, если помните выпитый объём.",
+      "context": "Кольцо отражает только введённые объёмы.",
+      "basis": "water",
+      "sources": [
+        "cdc-water"
+      ],
+      "limitations": "Если не помните объём, оставьте его неизвестным; догонять кольцо не нужно.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "hydration-05",
+      "task": "Проверьте, в какой раздел внесён один напиток.",
+      "context": "Чай или молоко не превращаются в чистую воду в журнале.",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "limitations": "Не помните количество — не придумывайте точные КБЖУ.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "hydration-07",
+      "task": "Подготовьте подходящий напиток для запланированного выхода.",
+      "context": "После посильного движения удобно иметь доступ к отдыху и напитку.",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "limitations": "Короткий выход рядом с домом — можно предусмотреть доступ к напитку дома.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "hydration-18",
+      "task": "Проверьте, не заставляет ли цель пить через выраженный дискомфорт.",
+      "context": "Показатель приложения не требует пить большой объём сразу.",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "limitations": "Если цель вам не подходит, можно оставить показатель незакрытым.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "activity-02",
+      "task": "Попробуйте один комфортный вариант движения, если он безопасен.",
+      "context": "Способ зависит от возможностей и самочувствия сегодня.",
+      "basis": "universal",
+      "sources": [
+        "niddk-eating"
+      ],
+      "limitations": "Если движение сейчас не подходит, выберите отдых или согласованный со специалистом вариант.",
+      "similar": [
+        "today-07",
+        "activity-context"
+      ],
+      "outcome": "consolidated into today-07",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "activity-03",
+      "task": "После одного рабочего дела смените положение удобным способом.",
+      "context": "Не нужен новый спортивный план.",
+      "basis": "universal",
+      "sources": [
+        "niddk-eating"
+      ],
+      "limitations": "Если вставать не подходит, выберите доступную смену положения или отдых.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "activity-04",
+      "task": "Посмотрите на два завершённых дня, если записи есть.",
+      "context": "Счётчик описывает часть движения, а не весь расход энергии.",
+      "basis": "steps",
+      "sources": [
+        "niddk-eating"
+      ],
+      "limitations": "Есть только один день — оставьте сравнение на потом, не подставляйте ноль.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "activity-18",
+      "task": "Оставьте сегодня один комфортный вариант активности или отдыха.",
+      "context": "Вчерашнее число не обязывает повторять или превышать его.",
+      "basis": "universal",
+      "sources": [
+        "niddk-eating"
+      ],
+      "limitations": "Не подходит привычная нагрузка — можно сократить или перенести её.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "recovery-01",
+      "task": "Выберите спокойное действие перед своим обычным временем сна.",
+      "context": "Один короткий ритуал вместо списка идеальных правил.",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "Усталый вечер — достаточно убрать одно лишнее дело.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "recovery-04",
+      "task": "Попробуйте одно удобное изменение света, шума или температуры.",
+      "context": "Начните с того, что можете изменить без покупок.",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "Общая комната — выберите доступный вам маленький участок.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "recovery-06",
+      "task": "Отметьте время кофе и выберите подходящую вечернюю замену при необходимости.",
+      "context": "Если поздний кофе мешает вашему сну, попробуйте более раннее время.",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "Если менять напиток не хочется, начните с наблюдения времени без обязательного запрета.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "recovery-07",
+      "task": "Один раз завершите просмотр в выбранной точке.",
+      "context": "Если просмотр затягивает вечер, заранее решите, где закончить.",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "Если телефон нужен для связи, оставьте его рядом, закрыв только ленту.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "recovery-17",
+      "task": "Запишите один конкретный вопрос для консультации, если он актуален.",
+      "context": "Если сон регулярно мешает днём, это можно обсудить со специалистом.",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "Не хотите вести записи — достаточно одной заметки или устного вопроса.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "habits-15",
+      "task": "Выберите блюдо и внесите в список только недостающий компонент.",
+      "context": "Начните с содержимого холодильника, а не длинного списка.",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "Сложно идти в магазин — выберите замену из имеющегося.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "habits-16",
+      "task": "Выберите удобный момент для одной известной записи, если отслеживание вам подходит.",
+      "context": "Дневник может помогать без требования идеальной детализации.",
+      "basis": "food",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "Если контроль вызывает тревогу или навязчивость, допустима пауза и обсуждение другого подхода.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "mindful-02",
+      "task": "Перед одним приёмом пищи коротко отметьте, что сейчас нужно.",
+      "context": "Это наблюдение, а не экзамен на право поесть.",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "При плане регулярного питания следуйте ему, не ждите голода.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "mindful-08",
+      "task": "При сохраняющемся голоде выберите доступное дополнение.",
+      "context": "Цифра приложения не отменяет потребность в еде.",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "Если трудно решить, можно вернуться к привычному полноценному блюду.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "mindful-09",
+      "task": "Сохраните следующий обычный приём пищи без компенсации.",
+      "context": "Не нужно исправлять сладкое пропуском еды.",
+      "basis": "universal",
+      "sources": [
+        "nhs-eating-support",
+        "cdc-habits"
+      ],
+      "limitations": "После пропущенной записи тоже можно вернуться к обычному ритму.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "mindful-16",
+      "task": "Прочитайте одну запись нейтрально и выберите удобное уточнение, если оно нужно.",
+      "context": "Дневник записывает еду, а не характер.",
+      "basis": "food",
+      "sources": [
+        "nhs-eating-support",
+        "cdc-habits"
+      ],
+      "limitations": "Если просмотр усиливает тревогу, закройте дневник и обсудите поддержку.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "progress-02",
+      "task": "Подготовьте одинаковые удобные условия для следующего планового измерения.",
+      "context": "Чаще измерять ради приложения не требуется.",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "limitations": "Если измерения вызывают тревогу, выберите паузу или обсудите иной способ наблюдения.",
+      "similar": [
+        "insight-short"
+      ],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "progress-08",
+      "task": "Перед следующим плановым замером выберите одно и то же место.",
+      "context": "Место и натяжение ленты влияют на результат.",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "limitations": "Если трудно повторить технику или это вызывает тревогу, допустима пауза.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "progress-16",
+      "task": "Назовите, что именно в нынешнем плане неудобно или беспокоит.",
+      "context": "Цель можно пересмотреть, если она перестала подходить.",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "limitations": "Достигнутая цель — повод обсудить поддержание, а не обязательное дальнейшее снижение.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "facts-04",
+      "task": "Посмотрите состав одного привычного хлеба.",
+      "context": "Тёмная корочка не гарантирует цельное зерно.",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "limitations": "Не хотите менять хлеб — начните только с чтения состава.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "facts-06",
+      "task": "Сопоставьте два подходящих продукта на одинаковую массу.",
+      "context": "Порция производителя и 100 г — разные основания сравнения.",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "limitations": "Если пересчёт неудобен, сравните продукты с одинаковой формой этикетки.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "facts-09",
+      "task": "Проверьте состав одного часто записываемого блюда.",
+      "context": "Одинаковое название не означает одинаковый рецепт.",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "limitations": "Для еды из кафе без рецепта точность может остаться ограниченной.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "facts-16",
+      "task": "Выберите запись, соответствующую тому, что взвешивали.",
+      "context": "Одна и та же крупа после варки весит иначе.",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "limitations": "Не помните состояние или массу — оставьте оценку приблизительной.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "facts-18",
+      "task": "Проверьте одну известную массу или упаковку в записи.",
+      "context": "Не нужно добиваться абсолютной точности всего дневника.",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "limitations": "Для блюда без известного веса допустима приблизительная запись.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "today-02",
+      "task": "Выберите доступный ингредиент для одного знакомого блюда.",
+      "context": "Разнообразие можно попробовать без сложного рецепта.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Если новое покупать неудобно, иначе сочетайте имеющиеся продукты.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "today-03",
+      "task": "Выберите удобное время и доступный вариант еды.",
+      "context": "Если дела вытесняют еду, начните с одного окна в расписании.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Если расписание меняется, выберите запасное окно и готовую еду.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "today-07",
+      "task": "Выберите знакомый маршрут для следующей посильной прогулки или движения на коляске.",
+      "context": "План можно сократить по самочувствию.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Плохая погода или неподходящее состояние — доступное домашнее движение либо отдых.",
+      "similar": [
+        "activity-02",
+        "activity-context"
+      ],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "today-09",
+      "task": "Подготовьте один компонент будущего ужина по инструкции продукта.",
+      "context": "Выберите то, что можно сделать заранее без полной готовки.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Нет времени на подготовку — выберите подходящие готовые бобовые и хлеб с овощами.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "today-15",
+      "task": "Выберите доступную комбинацию без готовки и подготовьте её компоненты.",
+      "context": "Пригодится в поездке или в вечер без сил.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Вне дома можно выбрать готовый сэндвич и подходящий овощ или фрукт.",
+      "similar": [
+        "nutrition-09"
+      ],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "insight-short",
+      "task": "Посмотрите, сколько реальных дней с измерениями доступно.",
+      "context": "Несколько одинаковых цифр не объясняют долгосрочную динамику.",
+      "basis": "observation",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "limitations": "Если измерения вызывают тревогу, можно сделать паузу и обсудить другой подход.",
+      "similar": [
+        "progress-02"
+      ],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "insight-stable",
+      "task": "Откройте один завершённый день и проверьте его состав.",
+      "context": "Сначала посмотрите на качество записей, а не уменьшайте еду.",
+      "basis": "plateau",
+      "sources": [
+        "mayo-plateau",
+        "niddk-eating"
+      ],
+      "limitations": "Нет дневника — запишите условия следующего планового взвешивания; чаще взвешиваться не требуется.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "insight-maintenance",
+      "task": "Выберите удобную привычку, которую хотите сохранить без ужесточения.",
+      "context": "После достижения цели не нужно обязательно продолжать снижение.",
+      "basis": "maintenance",
+      "sources": [
+        "niddk-eating"
+      ],
+      "limitations": "В загруженный день оставьте более простой вариант той же привычки.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "insight-down",
+      "task": "Откройте график за месяц и проверьте реальные даты.",
+      "context": "Последняя цифра не обязана продолжать ровную линию.",
+      "basis": "weight",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "limitations": "Если данных мало, используйте статус недостатка данных вместо угадывания темпа.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "insight-body",
+      "task": "Откройте сравнение и проверьте каждый ряд отдельно.",
+      "context": "Килограммы и сантиметры не нужно сравнивать напрямую.",
+      "basis": "body",
+      "sources": [
+        "nhs-weigh"
+      ],
+      "limitations": "Если замеров нет, оставьте их отсутствующими; новые ради заполнения графика не нужны.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "meal-breakfast",
+      "task": "Подготовьте продукты для одного удобного завтрака.",
+      "context": "Выберите одну из двух комбинаций и адаптируйте под свой аппетит.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "nhs-fibre"
+      ],
+      "limitations": "Вместо яйца — фасолевая намазка или тофу; вместо молочного — подходящий растительный продукт.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "meal-lunch",
+      "task": "Соедините доступные продукты в один удобный обед.",
+      "context": "Выберите основу, белковый продукт и овощи без сложных пропорций.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Подойдут готовая крупа, бобовые из банки и овощи без долгой готовки.",
+      "similar": [
+        "macros-02"
+      ],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "meal-dinner",
+      "task": "Соберите простой ужин, сохранив привычный гарнир.",
+      "context": "С готовыми компонентами можно ориентироваться на 10–20 минут; время зависит от продукта.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "who-diet"
+      ],
+      "limitations": "Без плиты — хлеб с фасолевой намазкой и овощами.",
+      "similar": [
+        "nutrition-02"
+      ],
+      "outcome": "consolidated into meal-lunch",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "meal-budget",
+      "task": "Выберите два блюда с одним недорогим базовым продуктом.",
+      "context": "Планируйте из обычных круп, бобовых и доступных овощей.",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "limitations": "Если заранее готовить неудобно, используйте подходящие готовые компоненты.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "food-fibre",
+      "task": "Дополните один приём пищи подходящим растительным продуктом.",
+      "context": "Начните с переносимого продукта, а не обязательных отрубей.",
+      "basis": "universal",
+      "sources": [
+        "nhs-fibre"
+      ],
+      "limitations": "При назначенной низковолокнистой диете не меняйте её самостоятельно — уточните подходящий вариант.",
+      "similar": [],
+      "outcome": "consolidated into nutrition-01",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "food-protein",
+      "task": "Выберите один знакомый белковый компонент и вариант для чередования.",
+      "context": "Если среди записей повторяются продукты, попробуйте одну подходящую альтернативу.",
+      "basis": "variety",
+      "sources": [
+        "who-diet",
+        "niddk-eating"
+      ],
+      "limitations": "Если менять продукт не хочется, приготовьте его другим привычным способом.",
+      "similar": [
+        "macros-01"
+      ],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "diary-gaps",
+      "task": "Просмотрите один день и уточните только то, что действительно помните.",
+      "context": "Отсутствующая запись не означает, что еды не было.",
+      "basis": "diary",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "Если восстановить день трудно, начните с одной удобной записи сегодня.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "diary-additions",
+      "task": "Проверьте один известный соус, масло или добавку в составе блюда.",
+      "context": "Запись дополнения не означает запрет на него.",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "limitations": "Для еды вне дома без рецепта не придумывайте точные КБЖУ.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "diary-low",
+      "task": "Выберите один низко заполненный день и спокойно проверьте известные записи.",
+      "context": "Мало записано не значит доказанно мало съедено.",
+      "basis": "gentleFuel",
+      "sources": [
+        "nhs-eating-support",
+        "niddk-planner",
+        "cdc-habits"
+      ],
+      "limitations": "Если контроль вызывает навязчивость, допустима пауза и индивидуальная помощь.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "recovery-stress",
+      "task": "Выберите доступный приём пищи и одну посильную передышку.",
+      "context": "Поддержите еду и отдых без требования исправить всё сразу.",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "limitations": "Готовая подходящая еда и сообщение близкому тоже вариант.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "facts-fluid",
+      "task": "Сравните даты и известные условия двух записей без срочных ограничений.",
+      "context": "Краткий скачок веса не определяет изменение жира.",
+      "basis": "universal",
+      "sources": [
+        "mayo-plateau",
+        "nhs-pms",
+        "cleveland-fluid",
+        "cleveland-exercise"
+      ],
+      "limitations": "Если условия неизвестны, оставьте причину неизвестной и выберите сходные условия на будущее.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "activity-context",
+      "task": "После просмотра доступных записей выберите комфортное движение или отдых.",
+      "context": "Записи шагов дают контекст, но не обязательную норму.",
+      "basis": "steps",
+      "sources": [
+        "niddk-eating"
+      ],
+      "limitations": "Если данные неполны или движение не подходит, можно остановиться на отдыхе.",
+      "similar": [
+        "activity-02",
+        "today-07"
+      ],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    },
+    {
+      "id": "care-context",
+      "task": "Запишите один вопрос о безопасном и подходящем вам плане.",
+      "context": "Если общих советов недостаточно, начните с конкретной ситуации.",
+      "basis": "universal",
+      "sources": [
+        "nhs-eating-support",
+        "niddk-planner",
+        "cdc-habits"
+      ],
+      "limitations": "Не хотите вести записи — достаточно одного устного вопроса.",
+      "similar": [],
+      "outcome": "retained unchanged",
+      "ruEnReviewed": true
+    }
+  ],
+  "relatedGroups": [
+    {
+      "topic": "meal-building",
+      "ids": [
+        "nutrition-02",
+        "meal-lunch",
+        "meal-cultural-staple"
+      ],
+      "distinction": "Замороженная смесь требует подготовки по упаковке; сборка обеда соединяет готовые компоненты; культурный сценарий сохраняет привычную основу. Общий результат близок, поэтому одно окно ротации."
+    },
+    {
+      "topic": "pulse-introduction",
+      "ids": [
+        "nutrition-05",
+        "cook-lentil-bolognese"
+      ],
+      "distinction": "Первая небольшая проба бобовых оценивает переносимость; густой соус из чечевицы — отдельный способ приготовления основного компонента блюда. Общая тема учитывает пересечение примеров."
+    },
+    {
+      "topic": "protein-rotation",
+      "ids": [
+        "macros-01",
+        "food-protein"
+      ],
+      "distinction": "Общий выбор белкового компонента и замена после фактически повторяющихся записей различаются контекстом и первым шагом. Последний план доступен только при opt-in и подтверждённом сигнале; общая тема предотвращает повтор."
+    },
+    {
+      "topic": "dairy-alternative-choice",
+      "ids": [
+        "macros-13",
+        "food-fortified-plant"
+      ],
+      "distinction": "Йогурт для еды и растительный напиток для замены молока имеют разные применения и примеры сравнения. Оба требуют чтения состава, поэтому сгруппированы для ротации."
+    },
+    {
+      "topic": "water-log-review",
+      "ids": [
+        "hydration-04",
+        "water-cup-volume"
+      ],
+      "distinction": "Уточнение известного выпитого объёма в журнале и измерение вместимости чашки для будущих записей имеют разные входные факты. Общая тема ограничивает повтор учёта воды."
+    },
+    {
+      "topic": "load-adjustment",
+      "ids": [
+        "activity-18",
+        "move-restart-gap",
+        "move-pace-conversation"
+      ],
+      "distinction": "Усталость после нагрузки, возвращение после перерыва и дискомфорт от чужого темпа требуют разных проверок. Результат облегчения нагрузки общий, поэтому окно одно."
+    },
+    {
+      "topic": "rest-environment",
+      "ids": [
+        "recovery-04",
+        "rest-share-quiet"
+      ],
+      "distinction": "Личное изменение доступной помехи отличается от договорённости о поведении другого человека в общем пространстве. Общая тема отражает общий конечный результат."
+    },
+    {
+      "topic": "comparable-weighing",
+      "ids": [
+        "progress-02",
+        "insight-short"
+      ],
+      "distinction": "Подготовка одинаковых условий следующего измерения отличается от проверки покрытия реальных дат при недостатке данных. Общая тема не позволяет выдавать их подряд или внутри окна при достаточном пуле."
+    },
+    {
+      "topic": "recipe-ingredients",
+      "ids": [
+        "facts-09",
+        "diary-additions"
+      ],
+      "distinction": "Сверка известного рецепта с выбранной записью проверяет соответствие блюда; проверка масла и соуса уточняет конкретное дополнение. Общий класс уточнения ингредиентов сгруппирован."
+    },
+    {
+      "topic": "meal-time",
+      "ids": [
+        "today-03",
+        "meal-shift-handover",
+        "plan-backup-appointment"
+      ],
+      "distinction": "Обычный перегруженный день, перенос перерыва на смене и визит со специальными требованиями к питанию имеют разные ограничения и запасные действия. Планирование времени еды сгруппировано."
+    },
+    {
+      "topic": "gentle-movement",
+      "ids": [
+        "today-07",
+        "activity-context",
+        "move-weather-decision"
+      ],
+      "distinction": "Подготовить доступный маршрут; проверить реальные шаги и выбрать действие; отменить небезопасный выход из-за погоды — разные ситуации и первые действия. Общая тема не выдаёт их как разнообразие движения подряд."
+    },
+    {
+      "topic": "dinner-preparation",
+      "ids": [
+        "today-09",
+        "kitchen-fridge-thaw"
+      ],
+      "distinction": "Выбор одного компонента для подготовки и организация безопасной разморозки с защитой от жидкости решают разные этапы. Разморозка уже есть среди примеров общего плана, поэтому тема общая."
+    },
+    {
+      "topic": "log-coverage",
+      "ids": [
+        "diary-gaps",
+        "diary-low"
+      ],
+      "distinction": "Пробелы дат и несколько низко заполненных завершённых дней — разные фактические сигналы. Первый проверяет известное пропущенное, второй дополнительно запрещает вывод о дефиците и предлагает поддержку. Общая тема ограничивает повтор ревизии."
+    },
+    {
+      "topic": "professional-support",
+      "ids": [
+        "care-context",
+        "record-sharing-summary"
+      ],
+      "distinction": "Сформулировать один вопрос о подходящем плане и подготовить фактическую сводку дат с пробелами — разные результаты подготовки консультации. Общая тема предотвращает повтор близкой поддержки."
+    },
+    {
+      "topic": "packed-lunch-storage",
+      "ids": [
+        "meal-no-fridge",
+        "meal-cold-transport"
+      ],
+      "distinction": "Отсутствие холодильника требует выбора закрытых продуктов длительного хранения; дорога между холодильниками требует поддерживать охлаждение. Это разные, несовместимые решения условий хранения."
+    },
+    {
+      "topic": "food-support",
+      "ids": [
+        "meal-share-prep",
+        "plan-request-food-help"
+      ],
+      "distinction": "Разделение приготовления обычного семейного ужина отличается от конкретной просьбы обеспечить еду при трудностях с покупкой или готовкой. Общая тема удерживает близкие просьбы вне окна."
+    },
+    {
+      "topic": "egg-vegetable-cooking",
+      "ids": [
+        "cook-egg-vegetable-pan",
+        "cook-shakshuka"
+      ],
+      "distinction": "Яичница с предварительно приготовленными овощами и яйца, приготовленные в томатном соусе, используют разные способы соединения и подачи. Сходные продукты и задача объединены в ротации."
+    },
+    {
+      "topic": "measurement-entry-check",
+      "ids": [
+        "record-weight-typo",
+        "record-weight-unit",
+        "record-date-check"
+      ],
+      "distinction": "Опечатка требует исходного числа; ошибка единиц — проверки масштаба; дата старой записи — исходной даты. Ни одно исправление не заменяет другое; все проверки сгруппированы."
+    }
+  ],
+  "plans": [
+    {
+      "id": "nutrition-01",
+      "category": "nutrition",
+      "action": "Дополните сегодняшний ужин овощами.",
+      "context": "Оставьте привычное блюдо и добавьте один доступный овощ.",
+      "limitations": "Нет свежих овощей — подойдёт подходящая замороженная смесь.",
+      "ruEnReviewed": true,
+      "topic": "vegetable-addition",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "nutrition-02",
+      "category": "nutrition",
+      "action": "Добавьте подходящую овощную смесь к одному блюду.",
+      "context": "Не начинайте с нового рецепта: используйте знакомую основу.",
+      "limitations": "Нет смеси — подойдут овощи, которые уже есть дома.",
+      "ruEnReviewed": true,
+      "topic": "meal-building",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": [
+        "meal-lunch",
+        "meal-cultural-staple"
+      ]
+    },
+    {
+      "id": "nutrition-05",
+      "category": "nutrition",
+      "action": "Добавьте немного чечевицы в привычный суп или соус.",
+      "context": "Начните с небольшого дополнения, если бобовые вам подходят.",
+      "limitations": "Быстрее — подходящая готовая фасоль; при лечебной диете сначала уточните замену.",
+      "ruEnReviewed": true,
+      "topic": "pulse-introduction",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": [
+        "cook-lentil-bolognese"
+      ]
+    },
+    {
+      "id": "macros-01",
+      "category": "macros",
+      "action": "Для одного блюда выберите привычный или новый подходящий источник белка.",
+      "context": "Разнообразие можно начать с одной замены.",
+      "limitations": "Яйцо или недорогая фасоль тоже подойдут; дорогой продукт не обязателен.",
+      "ruEnReviewed": true,
+      "topic": "protein-rotation",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "similarPlans": [
+        "food-protein"
+      ]
+    },
+    {
+      "id": "macros-03",
+      "category": "macros",
+      "action": "Выберите подходящее масло, семена или орехи для одного блюда.",
+      "context": "Не нужно делать всё меню обезжиренным.",
+      "limitations": "При аллергии на орехи используйте подходящее масло; при лечебной диете следуйте своему плану.",
+      "ruEnReviewed": true,
+      "topic": "fat-inclusion",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "macros-04",
+      "category": "macros",
+      "action": "Подготовьте один подходящий перекус из двух компонентов.",
+      "context": "Если хочется есть между приёмами пищи, можно выбрать удобную еду.",
+      "limitations": "Подойдёт готовый перекус, если сейчас нет возможности собирать пару.",
+      "ruEnReviewed": true,
+      "topic": "snack-pair",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "macros-13",
+      "category": "macros",
+      "action": "Выберите йогурт по подходящему составу и удобству.",
+      "context": "Молочные и растительные варианты отличаются по составу.",
+      "limitations": "Если йогурт не подходит, выберите хлеб с яйцом или фасолевой намазкой.",
+      "ruEnReviewed": true,
+      "topic": "dairy-alternative-choice",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "similarPlans": [
+        "food-fortified-plant"
+      ]
+    },
+    {
+      "id": "hydration-03",
+      "category": "hydration",
+      "action": "При желании приготовьте привычную воду с подходящей добавкой.",
+      "context": "Добавка нужна только для вкуса, а не для похудения.",
+      "limitations": "Не подходят кислые добавки — обычная вода равноценный выбор для этой задачи.",
+      "ruEnReviewed": true,
+      "topic": "water-flavour",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "hydration-04",
+      "category": "hydration",
+      "action": "Проверьте одну известную запись, если помните выпитый объём.",
+      "context": "Кольцо отражает только введённые объёмы.",
+      "limitations": "Если не помните объём, оставьте его неизвестным; догонять кольцо не нужно.",
+      "ruEnReviewed": true,
+      "topic": "water-log-review",
+      "basis": "water",
+      "sources": [
+        "cdc-water"
+      ],
+      "similarPlans": [
+        "water-cup-volume"
+      ]
+    },
+    {
+      "id": "hydration-05",
+      "category": "hydration",
+      "action": "Проверьте, в какой раздел внесён один напиток.",
+      "context": "Чай или молоко не превращаются в чистую воду в журнале.",
+      "limitations": "Не помните количество — не придумывайте точные КБЖУ.",
+      "ruEnReviewed": true,
+      "topic": "drink-log-type",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "hydration-07",
+      "category": "hydration",
+      "action": "Подготовьте подходящий напиток для запланированного выхода.",
+      "context": "После посильного движения удобно иметь доступ к отдыху и напитку.",
+      "limitations": "Короткий выход рядом с домом — можно предусмотреть доступ к напитку дома.",
+      "ruEnReviewed": true,
+      "topic": "water-access",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "hydration-18",
+      "category": "hydration",
+      "action": "Проверьте, не заставляет ли цель пить через выраженный дискомфорт.",
+      "context": "Показатель приложения не требует пить большой объём сразу.",
+      "limitations": "Если цель вам не подходит, можно оставить показатель незакрытым.",
+      "ruEnReviewed": true,
+      "topic": "water-goal-safety",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "activity-03",
+      "category": "activity",
+      "action": "После одного рабочего дела смените положение удобным способом.",
+      "context": "Не нужен новый спортивный план.",
+      "limitations": "Если вставать не подходит, выберите доступную смену положения или отдых.",
+      "ruEnReviewed": true,
+      "topic": "work-break",
+      "basis": "universal",
+      "sources": [
+        "niddk-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "activity-04",
+      "category": "activity",
+      "action": "Посмотрите на два завершённых дня, если записи есть.",
+      "context": "Счётчик описывает часть движения, а не весь расход энергии.",
+      "limitations": "Есть только один день — оставьте сравнение на потом, не подставляйте ноль.",
+      "ruEnReviewed": true,
+      "topic": "step-record-review",
+      "basis": "steps",
+      "sources": [
+        "niddk-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "activity-18",
+      "category": "activity",
+      "action": "Оставьте сегодня один комфортный вариант активности или отдыха.",
+      "context": "Вчерашнее число не обязывает повторять или превышать его.",
+      "limitations": "Не подходит привычная нагрузка — можно сократить или перенести её.",
+      "ruEnReviewed": true,
+      "topic": "load-adjustment",
+      "basis": "universal",
+      "sources": [
+        "niddk-eating"
+      ],
+      "similarPlans": [
+        "move-restart-gap",
+        "move-pace-conversation"
+      ]
+    },
+    {
+      "id": "recovery-01",
+      "category": "recovery",
+      "action": "Выберите спокойное действие перед своим обычным временем сна.",
+      "context": "Один короткий ритуал вместо списка идеальных правил.",
+      "limitations": "Усталый вечер — достаточно убрать одно лишнее дело.",
+      "ruEnReviewed": true,
+      "topic": "wind-down",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "recovery-04",
+      "category": "recovery",
+      "action": "Попробуйте одно удобное изменение света, шума или температуры.",
+      "context": "Начните с того, что можете изменить без покупок.",
+      "limitations": "Общая комната — выберите доступный вам маленький участок.",
+      "ruEnReviewed": true,
+      "topic": "rest-environment",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": [
+        "rest-share-quiet"
+      ]
+    },
+    {
+      "id": "recovery-06",
+      "category": "recovery",
+      "action": "Отметьте время кофе и выберите подходящую вечернюю замену при необходимости.",
+      "context": "Если поздний кофе мешает вашему сну, попробуйте более раннее время.",
+      "limitations": "Если менять напиток не хочется, начните с наблюдения времени без обязательного запрета.",
+      "ruEnReviewed": true,
+      "topic": "caffeine-timing",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "recovery-07",
+      "category": "recovery",
+      "action": "Один раз завершите просмотр в выбранной точке.",
+      "context": "Если просмотр затягивает вечер, заранее решите, где закончить.",
+      "limitations": "Если телефон нужен для связи, оставьте его рядом, закрыв только ленту.",
+      "ruEnReviewed": true,
+      "topic": "screen-stopping-point",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "recovery-17",
+      "category": "recovery",
+      "action": "Запишите один конкретный вопрос для консультации, если он актуален.",
+      "context": "Если сон регулярно мешает днём, это можно обсудить со специалистом.",
+      "limitations": "Не хотите вести записи — достаточно одной заметки или устного вопроса.",
+      "ruEnReviewed": true,
+      "topic": "sleep-support",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "habits-15",
+      "category": "habits",
+      "action": "Выберите блюдо и внесите в список только недостающий компонент.",
+      "context": "Начните с содержимого холодильника, а не длинного списка.",
+      "limitations": "Сложно идти в магазин — выберите замену из имеющегося.",
+      "ruEnReviewed": true,
+      "topic": "shopping-plan",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "habits-16",
+      "category": "habits",
+      "action": "Выберите удобный момент для одной известной записи, если отслеживание вам подходит.",
+      "context": "Дневник может помогать без требования идеальной детализации.",
+      "limitations": "Если контроль вызывает тревогу или навязчивость, допустима пауза и обсуждение другого подхода.",
+      "ruEnReviewed": true,
+      "topic": "comfortable-logging",
+      "basis": "food",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "mindful-02",
+      "category": "mindful",
+      "action": "Перед одним приёмом пищи коротко отметьте, что сейчас нужно.",
+      "context": "Это наблюдение, а не экзамен на право поесть.",
+      "limitations": "При плане регулярного питания следуйте ему, не ждите голода.",
+      "ruEnReviewed": true,
+      "topic": "appetite-observation",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "mindful-08",
+      "category": "mindful",
+      "action": "При сохраняющемся голоде выберите доступное дополнение.",
+      "context": "Цифра приложения не отменяет потребность в еде.",
+      "limitations": "Если трудно решить, можно вернуться к привычному полноценному блюду.",
+      "ruEnReviewed": true,
+      "topic": "hunger-response",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "mindful-09",
+      "category": "mindful",
+      "action": "Сохраните следующий обычный приём пищи без компенсации.",
+      "context": "Не нужно исправлять сладкое пропуском еды.",
+      "limitations": "После пропущенной записи тоже можно вернуться к обычному ритму.",
+      "ruEnReviewed": true,
+      "topic": "eating-without-compensation",
+      "basis": "universal",
+      "sources": [
+        "nhs-eating-support",
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "mindful-16",
+      "category": "mindful",
+      "action": "Прочитайте одну запись нейтрально и выберите удобное уточнение, если оно нужно.",
+      "context": "Дневник записывает еду, а не характер.",
+      "limitations": "Если просмотр усиливает тревогу, закройте дневник и обсудите поддержку.",
+      "ruEnReviewed": true,
+      "topic": "neutral-log-review",
+      "basis": "food",
+      "sources": [
+        "nhs-eating-support",
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "progress-02",
+      "category": "progress",
+      "action": "Подготовьте одинаковые удобные условия для следующего планового измерения.",
+      "context": "Чаще измерять ради приложения не требуется.",
+      "limitations": "Если измерения вызывают тревогу, выберите паузу или обсудите иной способ наблюдения.",
+      "ruEnReviewed": true,
+      "topic": "comparable-weighing",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "similarPlans": [
+        "insight-short"
+      ]
+    },
+    {
+      "id": "progress-08",
+      "category": "progress",
+      "action": "Перед следующим плановым замером выберите одно и то же место.",
+      "context": "Место и натяжение ленты влияют на результат.",
+      "limitations": "Если трудно повторить технику или это вызывает тревогу, допустима пауза.",
+      "ruEnReviewed": true,
+      "topic": "circumference-technique",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "progress-16",
+      "category": "progress",
+      "action": "Назовите, что именно в нынешнем плане неудобно или беспокоит.",
+      "context": "Цель можно пересмотреть, если она перестала подходить.",
+      "limitations": "Достигнутая цель — повод обсудить поддержание, а не обязательное дальнейшее снижение.",
+      "ruEnReviewed": true,
+      "topic": "goal-review",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "facts-04",
+      "category": "facts",
+      "action": "Посмотрите состав одного привычного хлеба.",
+      "context": "Тёмная корочка не гарантирует цельное зерно.",
+      "limitations": "Не хотите менять хлеб — начните только с чтения состава.",
+      "ruEnReviewed": true,
+      "topic": "bread-label",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "facts-06",
+      "category": "facts",
+      "action": "Сопоставьте два подходящих продукта на одинаковую массу.",
+      "context": "Порция производителя и 100 г — разные основания сравнения.",
+      "limitations": "Если пересчёт неудобен, сравните продукты с одинаковой формой этикетки.",
+      "ruEnReviewed": true,
+      "topic": "label-basis",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "facts-09",
+      "category": "facts",
+      "action": "Проверьте состав одного часто записываемого блюда.",
+      "context": "Одинаковое название не означает одинаковый рецепт.",
+      "limitations": "Для еды из кафе без рецепта точность может остаться ограниченной.",
+      "ruEnReviewed": true,
+      "topic": "recipe-ingredients",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "similarPlans": [
+        "diary-additions"
+      ]
+    },
+    {
+      "id": "facts-16",
+      "category": "facts",
+      "action": "Выберите запись, соответствующую тому, что взвешивали.",
+      "context": "Одна и та же крупа после варки весит иначе.",
+      "limitations": "Не помните состояние или массу — оставьте оценку приблизительной.",
+      "ruEnReviewed": true,
+      "topic": "dry-cooked-entry",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "facts-18",
+      "category": "facts",
+      "action": "Проверьте одну известную массу или упаковку в записи.",
+      "context": "Не нужно добиваться абсолютной точности всего дневника.",
+      "limitations": "Для блюда без известного веса допустима приблизительная запись.",
+      "ruEnReviewed": true,
+      "topic": "portion-uncertainty",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "today-02",
+      "category": "today",
+      "action": "Выберите доступный ингредиент для одного знакомого блюда.",
+      "context": "Разнообразие можно попробовать без сложного рецепта.",
+      "limitations": "Если новое покупать неудобно, иначе сочетайте имеющиеся продукты.",
+      "ruEnReviewed": true,
+      "topic": "ingredient-variety",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "today-03",
+      "category": "today",
+      "action": "Выберите удобное время и доступный вариант еды.",
+      "context": "Если дела вытесняют еду, начните с одного окна в расписании.",
+      "limitations": "Если расписание меняется, выберите запасное окно и готовую еду.",
+      "ruEnReviewed": true,
+      "topic": "meal-time",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": [
+        "meal-shift-handover",
+        "plan-backup-appointment"
+      ]
+    },
+    {
+      "id": "today-07",
+      "category": "today",
+      "action": "Выберите знакомый маршрут для следующей посильной прогулки или движения на коляске.",
+      "context": "План можно сократить по самочувствию.",
+      "limitations": "Плохая погода или неподходящее состояние — доступное домашнее движение либо отдых.",
+      "ruEnReviewed": true,
+      "topic": "gentle-movement",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": [
+        "activity-context",
+        "move-weather-decision"
+      ]
+    },
+    {
+      "id": "today-09",
+      "category": "today",
+      "action": "Подготовьте один компонент будущего ужина по инструкции продукта.",
+      "context": "Выберите то, что можно сделать заранее без полной готовки.",
+      "limitations": "Нет времени на подготовку — выберите подходящие готовые бобовые и хлеб с овощами.",
+      "ruEnReviewed": true,
+      "topic": "dinner-preparation",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": [
+        "kitchen-fridge-thaw"
+      ]
+    },
+    {
+      "id": "today-15",
+      "category": "today",
+      "action": "Выберите доступную комбинацию без готовки и подготовьте её компоненты.",
+      "context": "Пригодится в поездке или в вечер без сил.",
+      "limitations": "Вне дома можно выбрать готовый сэндвич и подходящий овощ или фрукт.",
+      "ruEnReviewed": true,
+      "topic": "backup-meal",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "insight-short",
+      "category": "progress",
+      "action": "Посмотрите, сколько реальных дней с измерениями доступно.",
+      "context": "Несколько одинаковых цифр не объясняют долгосрочную динамику.",
+      "limitations": "Если измерения вызывают тревогу, можно сделать паузу и обсудить другой подход.",
+      "ruEnReviewed": true,
+      "topic": "comparable-weighing",
+      "basis": "observation",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "similarPlans": [
+        "progress-02"
+      ]
+    },
+    {
+      "id": "insight-stable",
+      "category": "progress",
+      "action": "Откройте один завершённый день и проверьте его состав.",
+      "context": "Сначала посмотрите на качество записей, а не уменьшайте еду.",
+      "limitations": "Нет дневника — запишите условия следующего планового взвешивания; чаще взвешиваться не требуется.",
+      "ruEnReviewed": true,
+      "topic": "plateau-review",
+      "basis": "plateau",
+      "sources": [
+        "mayo-plateau",
+        "niddk-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "insight-maintenance",
+      "category": "progress",
+      "action": "Выберите удобную привычку, которую хотите сохранить без ужесточения.",
+      "context": "После достижения цели не нужно обязательно продолжать снижение.",
+      "limitations": "В загруженный день оставьте более простой вариант той же привычки.",
+      "ruEnReviewed": true,
+      "topic": "maintenance-routine",
+      "basis": "maintenance",
+      "sources": [
+        "niddk-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "insight-down",
+      "category": "progress",
+      "action": "Откройте график за месяц и проверьте реальные даты.",
+      "context": "Последняя цифра не обязана продолжать ровную линию.",
+      "limitations": "Если данных мало, используйте статус недостатка данных вместо угадывания темпа.",
+      "ruEnReviewed": true,
+      "topic": "trend-window",
+      "basis": "weight",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "insight-body",
+      "category": "progress",
+      "action": "Откройте сравнение и проверьте каждый ряд отдельно.",
+      "context": "Килограммы и сантиметры не нужно сравнивать напрямую.",
+      "limitations": "Если замеров нет, оставьте их отсутствующими; новые ради заполнения графика не нужны.",
+      "ruEnReviewed": true,
+      "topic": "metric-comparison",
+      "basis": "body",
+      "sources": [
+        "nhs-weigh"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-breakfast",
+      "category": "nutrition",
+      "action": "Подготовьте продукты для одного удобного завтрака.",
+      "context": "Выберите одну из двух комбинаций и адаптируйте под свой аппетит.",
+      "limitations": "Вместо яйца — фасолевая намазка или тофу; вместо молочного — подходящий растительный продукт.",
+      "ruEnReviewed": true,
+      "topic": "breakfast",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "nhs-fibre"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-lunch",
+      "category": "nutrition",
+      "action": "Соедините доступные продукты в один удобный обед.",
+      "context": "Выберите основу, белковый продукт и овощи без сложных пропорций.",
+      "limitations": "Подойдут готовая крупа, бобовые из банки и овощи без долгой готовки.",
+      "ruEnReviewed": true,
+      "topic": "meal-building",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": [
+        "nutrition-02",
+        "meal-cultural-staple"
+      ]
+    },
+    {
+      "id": "meal-budget",
+      "category": "nutrition",
+      "action": "Выберите два блюда с одним недорогим базовым продуктом.",
+      "context": "Планируйте из обычных круп, бобовых и доступных овощей.",
+      "limitations": "Если заранее готовить неудобно, используйте подходящие готовые компоненты.",
+      "ruEnReviewed": true,
+      "topic": "batch-base",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "food-protein",
+      "category": "macros",
+      "action": "Выберите один знакомый белковый компонент и вариант для чередования.",
+      "context": "Если среди записей повторяются продукты, попробуйте одну подходящую альтернативу.",
+      "limitations": "Если менять продукт не хочется, приготовьте его другим привычным способом.",
+      "ruEnReviewed": true,
+      "topic": "protein-rotation",
+      "basis": "variety",
+      "sources": [
+        "who-diet",
+        "niddk-eating"
+      ],
+      "similarPlans": [
+        "macros-01"
+      ]
+    },
+    {
+      "id": "diary-gaps",
+      "category": "habits",
+      "action": "Просмотрите один день и уточните только то, что действительно помните.",
+      "context": "Отсутствующая запись не означает, что еды не было.",
+      "limitations": "Если восстановить день трудно, начните с одной удобной записи сегодня.",
+      "ruEnReviewed": true,
+      "topic": "log-coverage",
+      "basis": "diary",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": [
+        "diary-low"
+      ]
+    },
+    {
+      "id": "diary-additions",
+      "category": "habits",
+      "action": "Проверьте один известный соус, масло или добавку в составе блюда.",
+      "context": "Запись дополнения не означает запрет на него.",
+      "limitations": "Для еды вне дома без рецепта не придумывайте точные КБЖУ.",
+      "ruEnReviewed": true,
+      "topic": "recipe-ingredients",
+      "basis": "universal",
+      "sources": [
+        "niddk-portions"
+      ],
+      "similarPlans": [
+        "facts-09"
+      ]
+    },
+    {
+      "id": "diary-low",
+      "category": "habits",
+      "action": "Выберите один низко заполненный день и спокойно проверьте известные записи.",
+      "context": "Мало записано не значит доказанно мало съедено.",
+      "limitations": "Если контроль вызывает навязчивость, допустима пауза и индивидуальная помощь.",
+      "ruEnReviewed": true,
+      "topic": "log-coverage",
+      "basis": "gentleFuel",
+      "sources": [
+        "nhs-eating-support",
+        "niddk-planner",
+        "cdc-habits"
+      ],
+      "similarPlans": [
+        "diary-gaps"
+      ]
+    },
+    {
+      "id": "recovery-stress",
+      "category": "recovery",
+      "action": "Выберите доступный приём пищи и одну посильную передышку.",
+      "context": "Поддержите еду и отдых без требования исправить всё сразу.",
+      "limitations": "Готовая подходящая еда и сообщение близкому тоже вариант.",
+      "ruEnReviewed": true,
+      "topic": "busy-day-support",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "facts-fluid",
+      "category": "facts",
+      "action": "Сравните даты и известные условия двух записей без срочных ограничений.",
+      "context": "Краткий скачок веса не определяет изменение жира.",
+      "limitations": "Если условия неизвестны, оставьте причину неизвестной и выберите сходные условия на будущее.",
+      "ruEnReviewed": true,
+      "topic": "short-term-fluctuation",
+      "basis": "universal",
+      "sources": [
+        "mayo-plateau",
+        "nhs-pms",
+        "cleveland-fluid",
+        "cleveland-exercise"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "activity-context",
+      "category": "activity",
+      "action": "После просмотра доступных записей выберите комфортное движение или отдых.",
+      "context": "Записи шагов дают контекст, но не обязательную норму.",
+      "limitations": "Если данные неполны или движение не подходит, можно остановиться на отдыхе.",
+      "ruEnReviewed": true,
+      "topic": "gentle-movement",
+      "basis": "steps",
+      "sources": [
+        "niddk-eating"
+      ],
+      "similarPlans": [
+        "today-07",
+        "move-weather-decision"
+      ]
+    },
+    {
+      "id": "care-context",
+      "category": "mindful",
+      "action": "Запишите один вопрос о безопасном и подходящем вам плане.",
+      "context": "Если общих советов недостаточно, начните с конкретной ситуации.",
+      "limitations": "Не хотите вести записи — достаточно одного устного вопроса.",
+      "ruEnReviewed": true,
+      "topic": "professional-support",
+      "basis": "universal",
+      "sources": [
+        "nhs-eating-support",
+        "niddk-planner",
+        "cdc-habits"
+      ],
+      "similarPlans": [
+        "record-sharing-summary"
+      ]
+    },
+    {
+      "id": "meal-no-fridge",
+      "category": "nutrition",
+      "action": "Выберите продукты, которые до открытия можно хранить без холодильника.",
+      "context": "Если на работе негде охлаждать еду.",
+      "limitations": "Купите охлаждённую готовую еду непосредственно перед обедом.",
+      "ruEnReviewed": true,
+      "topic": "packed-lunch-storage",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-chilling"
+      ],
+      "similarPlans": [
+        "meal-cold-transport"
+      ]
+    },
+    {
+      "id": "meal-canteen",
+      "category": "nutrition",
+      "action": "Найдите в сегодняшнем меню подходящие основное блюдо и дополнение.",
+      "context": "Когда меню заранее неизвестно.",
+      "limitations": "Если выбора мало, возьмите подходящее готовое сочетание без требования идеальной тарелки.",
+      "ruEnReviewed": true,
+      "topic": "meal-canteen",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-buffet",
+      "category": "nutrition",
+      "action": "Перед выбором еды спокойно осмотрите доступные блюда.",
+      "context": "Если трудно выбрать среди множества блюд.",
+      "limitations": "Попросите хозяина назвать состав нескольких блюд.",
+      "ruEnReviewed": true,
+      "topic": "meal-buffet",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-delivery-budget",
+      "category": "nutrition",
+      "action": "Сравните итоговую цену двух подходящих заказов.",
+      "context": "Когда нужна доставка без сложной готовки.",
+      "limitations": "Самовывоз или готовая еда поблизости, если это удобно и доступно.",
+      "ruEnReviewed": true,
+      "topic": "meal-delivery-budget",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-shift-handover",
+      "category": "nutrition",
+      "action": "Привяжите один приём пищи к реальной паузе на смене.",
+      "context": "Если смена сдвигает обычные часы еды.",
+      "limitations": "Уточните возможность перерыва с руководителем, если еда регулярно недоступна.",
+      "ruEnReviewed": true,
+      "topic": "meal-time",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": [
+        "today-03",
+        "plan-backup-appointment"
+      ]
+    },
+    {
+      "id": "meal-family-components",
+      "category": "nutrition",
+      "action": "Подайте компоненты ужина отдельно для самостоятельного сочетания.",
+      "context": "Если дома едят по-разному.",
+      "limitations": "Оставьте одну общую основу и одно индивидуальное дополнение.",
+      "ruEnReviewed": true,
+      "topic": "meal-family-components",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-single-shop",
+      "category": "nutrition",
+      "action": "Сравните пригодную к использованию стоимость маленькой и большой упаковки.",
+      "context": "Если большая упаковка часто остаётся несъеденной.",
+      "limitations": "Разделите покупку с близким, если это удобно.",
+      "ruEnReviewed": true,
+      "topic": "meal-single-shop",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-low-appetite",
+      "category": "nutrition",
+      "action": "Выберите небольшую привычную еду с возможностью добавить позже.",
+      "context": "Если сейчас проще начать с небольшого объёма.",
+      "limitations": "Если снижение аппетита держится или мешает есть, обсудите это со специалистом.",
+      "ruEnReviewed": true,
+      "topic": "meal-low-appetite",
+      "basis": "universal",
+      "sources": [
+        "nhs-eating-support"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-soft-texture",
+      "category": "nutrition",
+      "action": "Переделайте знакомое блюдо в мягкую комбинацию.",
+      "context": "Когда просто хочется более мягкой еды.",
+      "limitations": "Обычная текстура тоже подходит; при трудностях глотания нужна индивидуальная помощь.",
+      "ruEnReviewed": true,
+      "topic": "meal-soft-texture",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-one-burner",
+      "category": "nutrition",
+      "action": "Расположите этапы готовки по времени готовности продуктов.",
+      "context": "Если одновременно можно готовить только в одной кастрюле.",
+      "limitations": "Возьмите готовую основу, если последовательная готовка неудобна.",
+      "ruEnReviewed": true,
+      "topic": "meal-one-burner",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-cultural-staple",
+      "category": "nutrition",
+      "action": "Найдите подходящее дополнение к любимому традиционному блюду.",
+      "context": "Если советы кажутся чуждыми вашей кухне.",
+      "limitations": "Оставьте блюдо как есть и обсудите адаптацию лечебной диеты со специалистом.",
+      "ruEnReviewed": true,
+      "topic": "meal-building",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "similarPlans": [
+        "nutrition-02",
+        "meal-lunch"
+      ]
+    },
+    {
+      "id": "meal-soup-main",
+      "category": "nutrition",
+      "action": "Подберите дополнение, которое сделает суп удобным основным блюдом.",
+      "context": "Если обычного лёгкого супа вам недостаточно.",
+      "limitations": "Подойдёт другое привычное основное блюдо, если суп не хочется.",
+      "ruEnReviewed": true,
+      "topic": "meal-soup-main",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-sandwich-packing",
+      "category": "nutrition",
+      "action": "Упакуйте влажные компоненты отдельно до еды.",
+      "context": "Если начинка размокает до обеда.",
+      "limitations": "Купите или соберите сэндвич непосредственно перед обедом.",
+      "ruEnReviewed": true,
+      "topic": "meal-sandwich-packing",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-chilling"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-guest-preferences",
+      "category": "nutrition",
+      "action": "Спросите об ограничениях и удобном блюде до покупки продуктов.",
+      "context": "Если готовите для другого человека.",
+      "limitations": "Пусть гость предложит знакомый безопасный вариант; не угадывайте по внешности.",
+      "ruEnReviewed": true,
+      "topic": "meal-guest-preferences",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fda-allergens"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-restaurant-allergy",
+      "category": "nutrition",
+      "action": "Задайте сотруднику прямой вопрос о составе и перекрёстном контакте.",
+      "context": "Если состав блюда влияет на вашу безопасность.",
+      "limitations": "Выберите другое место или знакомую безопасную еду.",
+      "ruEnReviewed": true,
+      "topic": "meal-restaurant-allergy",
+      "basis": "universal",
+      "sources": [
+        "fda-allergens"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-seasonal-swap",
+      "category": "nutrition",
+      "action": "Подберите доступную замену с похожим способом приготовления.",
+      "context": "Если ингредиент из рецепта сейчас дорогой.",
+      "limitations": "Выберите другой рецепт из уже имеющихся продуктов.",
+      "ruEnReviewed": true,
+      "topic": "meal-seasonal-swap",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-ready-heat",
+      "category": "nutrition",
+      "action": "Следуйте инструкции разогрева и проверьте всё блюдо.",
+      "context": "Если пользуетесь микроволновкой.",
+      "limitations": "Выберите другой указанный на упаковке способ приготовления.",
+      "ruEnReviewed": true,
+      "topic": "meal-ready-heat",
+      "basis": "universal",
+      "sources": [
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-cold-transport",
+      "category": "nutrition",
+      "action": "Спланируйте охлаждение скоропортящегося обеда в пути.",
+      "context": "Если дорога до холодильника занимает время.",
+      "limitations": "Если холод обеспечить нельзя, выберите продукты без охлаждения до открытия.",
+      "ruEnReviewed": true,
+      "topic": "packed-lunch-storage",
+      "basis": "universal",
+      "sources": [
+        "fsa-chilling"
+      ],
+      "similarPlans": [
+        "meal-no-fridge"
+      ]
+    },
+    {
+      "id": "meal-access-help",
+      "category": "nutrition",
+      "action": "Узнайте один реальный вариант продуктовой поддержки поблизости.",
+      "context": "Если дело в доступности еды, а не в рецептах.",
+      "limitations": "Попросите близкого помочь найти актуальные контакты.",
+      "ruEnReviewed": true,
+      "topic": "meal-access-help",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-share-prep",
+      "category": "nutrition",
+      "action": "Договоритесь об одной конкретной части готовки с другим человеком.",
+      "context": "Если вся работа с едой лежит на одном человеке.",
+      "limitations": "Если готовите один, выберите готовый компонент вместо одной задачи.",
+      "ruEnReviewed": true,
+      "topic": "food-support",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": [
+        "plan-request-food-help"
+      ]
+    },
+    {
+      "id": "meal-spice-separate",
+      "category": "nutrition",
+      "action": "Отделите мягкую порцию до добавления острой приправы.",
+      "context": "Если дома по-разному любят специи.",
+      "limitations": "Подайте подходящие специи отдельно за столом.",
+      "ruEnReviewed": true,
+      "topic": "meal-spice-separate",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "meal-pantry-order",
+      "category": "nutrition",
+      "action": "Сравните время приготовления двух имеющихся основ.",
+      "context": "Если продукты есть, но непонятно, что успеть приготовить.",
+      "limitations": "Выберите готовую подходящую основу, если готовить некогда.",
+      "ruEnReviewed": true,
+      "topic": "meal-pantry-order",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-overnight-oats",
+      "category": "nutrition",
+      "action": "Замочите подходящие хлопья в холодильнике по инструкции продукта.",
+      "context": "Если утром удобнее достать готовый завтрак.",
+      "limitations": "Если хлопья требуют варки, сварите их по инструкции вместо замачивания.",
+      "ruEnReviewed": true,
+      "topic": "cook-overnight-oats",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-chilling"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-savoury-porridge",
+      "category": "nutrition",
+      "action": "Приготовьте кашу с несладкими дополнениями.",
+      "context": "Если сладкий завтрак не нравится.",
+      "limitations": "Используйте рис или овсянку, если гречки нет.",
+      "ruEnReviewed": true,
+      "topic": "cook-savoury-porridge",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-egg-vegetable-pan",
+      "category": "nutrition",
+      "action": "Приготовьте овощи с яйцом до полной готовности.",
+      "context": "Если есть яйца и немного овощей.",
+      "limitations": "Вместо яйца приготовьте с овощами подходящий тофу по упаковке.",
+      "ruEnReviewed": true,
+      "topic": "egg-vegetable-cooking",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": [
+        "cook-shakshuka"
+      ]
+    },
+    {
+      "id": "cook-jacket-potato",
+      "category": "nutrition",
+      "action": "Приготовьте картофель и добавьте готовую начинку.",
+      "context": "Когда нужна сытная основа без сложного рецепта.",
+      "limitations": "Подойдёт отварной картофель с подходящим творогом или тофу.",
+      "ruEnReviewed": true,
+      "topic": "cook-jacket-potato",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-lentil-bolognese",
+      "category": "nutrition",
+      "action": "Сделайте густой томатный соус с чечевицей.",
+      "context": "Если хочется недорогую начинку к пасте.",
+      "limitations": "Готовая фасоль сократит время приготовления соуса.",
+      "ruEnReviewed": true,
+      "topic": "pulse-introduction",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": [
+        "nutrition-05"
+      ]
+    },
+    {
+      "id": "cook-chickpea-mash",
+      "category": "nutrition",
+      "action": "Разомните готовый нут с подходящей заправкой.",
+      "context": "Если хочется начинку для хлеба без плиты.",
+      "limitations": "Готовая белая фасоль тоже разминается вилкой; кунжут не обязателен.",
+      "ruEnReviewed": true,
+      "topic": "cook-chickpea-mash",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-tofu-crumble",
+      "category": "nutrition",
+      "action": "Раскрошите тофу и приготовьте с подходящими овощами.",
+      "context": "Если хочется попробовать тофу без сложного маринада.",
+      "limitations": "Если соя не подходит, выберите полностью приготовленное яйцо.",
+      "ruEnReviewed": true,
+      "topic": "cook-tofu-crumble",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-fish-parcel",
+      "category": "nutrition",
+      "action": "Запеките рыбу с овощами по инструкции продукта.",
+      "context": "Если есть духовка и подходящая рыба.",
+      "limitations": "Возьмите подходящий тофу с овощами, соблюдая его инструкцию.",
+      "ruEnReviewed": true,
+      "topic": "cook-fish-parcel",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-tray-chicken",
+      "category": "nutrition",
+      "action": "Приготовьте курицу с овощами, разделяя сырое и готовое.",
+      "context": "Если удобно готовить в духовке.",
+      "limitations": "Вместо сырой курицы используйте подходящую растительную замену по её инструкции.",
+      "ruEnReviewed": true,
+      "topic": "cook-tray-chicken",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-cabbage-noodles",
+      "category": "nutrition",
+      "action": "Соедините приготовленную лапшу с тушёной капустой и готовой фасолью.",
+      "context": "Если нужен бюджетный горячий обед.",
+      "limitations": "Вместо лапши подойдёт картофель; соус выбирайте по ограничениям.",
+      "ruEnReviewed": true,
+      "topic": "cook-cabbage-noodles",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-couscous-kettle",
+      "category": "nutrition",
+      "action": "Приготовьте кускус, допускающий запаривание, и добавьте готовые компоненты.",
+      "context": "Если есть только чайник и подходящая крупа.",
+      "limitations": "Если крупа требует варки, выберите хлеб с готовой начинкой.",
+      "ruEnReviewed": true,
+      "topic": "cook-couscous-kettle",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-stuffed-wrap",
+      "category": "nutrition",
+      "action": "Сверните лепёшку с готовой начинкой и нарезанными овощами.",
+      "context": "Для еды, которую удобно держать в руках.",
+      "limitations": "Та же начинка в тарелке с хлебом, если сворачивать неудобно.",
+      "ruEnReviewed": true,
+      "topic": "cook-stuffed-wrap",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-split-pea-soup",
+      "category": "nutrition",
+      "action": "Приготовьте суп из сухого колотого гороха по упаковке.",
+      "context": "Если есть время на длительную варку.",
+      "limitations": "При нехватке времени выберите готовую фасоль для другого супа.",
+      "ruEnReviewed": true,
+      "topic": "cook-split-pea-soup",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-frittata-leftovers",
+      "category": "nutrition",
+      "action": "Используйте подходящие остатки овощей в полностью приготовленной яичной запеканке.",
+      "context": "Если остались готовые овощи с известным хранением.",
+      "limitations": "Используйте свежеприготовленные овощи, если хранение неизвестно.",
+      "ruEnReviewed": true,
+      "topic": "cook-frittata-leftovers",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking",
+        "fsa-chilling"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "kitchen-separate-board",
+      "category": "nutrition",
+      "action": "Выделите отдельные чистые доску и приборы для готовой еды.",
+      "context": "Если готовите сырое мясо, рыбу и еду без последующей готовки.",
+      "limitations": "Используйте другой чистый комплект или выберите блюдо без работы с сырым мясом.",
+      "ruEnReviewed": true,
+      "topic": "raw-ready-separation",
+      "basis": "universal",
+      "sources": [
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-buckwheat-mushroom",
+      "category": "nutrition",
+      "action": "Приготовьте гречку с покупными грибами и готовой фасолью.",
+      "context": "Если хочется горячую крупу с выраженным вкусом.",
+      "limitations": "Если грибы не подходят, используйте тушёную морковь; лесные грибы для этого плана не нужны.",
+      "ruEnReviewed": true,
+      "topic": "cook-buckwheat-mushroom",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "kitchen-fridge-thaw",
+      "category": "nutrition",
+      "action": "Проверьте инструкцию и организуйте безопасную разморозку в холодильнике.",
+      "context": "Если планируете готовить замороженный продукт.",
+      "limitations": "Продукт, допускающий готовку из заморозки, готовьте по его инструкции.",
+      "ruEnReviewed": true,
+      "topic": "dinner-preparation",
+      "basis": "universal",
+      "sources": [
+        "fsa-chilling"
+      ],
+      "similarPlans": [
+        "today-09"
+      ]
+    },
+    {
+      "id": "cook-frozen-fruit-bowl",
+      "category": "nutrition",
+      "action": "Подготовьте замороженные ягоды строго по упаковке для готового завтрака.",
+      "context": "Если свежие фрукты сейчас дороги.",
+      "limitations": "Подойдёт нарезанное яблоко без покупки ягод.",
+      "ruEnReviewed": true,
+      "topic": "cook-frozen-fruit-bowl",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-microwave-vegetable",
+      "category": "nutrition",
+      "action": "Приготовьте овощи в подходящей посуде по инструкции техники или упаковки.",
+      "context": "Если не хочется разогревать духовку.",
+      "limitations": "Отварите овощи обычным способом, если нет подходящей посуды.",
+      "ruEnReviewed": true,
+      "topic": "cook-microwave-vegetable",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-roast-vegetable-sauce",
+      "category": "nutrition",
+      "action": "Превратите приготовленные овощи в соус с бобовыми.",
+      "context": "Если хочется другой текстуры к пасте.",
+      "limitations": "Разомните вилкой вместо блендера или оставьте овощи кусочками.",
+      "ruEnReviewed": true,
+      "topic": "cook-roast-vegetable-sauce",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-potato-bean-cakes",
+      "category": "nutrition",
+      "action": "Сформируйте лепёшки из приготовленного картофеля и готовой фасоли.",
+      "context": "Если хочется формованное горячее блюдо без мяса.",
+      "limitations": "Если масса не держит форму, подайте её как горячее пюре.",
+      "ruEnReviewed": true,
+      "topic": "cook-potato-bean-cakes",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "cook-shakshuka",
+      "category": "nutrition",
+      "action": "Приготовьте яйца в прогретом томатно-овощном соусе до полной готовности.",
+      "context": "Если нужен горячий ужин с хлебом.",
+      "limitations": "Готовая фасоль в том же соусе вместо яйца.",
+      "ruEnReviewed": true,
+      "topic": "egg-vegetable-cooking",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fsa-cooking"
+      ],
+      "similarPlans": [
+        "cook-egg-vegetable-pan"
+      ]
+    },
+    {
+      "id": "cook-yogurt-dip",
+      "category": "nutrition",
+      "action": "Смешайте подходящий йогурт с зеленью для соуса.",
+      "context": "Если хочется отдельную заправку к нескольким компонентам.",
+      "limitations": "Используйте подходящую растительную основу; молочный соус не обязателен.",
+      "ruEnReviewed": true,
+      "topic": "cook-yogurt-dip",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "food-fortified-plant",
+      "category": "macros",
+      "action": "Проверьте белок и обогащение на упаковке выбранного напитка.",
+      "context": "Если вы выбираете растительную замену.",
+      "limitations": "Если замена нужна по лечебным причинам, уточните подходящий продукт со специалистом.",
+      "ruEnReviewed": true,
+      "topic": "dairy-alternative-choice",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "similarPlans": [
+        "macros-13"
+      ]
+    },
+    {
+      "id": "food-nut-alternative",
+      "category": "macros",
+      "action": "Подберите безопасную намазку вместо ореховой пасты.",
+      "context": "Если орехи вам не подходят.",
+      "limitations": "При сложной аллергии используйте уже согласованный безопасный продукт, не пробуйте наугад.",
+      "ruEnReviewed": true,
+      "topic": "food-nut-alternative",
+      "basis": "universal",
+      "sources": [
+        "who-diet",
+        "fda-allergens"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "food-grain-transition",
+      "category": "macros",
+      "action": "Смешайте небольшое количество подходящей цельнозерновой крупы с привычной.",
+      "context": "Если хочется попробовать другую крупу.",
+      "limitations": "При лечебном ограничении клетчатки следуйте своему плану, не меняйте крупу самостоятельно.",
+      "ruEnReviewed": true,
+      "topic": "food-grain-transition",
+      "basis": "universal",
+      "sources": [
+        "nhs-fibre"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "food-pulse-rinse",
+      "category": "macros",
+      "action": "Проверьте, как подготовить одну банку бобовых к еде.",
+      "context": "Если хотите использовать готовую фасоль или нут.",
+      "limitations": "Бобовые в готовом соусе используйте по их инструкции, промывка не обязательна.",
+      "ruEnReviewed": true,
+      "topic": "food-pulse-rinse",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "food-fibre-tolerance",
+      "category": "macros",
+      "action": "Вернитесь к переносимому количеству и меняйте один продукт за раз.",
+      "context": "Если новая богатая клетчаткой еда вызывает дискомфорт.",
+      "limitations": "При назначенной диете не экспериментируйте, уточните её со специалистом.",
+      "ruEnReviewed": true,
+      "topic": "food-fibre-tolerance",
+      "basis": "universal",
+      "sources": [
+        "nhs-fibre"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "food-protein-pack-cost",
+      "category": "macros",
+      "action": "Сравните стоимость двух подходящих вариантов для одного блюда.",
+      "context": "Если привычный продукт стал дорогим.",
+      "limitations": "Оставьте знакомый вариант, если замена требует недоступного оборудования.",
+      "ruEnReviewed": true,
+      "topic": "food-protein-pack-cost",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "food-fat-cooking-role",
+      "category": "macros",
+      "action": "Проверьте назначение имеющегося масла для нагрева или заправки.",
+      "context": "Если неясно, какое масло использовать.",
+      "limitations": "Выберите иной способ приготовления, если подходящего масла нет.",
+      "ruEnReviewed": true,
+      "topic": "food-fat-cooking-role",
+      "basis": "universal",
+      "sources": [
+        "who-diet"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "food-gluten-substitution",
+      "category": "macros",
+      "action": "Подберите подходящую основу вместо пшеничной пасты.",
+      "context": "Если пшеница не подходит по вашим ограничениям.",
+      "limitations": "При целиакии учитывайте сертификацию и перекрёстный контакт по своему лечебному плану.",
+      "ruEnReviewed": true,
+      "topic": "food-gluten-substitution",
+      "basis": "universal",
+      "sources": [
+        "cdc-eating",
+        "fda-allergens"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "move-indoor-space",
+      "category": "activity",
+      "action": "Проверьте один небольшой участок на препятствия.",
+      "context": "Если хотите двигаться дома.",
+      "limitations": "Попросите помочь с тяжёлыми предметами; не переносите их ради плана.",
+      "ruEnReviewed": true,
+      "topic": "move-indoor-space",
+      "basis": "universal",
+      "sources": [
+        "cdc-accessible"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "move-chair-mobility",
+      "category": "activity",
+      "action": "Попробуйте одно уже знакомое комфортное движение сидя.",
+      "context": "Если удобнее оставаться сидя.",
+      "limitations": "Отдых или совет специалиста по подходящему движению при ограничениях.",
+      "ruEnReviewed": true,
+      "topic": "move-chair-mobility",
+      "basis": "universal",
+      "sources": [
+        "cdc-accessible"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "move-carry-task",
+      "category": "activity",
+      "action": "Разбейте переноску на удобные части или попросите помощь.",
+      "context": "Если бытовая задача требует неприятного усилия.",
+      "limitations": "Доставка, тележка или помощь другого человека.",
+      "ruEnReviewed": true,
+      "topic": "move-carry-task",
+      "basis": "universal",
+      "sources": [
+        "cdc-accessible"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "move-social-meeting",
+      "category": "activity",
+      "action": "Предложите знакомому встречу с удобным для обоих форматом движения.",
+      "context": "Если хочется совместить общение и посильную активность.",
+      "limitations": "Встреча сидя тоже подходит, если движение сейчас неудобно.",
+      "ruEnReviewed": true,
+      "topic": "move-social-meeting",
+      "basis": "universal",
+      "sources": [
+        "cdc-accessible"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "move-first-class",
+      "category": "activity",
+      "action": "Задайте организатору один конкретный вопрос об адаптации нагрузки.",
+      "context": "Если рассматриваете новое занятие.",
+      "limitations": "Выберите знакомое движение или индивидуальную консультацию вместо занятия.",
+      "ruEnReviewed": true,
+      "topic": "move-first-class",
+      "basis": "universal",
+      "sources": [
+        "cdc-accessible"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "move-weather-decision",
+      "category": "activity",
+      "action": "Замените уличное движение доступным безопасным вариантом.",
+      "context": "Если жара, лёд или другое условие мешает выходу.",
+      "limitations": "Отдых и перенос прогулки на другой день.",
+      "ruEnReviewed": true,
+      "topic": "gentle-movement",
+      "basis": "universal",
+      "sources": [
+        "cdc-accessible"
+      ],
+      "similarPlans": [
+        "today-07",
+        "activity-context"
+      ]
+    },
+    {
+      "id": "move-activity-menu",
+      "category": "activity",
+      "action": "Составьте пару приятных доступных вариантов разного типа.",
+      "context": "Если привычная активность наскучила.",
+      "limitations": "Отдых тоже остаётся вариантом; новые ограничения обсудите со специалистом.",
+      "ruEnReviewed": true,
+      "topic": "move-activity-menu",
+      "basis": "universal",
+      "sources": [
+        "cdc-accessible"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "move-restart-gap",
+      "category": "activity",
+      "action": "Вернитесь к облегчённому знакомому варианту, если он вам подходит.",
+      "context": "Если давно не делали привычное движение.",
+      "limitations": "После болезни, травмы или новых симптомов сначала уточните безопасный возврат со специалистом.",
+      "ruEnReviewed": true,
+      "topic": "load-adjustment",
+      "basis": "universal",
+      "sources": [
+        "cdc-accessible"
+      ],
+      "similarPlans": [
+        "activity-18",
+        "move-pace-conversation"
+      ]
+    },
+    {
+      "id": "move-accessible-destination",
+      "category": "activity",
+      "action": "Уточните один важный барьер до выхода.",
+      "context": "Если планируете выйти в новое место.",
+      "limitations": "Выберите знакомое доступное место, если информация не подтверждена.",
+      "ruEnReviewed": true,
+      "topic": "move-accessible-destination",
+      "basis": "universal",
+      "sources": [
+        "cdc-accessible"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "move-pace-conversation",
+      "category": "activity",
+      "action": "Снизьте темп или остановитесь по самочувствию.",
+      "context": "Если знакомое движение становится неприятно тяжёлым.",
+      "limitations": "Отдых, если даже облегчённое движение сейчас не подходит.",
+      "ruEnReviewed": true,
+      "topic": "load-adjustment",
+      "basis": "universal",
+      "sources": [
+        "cdc-accessible"
+      ],
+      "similarPlans": [
+        "activity-18",
+        "move-restart-gap"
+      ]
+    },
+    {
+      "id": "plan-two-day-menu",
+      "category": "habits",
+      "action": "Распишите два дня с учётом реально доступных приёмов пищи.",
+      "context": "Если недельный план слишком громоздкий.",
+      "limitations": "Запланируйте один день, если два пока неудобны.",
+      "ruEnReviewed": true,
+      "topic": "plan-two-day-menu",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-freezer-label",
+      "category": "habits",
+      "action": "Подпишите название и дату заморозки одной безопасной заготовки.",
+      "context": "Если в морозилке трудно узнать контейнеры.",
+      "limitations": "При неизвестном хранении не придумывайте дату и не используйте сомнительную еду.",
+      "ruEnReviewed": true,
+      "topic": "plan-freezer-label",
+      "basis": "universal",
+      "sources": [
+        "fsa-chilling"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-first-use-shelf",
+      "category": "habits",
+      "action": "Выделите место для продуктов, которые нужно использовать раньше.",
+      "context": "Если забываете уже открытые упаковки.",
+      "limitations": "Запишите один продукт на видном списке, если переставлять неудобно.",
+      "ruEnReviewed": true,
+      "topic": "plan-first-use-shelf",
+      "basis": "universal",
+      "sources": [
+        "fsa-chilling"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-batch-freeze",
+      "category": "habits",
+      "action": "Быстро охладите и уберите безопасные порции на хранение.",
+      "context": "Если приготовили больше, чем скоро используете.",
+      "limitations": "Готовьте меньше, если нет возможности безопасно охлаждать и хранить.",
+      "ruEnReviewed": true,
+      "topic": "plan-batch-freeze",
+      "basis": "universal",
+      "sources": [
+        "fsa-chilling"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-shopping-route",
+      "category": "habits",
+      "action": "Сгруппируйте короткий список по отделам знакомого магазина.",
+      "context": "Если покупки отнимают много сил.",
+      "limitations": "Используйте заказ или помощь с покупками, если магазин недоступен.",
+      "ruEnReviewed": true,
+      "topic": "plan-shopping-route",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-online-substitution",
+      "category": "habits",
+      "action": "Перечитайте состав одного заменённого продукта до использования.",
+      "context": "Если магазин заменил товар без вас.",
+      "limitations": "Отключите неподходящие автоматические замены в следующем заказе.",
+      "ruEnReviewed": true,
+      "topic": "plan-online-substitution",
+      "basis": "universal",
+      "sources": [
+        "fda-allergens",
+        "cdc-eating"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-cooking-tool",
+      "category": "habits",
+      "action": "Подготовьте один часто используемый безопасный инструмент.",
+      "context": "Если перед едой приходится долго искать нужное.",
+      "limitations": "Выберите упаковку с удобным открыванием, если инструментом трудно пользоваться.",
+      "ruEnReviewed": true,
+      "topic": "plan-cooking-tool",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-backup-appointment",
+      "category": "habits",
+      "action": "Подготовьте вариант еды вокруг длительной встречи с учётом указаний.",
+      "context": "Если дорога и ожидание меняют расписание.",
+      "limitations": "При неясных требованиях заранее уточните их в учреждении.",
+      "ruEnReviewed": true,
+      "topic": "meal-time",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": [
+        "today-03",
+        "meal-shift-handover"
+      ]
+    },
+    {
+      "id": "plan-change-cue",
+      "category": "habits",
+      "action": "Перенесите одно собственное напоминание на реально доступное событие.",
+      "context": "Если сигнал о еде постоянно попадает на неудобный момент.",
+      "limitations": "Уберите сигнал, если он вызывает тревогу; выберите записку или помощь.",
+      "ruEnReviewed": true,
+      "topic": "plan-change-cue",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-choice-default",
+      "category": "habits",
+      "action": "Запишите состав одного удобного блюда в личном списке.",
+      "context": "Если удачное сочетание трудно вспомнить в занятый день.",
+      "limitations": "Фотография блюда с подписью, если так удобнее.",
+      "ruEnReviewed": true,
+      "topic": "plan-choice-default",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-eating-space",
+      "category": "habits",
+      "action": "Освободите небольшой удобный участок для одного приёма пищи.",
+      "context": "Если рабочие вещи занимают весь стол.",
+      "limitations": "Подойдёт другое устойчивое доступное место; идеальная сервировка не нужна.",
+      "ruEnReviewed": true,
+      "topic": "plan-eating-space",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-split-recipe",
+      "category": "habits",
+      "action": "Пересчитайте один знакомый рецепт под доступное хранение и число едоков.",
+      "context": "Если рецепт рассчитан на слишком большую компанию.",
+      "limitations": "Приготовьте полный объём только при возможности безопасно сохранить остатки.",
+      "ruEnReviewed": true,
+      "topic": "plan-split-recipe",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "plan-request-food-help",
+      "category": "habits",
+      "action": "Сформулируйте одну выполнимую просьбу близкому человеку.",
+      "context": "Если трудно справиться с покупками или готовкой.",
+      "limitations": "Готовая подходящая еда или социальная поддержка, если личная помощь недоступна.",
+      "ruEnReviewed": true,
+      "topic": "food-support",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": [
+        "meal-share-prep"
+      ]
+    },
+    {
+      "id": "rest-wake-anchor",
+      "category": "recovery",
+      "action": "Выберите посильное время пробуждения для ближайших похожих дней.",
+      "context": "Если режим сильно меняется и это вам мешает.",
+      "limitations": "При сменной работе подберите индивидуальный режим; при стойких трудностях обсудите сон со специалистом.",
+      "ruEnReviewed": true,
+      "topic": "rest-wake-anchor",
+      "basis": "universal",
+      "sources": [
+        "nhs-sleep"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "rest-worry-note",
+      "category": "recovery",
+      "action": "Запишите одну задачу и время, когда вернётесь к ней.",
+      "context": "Если мысли о завтрашних задачах удерживают внимание.",
+      "limitations": "Устная договорённость с близким вместо записей.",
+      "ruEnReviewed": true,
+      "topic": "rest-worry-note",
+      "basis": "universal",
+      "sources": [
+        "nhs-sleep"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "rest-night-clock",
+      "category": "recovery",
+      "action": "Уберите часы из прямого поля зрения, сохранив нужный будильник.",
+      "context": "Если постоянный взгляд на часы усиливает напряжение.",
+      "limitations": "Оставьте нужные медицинские устройства и сигналы как назначено.",
+      "ruEnReviewed": true,
+      "topic": "rest-night-clock",
+      "basis": "universal",
+      "sources": [
+        "nhs-sleep"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "rest-share-quiet",
+      "category": "recovery",
+      "action": "Обсудите одну посильную договорённость о шуме или свете.",
+      "context": "Если сон зависит от общего пространства.",
+      "limitations": "Выберите собственный доступный угол, если договориться сейчас нельзя.",
+      "ruEnReviewed": true,
+      "topic": "rest-environment",
+      "basis": "universal",
+      "sources": [
+        "nhs-sleep"
+      ],
+      "similarPlans": [
+        "recovery-04"
+      ]
+    },
+    {
+      "id": "water-cup-volume",
+      "category": "hydration",
+      "action": "Один раз определите объём чашки доступным способом.",
+      "context": "Если хотите удобнее записывать воду.",
+      "limitations": "Оставьте приблизительную запись, если измерить нечем.",
+      "ruEnReviewed": true,
+      "topic": "water-log-review",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "similarPlans": [
+        "hydration-04"
+      ]
+    },
+    {
+      "id": "water-clean-bottle",
+      "category": "hydration",
+      "action": "Очистите бутылку способом, разрешённым производителем.",
+      "context": "Если пользуетесь многоразовой ёмкостью.",
+      "limitations": "Используйте другую чистую подходящую ёмкость.",
+      "ruEnReviewed": true,
+      "topic": "water-clean-bottle",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "water-drink-access-home",
+      "category": "hydration",
+      "action": "Разместите подходящий напиток и ёмкость в доступном месте.",
+      "context": "Если трудно дотянуться до привычного места.",
+      "limitations": "Попросите помочь с размещением или используйте лёгкую чашку.",
+      "ruEnReviewed": true,
+      "topic": "water-drink-access-home",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "water-container-grip",
+      "category": "hydration",
+      "action": "Выберите лёгкую подходящую ёмкость с удобным захватом.",
+      "context": "Если тяжёлую бутылку неудобно поднимать.",
+      "limitations": "Попросите помочь подобрать или разместить подходящую ёмкость.",
+      "ruEnReviewed": true,
+      "topic": "drink-container-access",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "water-drink-temperature",
+      "category": "hydration",
+      "action": "Подберите комфортную температуру подходящего напитка.",
+      "context": "Если слишком холодный или горячий напиток вам неудобен.",
+      "limitations": "При назначенных требованиях к питью следуйте индивидуальным указаниям.",
+      "ruEnReviewed": true,
+      "topic": "water-drink-temperature",
+      "basis": "universal",
+      "sources": [
+        "cdc-water"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "record-weight-typo",
+      "category": "progress",
+      "action": "Сверьте одну подозрительную запись с известным исходным значением.",
+      "context": "Если сохранённое число не совпадает с тем, что вы точно записали.",
+      "limitations": "Если исходное значение неизвестно, не заменяйте его догадкой.",
+      "ruEnReviewed": true,
+      "topic": "measurement-entry-check",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh"
+      ],
+      "similarPlans": [
+        "record-weight-unit",
+        "record-date-check"
+      ]
+    },
+    {
+      "id": "record-weight-unit",
+      "category": "progress",
+      "action": "Сверьте единицу на весах и в поле записи до сохранения.",
+      "context": "Если весы показывают другую единицу.",
+      "limitations": "Если значение уже неизвестно, оставьте запись непроверенной вместо догадки.",
+      "ruEnReviewed": true,
+      "topic": "measurement-entry-check",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh"
+      ],
+      "similarPlans": [
+        "record-weight-typo",
+        "record-date-check"
+      ]
+    },
+    {
+      "id": "record-date-check",
+      "category": "progress",
+      "action": "Поставьте фактическую дату измерения перед сохранением.",
+      "context": "Если переносите известную запись из заметки.",
+      "limitations": "Если дата неизвестна, не создавайте фиктивную точку на графике.",
+      "ruEnReviewed": true,
+      "topic": "measurement-entry-check",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh"
+      ],
+      "similarPlans": [
+        "record-weight-typo",
+        "record-weight-unit"
+      ]
+    },
+    {
+      "id": "record-circumference-kind",
+      "category": "progress",
+      "action": "Сверьте название каждого поля с известным замером.",
+      "context": "Если вносите грудь, талию и бёдра.",
+      "limitations": "Сохраните только доступный замер; полный набор не обязателен.",
+      "ruEnReviewed": true,
+      "topic": "record-circumference-kind",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "record-gap-display",
+      "category": "progress",
+      "action": "Найдите реальные точки по датам, прежде чем оценивать длинный промежуток.",
+      "context": "Если на графике видны соединённые участки без записей.",
+      "limitations": "При большом промежутке оставьте динамику внутри него неизвестной.",
+      "ruEnReviewed": true,
+      "topic": "record-gap-display",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "record-forecast-boundary",
+      "category": "progress",
+      "action": "Сначала проверьте реальные измерения, затем условный прогноз.",
+      "context": "Если смотрите на ожидаемую дату достижения цели.",
+      "limitations": "Если прогноз тревожит, остановитесь на реальной истории.",
+      "ruEnReviewed": true,
+      "topic": "record-forecast-boundary",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh",
+        "niddk-planner"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "record-process-progress",
+      "category": "progress",
+      "action": "Назовите один наблюдаемый бытовой результат.",
+      "context": "Если хотите оценить полезность своей организации дня.",
+      "limitations": "Можно просто заметить результат без ведения ещё одного трекера.",
+      "ruEnReviewed": true,
+      "topic": "record-process-progress",
+      "basis": "universal",
+      "sources": [
+        "cdc-habits"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "record-sharing-summary",
+      "category": "progress",
+      "action": "Подготовьте короткую сводку фактов и один вопрос.",
+      "context": "Если хотите обсудить наблюдения со специалистом.",
+      "limitations": "Покажите историю на экране без создания отдельного файла.",
+      "ruEnReviewed": true,
+      "topic": "professional-support",
+      "basis": "universal",
+      "sources": [
+        "nhs-weigh",
+        "cdc-habits"
+      ],
+      "similarPlans": [
+        "care-context"
+      ]
+    },
+    {
+      "id": "kitchen-clean-hands",
+      "category": "nutrition",
+      "action": "Вымойте руки перед работой с едой и после контакта с сырыми продуктами.",
+      "context": "Если переходите от других дел к готовке.",
+      "limitations": "Если безопасные условия недоступны, выберите другой доступный способ получения готовой еды.",
+      "ruEnReviewed": true,
+      "topic": "kitchen-clean-hands",
+      "basis": "universal",
+      "sources": [
+        "fsa-cooking"
+      ],
+      "similarPlans": []
+    },
+    {
+      "id": "kitchen-date-meaning",
+      "category": "facts",
+      "action": "Различите срок безопасности и срок качества перед использованием продукта.",
+      "context": "Если на упаковке указано use by или best before.",
+      "limitations": "Для другой маркировки следуйте местным указаниям и инструкции производителя; при сомнении уточните значение.",
+      "ruEnReviewed": true,
+      "topic": "kitchen-date-meaning",
+      "basis": "universal",
+      "sources": [
+        "gov-food-dates"
+      ],
+      "similarPlans": []
+    }
+  ]
+}

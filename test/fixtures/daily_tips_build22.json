@@ -1,0 +1,2566 @@
+{
+  "active": [
+    {
+      "id": "nutrition-01",
+      "category": "nutrition",
+      "topic": "vegetable-addition",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Добавьте овощ к ужину",
+        "summary": "Оставьте привычное блюдо и добавьте один доступный овощ.",
+        "action": "Дополните сегодняшний ужин овощами.",
+        "steps": [
+          "Выберите овощ, который уже есть дома.",
+          "Подайте его рядом с привычным блюдом или добавьте при готовке."
+        ],
+        "example": "Макароны с фасолью и помидором; картофель с рыбой и огурцом.",
+        "alternative": "Нет свежих овощей — подойдёт подходящая замороженная смесь.",
+        "doneWhen": "Овощ добавлен к одному приёму пищи, а не вместо всей еды.",
+        "benefit": "Так в знакомом блюде появляется ещё один источник клетчатки без сложного нового рецепта.",
+        "background": "Овощи добавляют разнообразие и пищевые волокна. Подойдут свежие, замороженные или консервированные варианты без избытка соли. Конкретная порция зависит от вашего плана."
+      },
+      "en": {
+        "title": "Add a vegetable to dinner",
+        "summary": "Keep a familiar meal and add one accessible vegetable.",
+        "action": "Include a vegetable with dinner today.",
+        "steps": [
+          "Choose a vegetable you already have.",
+          "Serve it alongside the meal or add it while cooking."
+        ],
+        "example": "Pasta with beans and tomato; potato with fish and cucumber.",
+        "alternative": "No fresh vegetables? A suitable frozen mix can work.",
+        "doneWhen": "A vegetable accompanies one meal rather than replacing the whole meal.",
+        "benefit": "This adds a fibre source to familiar food without a complicated new recipe.",
+        "background": "Vegetables add variety and fibre. Fresh, frozen or canned options without excess salt can work. Portions depend on your own plan."
+      }
+    },
+    {
+      "id": "nutrition-02",
+      "category": "nutrition",
+      "topic": "quick-dinner",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Приготовьте ужин с замороженными овощами",
+        "summary": "Не начинайте с нового рецепта: используйте знакомую основу.",
+        "action": "Добавьте подходящую овощную смесь к одному блюду.",
+        "steps": [
+          "Проверьте морозилку и состав смеси.",
+          "Приготовьте её по упаковке и соедините с основой и белковым продуктом."
+        ],
+        "example": "Рис + овощная смесь + тофу; паста + овощи + фасоль.",
+        "alternative": "Нет смеси — подойдут овощи, которые уже есть дома.",
+        "doneWhen": "Одна комбинация приготовлена или выбрана на ужин.",
+        "benefit": "Замороженная заготовка сокращает подготовку овощей; блюдо остаётся разнообразным.",
+        "background": "Заморозка помогает хранить овощи для быстрого блюда. Состав смеси и соус могут различаться: проверьте упаковку. Это удобный способ разнообразить еду, а не особый продукт для похудения."
+      },
+      "en": {
+        "title": "Cook dinner with frozen vegetables",
+        "summary": "Use a familiar base rather than learning a new recipe.",
+        "action": "Add a suitable frozen vegetable mix to one meal.",
+        "steps": [
+          "Check your freezer and the ingredients on the pack.",
+          "Cook as directed and combine with a base and protein food."
+        ],
+        "example": "Rice + vegetables + tofu; pasta + vegetables + beans.",
+        "alternative": "No frozen mix? Use vegetables you already have.",
+        "doneWhen": "One combination is cooked or chosen for dinner.",
+        "benefit": "Frozen vegetables reduce preparation while keeping the meal varied.",
+        "background": "Frozen vegetables are a practical freezer staple. Mixes and sauces vary, so check the package. They offer convenience, not a special weight-loss effect."
+      }
+    },
+    {
+      "id": "nutrition-05",
+      "category": "nutrition",
+      "topic": "pulse-introduction",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Попробуйте чечевицу в знакомом супе",
+        "summary": "Начните с небольшого дополнения, если бобовые вам подходят.",
+        "action": "Добавьте немного чечевицы в привычный суп или соус.",
+        "steps": [
+          "Выберите красную чечевицу и проверьте инструкцию приготовления.",
+          "Сначала попробуйте небольшое количество с привычной едой."
+        ],
+        "example": "Овощной суп с чечевицей; томатный соус с чечевицей к пасте.",
+        "alternative": "Быстрее — подходящая готовая фасоль; при лечебной диете сначала уточните замену.",
+        "doneWhen": "Выбран или приготовлен один переносимый вариант.",
+        "benefit": "Бобовые добавляют растительный белок и клетчатку; постепенная проба помогает оценить переносимость.",
+        "background": "Бобовые содержат растительный белок и пищевые волокна. При непривычном рационе добавляйте их постепенно; при назначенной лечебной диете обсудите замену со специалистом."
+      },
+      "en": {
+        "title": "Try lentils in a familiar soup",
+        "summary": "Start with a small addition if pulses suit you.",
+        "action": "Add a little lentil to a familiar soup or sauce.",
+        "steps": [
+          "Choose red lentils and check the cooking instructions.",
+          "Try a small amount alongside familiar food first."
+        ],
+        "example": "Vegetable soup with lentils; lentil tomato sauce with pasta.",
+        "alternative": "For speed, use suitable ready-cooked beans; check substitutions on a clinical diet.",
+        "doneWhen": "One tolerated option is chosen or cooked.",
+        "benefit": "Pulses add plant protein and fibre; a gradual trial lets you assess tolerance.",
+        "background": "Pulses provide plant protein and fibre. Introduce unfamiliar foods gradually; discuss substitutions with a professional if you follow a clinical diet."
+      }
+    },
+    {
+      "id": "nutrition-09",
+      "category": "nutrition",
+      "topic": "backup-meal",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Соберите обед с фасолью без плиты",
+        "summary": "Консервы могут стать основой обычного обеда.",
+        "action": "Соедините готовые бобовые, хлеб и овощи.",
+        "steps": [
+          "Проверьте состав подходящей банки и подготовьте бобовые по упаковке.",
+          "Добавьте хлеб, овощи и подходящую заправку."
+        ],
+        "example": "Фасоль + помидор + хлеб; нут + огурец + лепёшка.",
+        "alternative": "Нет бобовых — подойдут яйцо или готовая рыба, если подходят вам.",
+        "doneWhen": "Один вариант обеда собран; количества выбраны по потребности.",
+        "benefit": "Готовые продукты сокращают готовку и дают несколько групп пищи без сложного рецепта.",
+        "background": "Консервированные бобовые экономят время и позволяют добавить растительный белок. Сравните соль на этикетке, при желании промойте. Выбирайте продукт, который подходит вашим ограничениям."
+      },
+      "en": {
+        "title": "Build a no-stove bean lunch",
+        "summary": "Canned foods can be the base of an ordinary lunch.",
+        "action": "Combine ready-cooked pulses, bread and vegetables.",
+        "steps": [
+          "Check a suitable can and prepare the pulses as directed.",
+          "Add bread, vegetables and a suitable dressing."
+        ],
+        "example": "Beans + tomato + bread; chickpeas + cucumber + flatbread.",
+        "alternative": "No pulses? Try egg or ready-to-eat fish if suitable.",
+        "doneWhen": "One lunch is assembled in amounts that suit your needs.",
+        "benefit": "Ready-to-eat foods save cooking and combine food groups without a complex recipe.",
+        "background": "Canned pulses save time and add a plant-protein option. Compare label sodium and rinse if desired. Choose a product compatible with your restrictions."
+      }
+    },
+    {
+      "id": "macros-01",
+      "category": "macros",
+      "topic": "protein-rotation",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "who-diet"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Выберите другой белковый продукт",
+        "summary": "Разнообразие можно начать с одной замены.",
+        "action": "Для одного блюда выберите привычный или новый подходящий источник белка.",
+        "steps": [
+          "Вспомните удобный вам вариант.",
+          "Подберите к нему знакомый гарнир и овощи."
+        ],
+        "example": "Рис с тофу; картофель с рыбой; хлеб с фасолевой намазкой.",
+        "alternative": "Яйцо или недорогая фасоль тоже подойдут; дорогой продукт не обязателен.",
+        "doneWhen": "Одна подходящая комбинация выбрана или приготовлена.",
+        "benefit": "Разные белковые продукты дают разный состав нутриентов. Высокобелковая норма здесь не назначается.",
+        "background": "Белок участвует в поддержании тканей. Разные продукты дают и другие нутриенты; чередуйте доступные варианты. Универсальная высокая норма белка здесь не назначается."
+      },
+      "en": {
+        "title": "Choose another protein food",
+        "summary": "Variety can start with one substitution.",
+        "action": "Pick a familiar or new suitable protein food for one meal.",
+        "steps": [
+          "Think of an accessible option.",
+          "Pair it with a familiar side and vegetables."
+        ],
+        "example": "Rice with tofu; potato with fish; bread with bean spread.",
+        "alternative": "Egg or affordable beans can work too; an expensive food is unnecessary.",
+        "doneWhen": "One suitable combination is chosen or prepared.",
+        "benefit": "Protein foods differ in their other nutrients. No high-protein target is prescribed.",
+        "background": "Protein helps maintain tissues. Different foods also supply other nutrients, so rotate accessible choices. No universal high-protein target is prescribed here."
+      }
+    },
+    {
+      "id": "macros-02",
+      "category": "macros",
+      "topic": "meal-building",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "who-diet"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Дополните гарнир вместо запрета",
+        "summary": "Хлеб, рис или картофель могут остаться в меню.",
+        "action": "Добавьте к привычному гарниру овощи и подходящий белковый продукт.",
+        "steps": [
+          "Выберите гарнир, который вам нравится.",
+          "Добавьте два подходящих компонента без обязательных пропорций."
+        ],
+        "example": "Картофель + рыба + капуста; рис + фасоль + овощи.",
+        "alternative": "Если нет времени, подойдут готовые подходящие компоненты.",
+        "doneWhen": "Составлен один приём пищи с привычным гарниром.",
+        "benefit": "Так проще сочетать разные группы пищи, не запрещая углеводы целиком.",
+        "background": "Важны весь рацион и подходящие порции, а не запрет группы продуктов. Цельнозерновые варианты и бобовые дают клетчатку. Хлеб, картофель, рис, паста и фрукты могут оставаться в меню."
+      },
+      "en": {
+        "title": "Complete a side rather than banning it",
+        "summary": "Bread, rice or potatoes can stay on the menu.",
+        "action": "Add vegetables and a suitable protein food to a familiar side.",
+        "steps": [
+          "Choose a side you enjoy.",
+          "Add two suitable components without compulsory ratios."
+        ],
+        "example": "Potato + fish + cabbage; rice + beans + vegetables.",
+        "alternative": "Use suitable ready-made components when time is short.",
+        "doneWhen": "One meal includes a familiar side with additions.",
+        "benefit": "This combines food groups without banning carbohydrates altogether.",
+        "background": "The whole eating pattern and suitable portions matter more than banning a food group. Whole grains and pulses supply fibre. Bread, potatoes, rice, pasta and fruit can remain on the menu."
+      }
+    },
+    {
+      "id": "macros-03",
+      "category": "macros",
+      "topic": "fat-inclusion",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "who-diet"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Добавьте подходящую заправку",
+        "summary": "Не нужно делать всё меню обезжиренным.",
+        "action": "Выберите подходящее масло, семена или орехи для одного блюда.",
+        "steps": [
+          "Проверьте переносимость и назначения.",
+          "Добавьте выбранный продукт в удобном для вас количестве."
+        ],
+        "example": "Салат с растительным маслом; каша с семенами, если они подходят.",
+        "alternative": "При аллергии на орехи используйте подходящее масло; при лечебной диете следуйте своему плану.",
+        "doneWhen": "Выбрано одно подходящее дополнение, без цели убрать все жиры.",
+        "benefit": "Жиры входят в обычный рацион; эти варианты могут давать ненасыщенные жиры.",
+        "background": "Жир необходим организму. Растительные масла, орехи, семена и рыба дают ненасыщенные жиры; порция и личная переносимость тоже имеют значение. Полностью обезжиривать питание не нужно."
+      },
+      "en": {
+        "title": "Choose a suitable dressing",
+        "summary": "Your whole menu need not be fat-free.",
+        "action": "Choose suitable oil, seeds or nuts for one dish.",
+        "steps": [
+          "Check tolerance and your care plan.",
+          "Add the chosen food in an amount that suits you."
+        ],
+        "example": "Salad with plant oil; porridge with suitable seeds.",
+        "alternative": "With nut allergy use suitable oil; follow any clinical diet.",
+        "doneWhen": "One suitable addition is chosen without trying to remove all fat.",
+        "benefit": "Fat belongs in everyday eating; these options can supply unsaturated fats.",
+        "background": "Dietary fat is essential. Plant oils, nuts, seeds and fish supply unsaturated fats; portions and individual tolerance still matter. A completely fat-free diet is unnecessary."
+      }
+    },
+    {
+      "id": "macros-04",
+      "category": "macros",
+      "topic": "snack-pair",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "who-diet"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Подготовьте пару для перекуса",
+        "summary": "Если хочется есть между приёмами пищи, можно выбрать удобную еду.",
+        "action": "Подготовьте один подходящий перекус из двух компонентов.",
+        "steps": [
+          "Выберите фрукт или хлеб.",
+          "Добавьте подходящий йогурт, сыр или бобовую намазку."
+        ],
+        "example": "Яблоко + йогурт; хлеб + хумус; груша + подходящий сыр.",
+        "alternative": "Подойдёт готовый перекус, если сейчас нет возможности собирать пару.",
+        "doneWhen": "Один удобный вариант подготовлен; есть его через силу не нужно.",
+        "benefit": "Сочетание разных продуктов делает выбор разнообразнее; потребность и насыщение индивидуальны.",
+        "background": "Сочетайте доступный белковый продукт с фруктом или цельнозерновым хлебом, если это вам подходит. Это пример разнообразия, а не обязательный перекус или фиксированная порция."
+      },
+      "en": {
+        "title": "Prepare a snack pairing",
+        "summary": "If you want food between meals, choose something convenient.",
+        "action": "Prepare one suitable two-part snack.",
+        "steps": [
+          "Choose fruit or bread.",
+          "Add suitable yogurt, cheese or bean spread."
+        ],
+        "example": "Apple + yogurt; bread + hummus; pear + suitable cheese.",
+        "alternative": "A ready-made snack is also valid when assembly is impractical.",
+        "doneWhen": "One convenient option is ready; eating it is optional.",
+        "benefit": "Combining foods offers variety; appetite and fullness are individual.",
+        "background": "Pair an accessible protein food with fruit or wholegrain bread if that suits you. This illustrates variety, not a compulsory snack or fixed portion."
+      }
+    },
+    {
+      "id": "macros-13",
+      "category": "macros",
+      "topic": "yogurt-choice",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "who-diet"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Сравните два подходящих йогурта",
+        "summary": "Молочные и растительные варианты отличаются по составу.",
+        "action": "Выберите йогурт по подходящему составу и удобству.",
+        "steps": [
+          "Сравните состав на одинаковую массу.",
+          "Учитывайте белок, обогащение и ограничения, затем выберите один вариант."
+        ],
+        "example": "Подходящий йогурт + овсянка + фрукт — идея еды, без расчёта КБЖУ.",
+        "alternative": "Если йогурт не подходит, выберите хлеб с яйцом или фасолевой намазкой.",
+        "doneWhen": "Выбран подходящий продукт или замена.",
+        "benefit": "Этикетка помогает понять различия, а не считать все растительные аналоги одинаковыми.",
+        "background": "Молочные и растительные аналоги отличаются по белку, кальцию и добавленному сахару. Читайте этикетку; при исключении молочного выбирайте подходящую обогащённую альтернативу."
+      },
+      "en": {
+        "title": "Compare two suitable yogurts",
+        "summary": "Dairy and plant options differ in composition.",
+        "action": "Choose a yogurt that suits your needs and routine.",
+        "steps": [
+          "Compare ingredients and values on the same weight basis.",
+          "Consider protein, fortification and restrictions before choosing."
+        ],
+        "example": "Suitable yogurt + oats + fruit is a meal idea, without calculated nutrients.",
+        "alternative": "If yogurt does not suit you, try bread with egg or bean spread.",
+        "doneWhen": "A suitable product or substitution is chosen.",
+        "benefit": "Labels show differences rather than treating all plant alternatives as identical.",
+        "background": "Dairy and plant alternatives differ in protein, calcium and added sugar. Read the label; an appropriately fortified alternative may help when avoiding dairy."
+      }
+    },
+    {
+      "id": "hydration-03",
+      "category": "hydration",
+      "topic": "water-flavour",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-water"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Попробуйте удобный вкус воды",
+        "summary": "Добавка нужна только для вкуса, а не для похудения.",
+        "action": "При желании приготовьте привычную воду с подходящей добавкой.",
+        "steps": [
+          "Выберите мяту, огурец или ягоды, если подходят.",
+          "Попробуйте немного и оставьте вариант, который нравится."
+        ],
+        "example": "Вода с огурцом; вода с мятой; обычная вода без добавок.",
+        "alternative": "Не подходят кислые добавки — обычная вода равноценный выбор для этой задачи.",
+        "doneWhen": "Выбран комфортный напиток без питья через силу.",
+        "benefit": "Выбор вкуса может сделать напиток удобнее; он не превращается в средство сжигания жира.",
+        "background": "Вода с добавками меняет вкус, но не становится средством сжигания жира. Если вам не подходят кислые добавки, обычная вода тоже нормальный выбор."
+      },
+      "en": {
+        "title": "Try a convenient water flavour",
+        "summary": "Flavour is for preference, not weight loss.",
+        "action": "If you wish, prepare familiar water with a suitable addition.",
+        "steps": [
+          "Choose mint, cucumber or berries if suitable.",
+          "Try a little and keep the option you enjoy."
+        ],
+        "example": "Water with cucumber; water with mint; plain water.",
+        "alternative": "Plain water works if acidic additions do not suit you.",
+        "doneWhen": "A comfortable drink is chosen without forcing intake.",
+        "benefit": "A preferred flavour may make a drink more convenient; it is not a fat-burning treatment.",
+        "background": "Flavouring water does not turn it into a fat-burning treatment. Plain water is equally valid if acidic additions do not suit you."
+      }
+    },
+    {
+      "id": "hydration-04",
+      "category": "hydration",
+      "topic": "water-log-review",
+      "basis": "water",
+      "destination": "none",
+      "sources": [
+        "cdc-water"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Уточните одну запись воды",
+        "summary": "Кольцо отражает только введённые объёмы.",
+        "action": "Проверьте одну известную запись, если помните выпитый объём.",
+        "steps": [
+          "Сопоставьте запись с известной ёмкостью чашки.",
+          "Исправьте только известную неточность; не угадывайте пропущенные объёмы."
+        ],
+        "example": "Чашка известного объёма записана дважды — исправьте повтор в журнале воды.",
+        "alternative": "Если не помните объём, оставьте его неизвестным; догонять кольцо не нужно.",
+        "doneWhen": "Одна запись проверена или её неопределённость оставлена без догадки.",
+        "benefit": "Проверка делает журнал понятнее, но не измеряет водный баланс или обезвоживание.",
+        "background": "Приложение знает только введённые объёмы. Оно не измеряет потери жидкости, поступление воды с едой и другими напитками или обезвоживание."
+      },
+      "en": {
+        "title": "Review one water entry",
+        "summary": "The ring reflects entered amounts only.",
+        "action": "Check one known entry if you remember its amount.",
+        "steps": [
+          "Compare it with a known cup size.",
+          "Correct only a known error; do not guess missing amounts."
+        ],
+        "example": "A known-size cup was logged twice: correct the duplicate in the water log.",
+        "alternative": "If unsure, leave the amount unknown; there is no need to catch up with the ring.",
+        "doneWhen": "One entry was checked or its uncertainty left unresolved.",
+        "benefit": "This improves record clarity without measuring fluid balance or dehydration.",
+        "background": "The app knows only entered volumes. It does not measure fluid loss, water in food and other drinks, or dehydration."
+      }
+    },
+    {
+      "id": "hydration-05",
+      "category": "hydration",
+      "topic": "drink-log-type",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-water"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Разделите воду и другие напитки в записях",
+        "summary": "Чай или молоко не превращаются в чистую воду в журнале.",
+        "action": "Проверьте, в какой раздел внесён один напиток.",
+        "steps": [
+          "Воду учитывайте в журнале воды.",
+          "Для молока или другого напитка с составом проверьте подходящую запись дневника еды."
+        ],
+        "example": "Молоко в кофе можно учесть в составе записи кофе, если известны количество и продукт.",
+        "alternative": "Не помните количество — не придумывайте точные КБЖУ.",
+        "doneWhen": "Тип одной записи проверен; полного водного баланса по кольцу не выводится.",
+        "benefit": "Так понятнее, что именно отражают журналы; вода поступает также с едой и напитками.",
+        "background": "Часть жидкости поступает с едой, молоком, чаем и другими напитками. Поэтому сумма чистой воды в Balance не равна всей поступившей жидкости."
+      },
+      "en": {
+        "title": "Distinguish water from other drink entries",
+        "summary": "Tea or milk does not become plain water in the log.",
+        "action": "Check where one drink is recorded.",
+        "steps": [
+          "Record plain water in the water log.",
+          "For milk or another drink with ingredients, review a suitable food-diary entry."
+        ],
+        "example": "Milk in coffee can belong in that entry when the product and amount are known.",
+        "alternative": "Unknown quantity? Do not invent exact nutrients.",
+        "doneWhen": "One entry type is checked without treating the ring as full fluid balance.",
+        "benefit": "This clarifies what logs show; food and other drinks also supply fluid.",
+        "background": "Food, milk, tea and other drinks also supply fluid. The plain-water total in Balance is therefore not total fluid intake."
+      }
+    },
+    {
+      "id": "hydration-07",
+      "category": "hydration",
+      "topic": "water-access",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-water"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Подготовьте питьё для выхода из дома",
+        "summary": "После посильного движения удобно иметь доступ к отдыху и напитку.",
+        "action": "Подготовьте подходящий напиток для запланированного выхода.",
+        "steps": [
+          "Проверьте, где сможете отдохнуть.",
+          "Возьмите удобную ёмкость или найдите доступ к питью."
+        ],
+        "example": "Небольшая прогулка: привычный маршрут, место отдыха и вода с собой.",
+        "alternative": "Короткий выход рядом с домом — можно предусмотреть доступ к напитку дома.",
+        "doneWhen": "Для выхода предусмотрены отдых и питьё в рамках ваших ограничений.",
+        "benefit": "Это упрощает доступ к напитку; объём не назначается, лечебные ограничения имеют приоритет.",
+        "background": "Нагрузка и жара могут менять потребности в жидкости. Дневник не рассчитывает индивидуальный водный баланс; соблюдайте клинические ограничения, если они есть."
+      },
+      "en": {
+        "title": "Make a drink accessible for an outing",
+        "summary": "A manageable outing can include access to rest and a drink.",
+        "action": "Prepare a suitable drink for a planned outing.",
+        "steps": [
+          "Check where you can rest.",
+          "Take a convenient container or plan access to drinking water."
+        ],
+        "example": "A short walk: familiar route, a rest spot and water available.",
+        "alternative": "For a short trip near home, plan access to a drink there.",
+        "doneWhen": "Rest and a drink are accessible within your restrictions.",
+        "benefit": "This makes access easier without prescribing an amount; clinical fluid limits take priority.",
+        "background": "Activity and heat can change fluid needs. A diary cannot calculate individual fluid balance; follow any clinical restrictions."
+      }
+    },
+    {
+      "id": "hydration-18",
+      "category": "hydration",
+      "topic": "water-goal-safety",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-water"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Не догоняйте кольцо через дискомфорт",
+        "summary": "Показатель приложения не требует пить большой объём сразу.",
+        "action": "Проверьте, не заставляет ли цель пить через выраженный дискомфорт.",
+        "steps": [
+          "Если есть назначенный предел жидкости, сверяйтесь с ним.",
+          "При несоответствии цели обсудите ориентир со специалистом, не допивайте ради шкалы."
+        ],
+        "example": "Вечером кольцо не закрыто — это не обязанность быстро допить остаток.",
+        "alternative": "Если цель вам не подходит, можно оставить показатель незакрытым.",
+        "doneWhen": "Выбран комфортный подход; назначенный план не заменён цифрой приложения.",
+        "benefit": "Шкала описывает запись, а не медицинскую потребность; соревнование с ней не нужно.",
+        "background": "Не нужно быстро выпивать большой объём ради показателя. Если питьё вызывает выраженный дискомфорт или есть необычные симптомы, обсудите это с медицинским специалистом."
+      },
+      "en": {
+        "title": "Do not chase a ring through discomfort",
+        "summary": "The tracker does not require drinking a large amount at once.",
+        "action": "Check whether the goal pressures you to drink through marked discomfort.",
+        "steps": [
+          "Follow any prescribed fluid limit.",
+          "Discuss a conflicting goal with a professional instead of catching up."
+        ],
+        "example": "An incomplete evening ring is not an obligation to rapidly drink the remainder.",
+        "alternative": "Leave the ring incomplete if its target does not suit you.",
+        "doneWhen": "A comfortable approach is chosen without replacing a care plan with an app number.",
+        "benefit": "The tracker describes entries rather than medical need; competing with it is unnecessary.",
+        "background": "Avoid rapidly drinking a large volume to satisfy a tracker. Discuss marked discomfort or unusual symptoms with a healthcare professional."
+      }
+    },
+    {
+      "id": "activity-02",
+      "category": "activity",
+      "topic": "gentle-movement",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "niddk-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Выберите доступное движение на паузу",
+        "summary": "Способ зависит от возможностей и самочувствия сегодня.",
+        "action": "Попробуйте один комфортный вариант движения, если он безопасен.",
+        "steps": [
+          "Выберите знакомое действие без цели по калориям.",
+          "Остановитесь при боли, головокружении или другом дискомфорте."
+        ],
+        "example": "Короткая прогулка; движение на коляске; знакомые адаптированные движения.",
+        "alternative": "Если движение сейчас не подходит, выберите отдых или согласованный со специалистом вариант.",
+        "doneWhen": "Один безопасный вариант попробован или осознанно выбран отдых.",
+        "benefit": "Посильное движение можно включать в обычный день без обязательной интенсивной тренировки.",
+        "background": "Общая активность включает бытовое и адаптированное движение. Приложение не знает всей нагрузки по одному счётчику шагов. Выбирайте подходящий способ, а не обязательную тренировку."
+      },
+      "en": {
+        "title": "Choose an accessible movement break",
+        "summary": "The option depends on your abilities and wellbeing today.",
+        "action": "Try one comfortable movement option if it is safe.",
+        "steps": [
+          "Choose something familiar without a calorie goal.",
+          "Stop for pain, dizziness or other discomfort."
+        ],
+        "example": "A short walk; wheeling; familiar adapted movement.",
+        "alternative": "If movement is unsuitable, choose rest or an agreed professional alternative.",
+        "doneWhen": "One safe option is tried or rest is deliberately chosen.",
+        "benefit": "Accessible movement can fit an ordinary day without a compulsory intense workout.",
+        "background": "Activity includes household tasks and adapted movement. A step counter does not capture all effort. Choose a suitable option rather than a compulsory workout."
+      }
+    },
+    {
+      "id": "activity-03",
+      "category": "activity",
+      "topic": "work-break",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "niddk-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Привяжите паузу к завершению дела",
+        "summary": "Не нужен новый спортивный план.",
+        "action": "После одного рабочего дела смените положение удобным способом.",
+        "steps": [
+          "Выберите событие: конец звонка или письма.",
+          "Сделайте короткую комфортную паузу перед следующим делом."
+        ],
+        "example": "После звонка пройтись по комнате или удобно сменить положение сидя.",
+        "alternative": "Если вставать не подходит, выберите доступную смену положения или отдых.",
+        "doneWhen": "Одна рабочая пауза состоялась без неприятных ощущений.",
+        "benefit": "Привязка к знакомому событию облегчает небольшую паузу; изменения веса не обещаются.",
+        "background": "Доступное движение можно распределять в течение дня. Смена положения удобна как короткая пауза; она не гарантирует изменение веса."
+      },
+      "en": {
+        "title": "Attach a break to finishing a task",
+        "summary": "No new workout plan is needed.",
+        "action": "After one task, change position in a comfortable way.",
+        "steps": [
+          "Choose a cue such as finishing a call or email.",
+          "Take a comfortable brief break before the next task."
+        ],
+        "example": "After a call, move around the room or comfortably change seated position.",
+        "alternative": "If standing is unsuitable, choose an accessible position change or rest.",
+        "doneWhen": "One comfortable work break happened.",
+        "benefit": "A familiar cue makes a small break easier to remember; no weight change is promised.",
+        "background": "Accessible movement can be spread through the day. Changing position is a practical short break, without a guaranteed weight effect."
+      }
+    },
+    {
+      "id": "activity-04",
+      "category": "activity",
+      "topic": "step-record-review",
+      "basis": "steps",
+      "destination": "none",
+      "sources": [
+        "niddk-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Сравните доступные записи шагов",
+        "summary": "Счётчик описывает часть движения, а не весь расход энергии.",
+        "action": "Посмотрите на два завершённых дня, если записи есть.",
+        "steps": [
+          "Проверьте, было ли устройство с вами.",
+          "Отметьте разницу обстоятельств без вывода о причине веса."
+        ],
+        "example": "Один день телефон лежал дома — меньший счётчик может быть неполным.",
+        "alternative": "Есть только один день — оставьте сравнение на потом, не подставляйте ноль.",
+        "doneWhen": "Проверены доступные дни и отмечены ограничения сравнения.",
+        "benefit": "Это помогает интерпретировать реальные шаги без чужого норматива и ложного вывода о расходе.",
+        "background": "Данные шагов полезны для сравнения с собственным ритмом, но телефон мог быть не с вами. Снижение счётчика само по себе не доказывает уменьшение всей активности."
+      },
+      "en": {
+        "title": "Compare available step records",
+        "summary": "A counter captures part of movement, not total energy use.",
+        "action": "Review two completed days if records exist.",
+        "steps": [
+          "Check whether you carried the device.",
+          "Note different circumstances without explaining weight from them."
+        ],
+        "example": "The phone stayed home on one day: its lower count may be incomplete.",
+        "alternative": "Only one day available? Defer comparison instead of inserting zero.",
+        "doneWhen": "Available days and comparison limits were reviewed.",
+        "benefit": "This puts actual steps in context without someone else’s target or a false expenditure estimate.",
+        "background": "Steps can be compared with your usual pattern, but the device may not have been with you. A lower count does not establish lower total activity."
+      }
+    },
+    {
+      "id": "activity-18",
+      "category": "activity",
+      "topic": "movement-without-compensation",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "niddk-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Выберите посильную нагрузку без рекорда",
+        "summary": "Вчерашнее число не обязывает повторять или превышать его.",
+        "action": "Оставьте сегодня один комфортный вариант активности или отдыха.",
+        "steps": [
+          "Оцените самочувствие и ограничения.",
+          "Выберите нагрузку без компенсации еды и пропущенных дней."
+        ],
+        "example": "После напряжённого дня — спокойная прогулка, доступное движение или отдых.",
+        "alternative": "Не подходит привычная нагрузка — можно сократить или перенести её.",
+        "doneWhen": "Выбран и соблюдён посильный вариант без цели побить рекорд.",
+        "benefit": "Гибкий ритм учитывает обстоятельства; еду не нужно заслуживать тренировкой.",
+        "background": "Нагрузка зависит от самочувствия и обстоятельств. Оставляйте дни полегче; устойчивый подход не требует ежедневно повышать цифры."
+      },
+      "en": {
+        "title": "Choose manageable effort without a record",
+        "summary": "Yesterday’s number is not an obligation to match or exceed it.",
+        "action": "Keep one comfortable activity or rest option today.",
+        "steps": [
+          "Consider how you feel and any restrictions.",
+          "Choose without compensating for food or missed days."
+        ],
+        "example": "After a demanding day: an easy walk, accessible movement or rest.",
+        "alternative": "Shorten or postpone your usual activity if it is unsuitable.",
+        "doneWhen": "A manageable option was chosen without chasing a record.",
+        "benefit": "A flexible routine accounts for circumstances; food does not need to be earned through exercise.",
+        "background": "Effort depends on wellbeing and circumstances. Allow lighter days; a sustainable approach does not demand higher numbers every day."
+      }
+    },
+    {
+      "id": "recovery-01",
+      "category": "recovery",
+      "topic": "wind-down",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Подготовьте спокойное завершение вечера",
+        "summary": "Один короткий ритуал вместо списка идеальных правил.",
+        "action": "Выберите спокойное действие перед своим обычным временем сна.",
+        "steps": [
+          "Решите, чем закончить вечер.",
+          "Подготовьте нужную вещь заранее, чтобы не искать её в последний момент."
+        ],
+        "example": "Книга у кровати; спокойная музыка; привычный тёплый душ.",
+        "alternative": "Усталый вечер — достаточно убрать одно лишнее дело.",
+        "doneWhen": "Выбранный спокойный переход попробован один раз.",
+        "benefit": "Понятная точка завершения помогает организовать вечер; это не лечение бессонницы.",
+        "background": "Повторяемый спокойный ритуал может помочь организовать вечер. Он не лечит бессонницу и не обещает снижение веса; выбирайте доступный вариант."
+      },
+      "en": {
+        "title": "Prepare a quiet end to the evening",
+        "summary": "Choose one small routine rather than a list of perfect rules.",
+        "action": "Choose a quiet activity before your usual sleep time.",
+        "steps": [
+          "Decide how to close the evening.",
+          "Prepare what you need so it is easy to start."
+        ],
+        "example": "A book by the bed; quiet music; a familiar warm shower.",
+        "alternative": "On a tiring evening, simply drop one unnecessary task.",
+        "doneWhen": "The chosen wind-down activity was tried once.",
+        "benefit": "A clear stopping point helps structure the evening; it is not insomnia treatment.",
+        "background": "A repeatable quiet routine may help structure the evening. It does not treat insomnia or promise weight loss; choose something practical."
+      }
+    },
+    {
+      "id": "recovery-04",
+      "category": "recovery",
+      "topic": "sleep-environment",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Уберите одну помеху для отдыха",
+        "summary": "Начните с того, что можете изменить без покупок.",
+        "action": "Попробуйте одно удобное изменение света, шума или температуры.",
+        "steps": [
+          "Назовите одну заметную помеху.",
+          "Измените только её и оцените удобство."
+        ],
+        "example": "Приглушить яркий свет; закрыть штору; убрать шумящий прибор, если безопасно.",
+        "alternative": "Общая комната — выберите доступный вам маленький участок.",
+        "doneWhen": "Одно изменение сделано и его удобство оценено.",
+        "benefit": "Так проще проверить условия отдыха по одной переменной, без обещания исправить сон или вес.",
+        "background": "Свет, шум и комфорт спальни относятся к привычкам сна. Начните с одного изменения, которое можете сделать; при стойких проблемах нужна индивидуальная оценка."
+      },
+      "en": {
+        "title": "Remove one barrier to rest",
+        "summary": "Start with something you can change without buying anything.",
+        "action": "Try one practical light, noise or temperature change.",
+        "steps": [
+          "Identify one noticeable disturbance.",
+          "Change just that and assess comfort."
+        ],
+        "example": "Dim a bright light; close a curtain; switch off a noisy device if safe.",
+        "alternative": "In a shared room, choose one small area you can control.",
+        "doneWhen": "One change was made and comfort assessed.",
+        "benefit": "Changing one thing makes conditions easier to review without promising better sleep or weight.",
+        "background": "Light, noise and bedroom comfort belong to sleep habits. Start with one feasible change; persistent problems need individual assessment."
+      }
+    },
+    {
+      "id": "recovery-06",
+      "category": "recovery",
+      "topic": "caffeine-timing",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Проверьте время последнего кофе",
+        "summary": "Если поздний кофе мешает вашему сну, попробуйте более раннее время.",
+        "action": "Отметьте время кофе и выберите подходящую вечернюю замену при необходимости.",
+        "steps": [
+          "Вспомните последний кофе за день.",
+          "Если сами замечаете связь со сном, попробуйте перенести его раньше."
+        ],
+        "example": "Любимый кофе раньше, а вечером — подходящий напиток без кофеина.",
+        "alternative": "Если менять напиток не хочется, начните с наблюдения времени без обязательного запрета.",
+        "doneWhen": "Время отмечено или выбран небольшой пробный перенос.",
+        "benefit": "Чувствительность к кофеину различается; такой эксперимент помогает обсудить ваш опыт, а не угадывать сон по весу.",
+        "background": "Кофеин может мешать сну. Чувствительность различается; попробуйте более раннее время без требования полностью отказаться от любимого напитка."
+      },
+      "en": {
+        "title": "Review the time of your last coffee",
+        "summary": "If late coffee disturbs your sleep, try an earlier time.",
+        "action": "Note your coffee timing and choose an evening alternative if needed.",
+        "steps": [
+          "Recall the last coffee of the day.",
+          "If you notice a sleep connection yourself, try moving it earlier."
+        ],
+        "example": "A favourite coffee earlier, with a suitable caffeine-free drink in the evening.",
+        "alternative": "Start with noticing the time if you do not want to change drinks.",
+        "doneWhen": "Timing is noted or a small trial change chosen.",
+        "benefit": "Caffeine sensitivity differs; this reviews your experience rather than inferring sleep from weight.",
+        "background": "Caffeine can disrupt sleep. Sensitivity varies; trying an earlier time does not require giving up a favourite drink entirely."
+      }
+    },
+    {
+      "id": "recovery-07",
+      "category": "recovery",
+      "topic": "screen-stopping-point",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Выберите точку остановки для ленты",
+        "summary": "Если просмотр затягивает вечер, заранее решите, где закончить.",
+        "action": "Один раз завершите просмотр в выбранной точке.",
+        "steps": [
+          "Выберите событие: конец серии или разговора.",
+          "Положите телефон в удобное место и переключитесь на спокойное дело."
+        ],
+        "example": "После одной серии убрать телефон на полку и подготовить одежду на завтра.",
+        "alternative": "Если телефон нужен для связи, оставьте его рядом, закрыв только ленту.",
+        "doneWhen": "Просмотр завершён в выбранной точке без требования идеальной серии дней.",
+        "benefit": "Заранее выбранное завершение уменьшает число вечерних решений; это практический эксперимент.",
+        "background": "Если экран отодвигает сон, выберите точку остановки и спокойную альтернативу. Это практический эксперимент, а не способ автоматически исправить вес."
+      },
+      "en": {
+        "title": "Choose a stopping point for scrolling",
+        "summary": "If scrolling stretches your evening, decide where to stop in advance.",
+        "action": "End one scrolling session at a chosen point.",
+        "steps": [
+          "Choose a cue such as the end of an episode or conversation.",
+          "Put the phone somewhere practical and switch to a quiet task."
+        ],
+        "example": "After one episode, park the phone and prepare tomorrow’s clothes.",
+        "alternative": "Need your phone for contact? Keep it nearby and close only the feed.",
+        "doneWhen": "One session ended at the chosen point, without a perfect-streak target.",
+        "benefit": "A planned stopping point reduces evening decisions; this is a practical trial.",
+        "background": "If screens delay sleep, choose a stopping point and a quiet alternative. This is a practical experiment, not an automatic way to change weight."
+      }
+    },
+    {
+      "id": "recovery-17",
+      "category": "recovery",
+      "topic": "sleep-support",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Подготовьте вопрос о повторяющихся трудностях сна",
+        "summary": "Если сон регулярно мешает днём, это можно обсудить со специалистом.",
+        "action": "Запишите один конкретный вопрос для консультации, если он актуален.",
+        "steps": [
+          "Опишите, что повторяется и как мешает днём.",
+          "Добавьте пример удобным вам способом без подробного трекера."
+        ],
+        "example": "«Часто просыпаюсь и устаю днём. Что стоит проверить?»",
+        "alternative": "Не хотите вести записи — достаточно одной заметки или устного вопроса.",
+        "doneWhen": "Подготовлен вопрос, а не самостоятельно назначенное лечение.",
+        "benefit": "Описание ситуации делает разговор конкретнее; приложение не определяет диагноз и лечение.",
+        "background": "Приложение не выявляет причины усталости и нарушений сна. Если они устойчиво мешают жизни, врач поможет оценить возможные причины и подходящую помощь."
+      },
+      "en": {
+        "title": "Prepare a question about recurring sleep trouble",
+        "summary": "If sleep repeatedly affects daytime life, you can discuss it with a professional.",
+        "action": "Write one specific consultation question if relevant.",
+        "steps": [
+          "Describe what recurs and how it affects your day.",
+          "Add one example without a detailed sleep tracker."
+        ],
+        "example": "“I often wake and feel tired in the day. What should we review?”",
+        "alternative": "A single note or a spoken question is enough if tracking is unwelcome.",
+        "doneWhen": "A question is prepared rather than self-prescribed treatment.",
+        "benefit": "A clear description supports the discussion; the app does not diagnose or treat.",
+        "background": "The app cannot identify causes of fatigue or sleep problems. If they persist and affect daily life, a clinician can assess causes and suitable support."
+      }
+    },
+    {
+      "id": "habits-15",
+      "category": "habits",
+      "topic": "shopping-plan",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Купите недостающий продукт для одного блюда",
+        "summary": "Начните с содержимого холодильника, а не длинного списка.",
+        "action": "Выберите блюдо и внесите в список только недостающий компонент.",
+        "steps": [
+          "Проверьте, что уже есть.",
+          "Соедините доступную основу, белковый продукт и овощи, затем отметьте недостающее."
+        ],
+        "example": "Есть рис и фасоль — в список можно добавить подходящие овощи.",
+        "alternative": "Сложно идти в магазин — выберите замену из имеющегося.",
+        "doneWhen": "Один короткий список или вариант без покупок готов.",
+        "benefit": "Покупка под конкретное блюдо уменьшает число решений и помогает использовать имеющиеся продукты.",
+        "background": "План покупок можно составлять из доступных продуктов. Нет необходимости покупать дорогой суперфуд: обычные крупы, бобовые и сезонные овощи тоже дают разнообразие."
+      },
+      "en": {
+        "title": "Buy the missing ingredient for one meal",
+        "summary": "Start with the fridge rather than a long shopping list.",
+        "action": "Choose one meal and list its missing component.",
+        "steps": [
+          "Check what you already have.",
+          "Combine an accessible base, protein food and vegetables, then note what is missing."
+        ],
+        "example": "Already have rice and beans? Suitable vegetables may be the only addition.",
+        "alternative": "Cannot shop? Choose a substitution from what you have.",
+        "doneWhen": "A short list or a no-shopping option is ready.",
+        "benefit": "Shopping for a specific meal reduces decisions and uses available ingredients.",
+        "background": "Plan shopping around accessible foods. Expensive superfoods are unnecessary: familiar grains, pulses and seasonal vegetables can provide variety."
+      }
+    },
+    {
+      "id": "habits-16",
+      "category": "habits",
+      "topic": "comfortable-logging",
+      "basis": "food",
+      "destination": "food",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Сделайте одну запись удобным способом",
+        "summary": "Дневник может помогать без требования идеальной детализации.",
+        "action": "Выберите удобный момент для одной известной записи, если отслеживание вам подходит.",
+        "steps": [
+          "Запишите знакомое блюдо без угадывания неизвестного.",
+          "Остановитесь на посильном уровне подробности."
+        ],
+        "example": "Записать известный продукт после обеда; неизвестный рецепт оставить приблизительным.",
+        "alternative": "Если контроль вызывает тревогу или навязчивость, допустима пауза и обсуждение другого подхода.",
+        "doneWhen": "Одна удобная запись сделана или осознанно выбрана пауза.",
+        "benefit": "Посильный формат может уменьшить трудность ведения дневника; точное потребление по нему не доказывается.",
+        "background": "По дневнику нельзя гарантировать полноту рациона. Если детализация вызывает напряжение, используйте более простой формат или обсудите другой способ наблюдения со специалистом."
+      },
+      "en": {
+        "title": "Make one entry in a manageable way",
+        "summary": "A diary can help without perfect detail.",
+        "action": "Choose a convenient moment for one known entry if tracking suits you.",
+        "steps": [
+          "Record familiar food without guessing unknown details.",
+          "Stop at a manageable level of detail."
+        ],
+        "example": "Log a known food after lunch; leave an unknown recipe approximate.",
+        "alternative": "If tracking brings anxiety or compulsive checking, take a break and discuss another approach.",
+        "doneWhen": "One manageable entry is made or a break deliberately chosen.",
+        "benefit": "A practical format may reduce logging effort; it cannot prove exact intake.",
+        "background": "A diary cannot guarantee complete intake data. If detailed tracking causes distress, use a simpler format or discuss another approach with a professional."
+      }
+    },
+    {
+      "id": "mindful-02",
+      "category": "mindful",
+      "topic": "appetite-observation",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Заметьте потребность перед едой без запретов",
+        "summary": "Это наблюдение, а не экзамен на право поесть.",
+        "action": "Перед одним приёмом пищи коротко отметьте, что сейчас нужно.",
+        "steps": [
+          "Заметьте голод, самочувствие и доступную еду.",
+          "Выберите еду с учётом своего плана, не требуя обязательного голода."
+        ],
+        "example": "«Хочется тёплой еды, есть суп и хлеб» — достаточно конкретного выбора.",
+        "alternative": "При плане регулярного питания следуйте ему, не ждите голода.",
+        "doneWhen": "Сделано одно нейтральное наблюдение без отмены еды.",
+        "benefit": "Так можно учесть самочувствие, не превращая аппетит в новое жёсткое правило.",
+        "background": "Голод и насыщение можно замечать без строгих правил. При медицинском плане регулярных приёмов пищи следуйте ему, а не ждите обязательного сигнала голода."
+      },
+      "en": {
+        "title": "Notice your needs without food rules",
+        "summary": "This is an observation, not a test of permission to eat.",
+        "action": "Before one meal, briefly notice what you need.",
+        "steps": [
+          "Notice appetite, wellbeing and available food.",
+          "Choose with your care plan in mind, without demanding hunger."
+        ],
+        "example": "“I want something warm; soup and bread are available” is a concrete choice.",
+        "alternative": "Follow scheduled eating in a care plan rather than waiting for hunger.",
+        "doneWhen": "One neutral observation was made without cancelling food.",
+        "benefit": "This considers wellbeing without turning appetite into a rigid new rule.",
+        "background": "Hunger and fullness can be noticed without rigid rules. If a clinical plan calls for regular meals, follow it rather than waiting for a hunger cue."
+      }
+    },
+    {
+      "id": "mindful-08",
+      "category": "mindful",
+      "topic": "hunger-response",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Если вы ещё голодны, дополните еду",
+        "summary": "Цифра приложения не отменяет потребность в еде.",
+        "action": "При сохраняющемся голоде выберите доступное дополнение.",
+        "steps": [
+          "Посмотрите, что удобно добавить к текущей еде.",
+          "Выберите по аппетиту, без обязательного ожидания до следующего часа."
+        ],
+        "example": "Ещё немного основного блюда; хлеб с намазкой; йогурт и фрукт, если подходят.",
+        "alternative": "Если трудно решить, можно вернуться к привычному полноценному блюду.",
+        "doneWhen": "При актуальном голоде выбран подходящий вариант дополнения.",
+        "benefit": "Это помогает ответить на потребность в еде; при стойком голоде или ограничениях полезна индивидуальная поддержка.",
+        "background": "Аппетит и потребности не всегда совпадают с планом приложения. Если голод сохраняется или рацион ограничен, оцените регулярность и полноценность еды с поддержкой специалиста."
+      },
+      "en": {
+        "title": "If still hungry, add to your meal",
+        "summary": "An app number does not override a need for food.",
+        "action": "Choose an accessible addition if hunger remains.",
+        "steps": [
+          "See what is convenient to add.",
+          "Choose according to appetite without an obligatory wait until later."
+        ],
+        "example": "More of the main dish; bread with spread; suitable yogurt and fruit.",
+        "alternative": "If deciding feels difficult, return to a familiar substantial meal.",
+        "doneWhen": "A suitable addition is chosen when hunger is relevant.",
+        "benefit": "This responds to a need for food; persistent hunger or restriction calls for individual support.",
+        "background": "Appetite and needs may differ from an app plan. Persistent hunger or a restrictive diet calls for a review of regular, adequate eating with professional support."
+      }
+    },
+    {
+      "id": "mindful-09",
+      "category": "mindful",
+      "topic": "eating-without-compensation",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "nhs-eating-support",
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "После десерта оставьте обычный приём пищи",
+        "summary": "Не нужно исправлять сладкое пропуском еды.",
+        "action": "Сохраните следующий обычный приём пищи без компенсации.",
+        "steps": [
+          "Посмотрите на обычное время еды.",
+          "Подготовьте привычный вариант без специального урезания."
+        ],
+        "example": "После десерта в обед — обычный ужин, например рис с фасолью и овощами.",
+        "alternative": "После пропущенной записи тоже можно вернуться к обычному ритму.",
+        "doneWhen": "Следующий приём пищи не отменён ради компенсации.",
+        "benefit": "Так один продукт не превращается в повод для новых ограничений; при чувстве вины можно обратиться за поддержкой.",
+        "background": "Один десерт не требует отменять следующую еду. Вернитесь к привычному ритму; если возникают компенсаторные ограничения, это повод обратиться за поддержкой."
+      },
+      "en": {
+        "title": "Keep your usual meal after dessert",
+        "summary": "Dessert does not need fixing by skipping food.",
+        "action": "Keep the next usual meal without compensation.",
+        "steps": [
+          "Check your usual meal time.",
+          "Prepare something familiar without a special cutback."
+        ],
+        "example": "After lunch dessert, have a usual dinner such as rice, beans and vegetables.",
+        "alternative": "After a missed log, return to the usual routine too.",
+        "doneWhen": "The next meal was not cancelled as compensation.",
+        "benefit": "This avoids turning one food into a reason for restriction; seek support for distressing guilt.",
+        "background": "One dessert does not require cancelling the next meal. Return to your usual routine; compensatory restriction is a reason to seek support."
+      }
+    },
+    {
+      "id": "mindful-16",
+      "category": "mindful",
+      "topic": "neutral-log-review",
+      "basis": "food",
+      "destination": "food",
+      "sources": [
+        "nhs-eating-support",
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Опишите одну запись без оценки себя",
+        "summary": "Дневник записывает еду, а не характер.",
+        "action": "Прочитайте одну запись нейтрально и выберите удобное уточнение, если оно нужно.",
+        "steps": [
+          "Назовите еду и обстоятельства без слов «плохой день».",
+          "Уточните известную деталь или просто завершите просмотр."
+        ],
+        "example": "«Паста в кафе, состав примерно известен» вместо «я всё испортил(а)».",
+        "alternative": "Если просмотр усиливает тревогу, закройте дневник и обсудите поддержку.",
+        "doneWhen": "Одна запись прочитана нейтрально или выбран безопасный перерыв.",
+        "benefit": "Так легче отделить сведения от самооценки; точность не требует обвинений.",
+        "background": "В дневнике отражена лишь часть жизни. Используйте его для вопросов и удобных действий, а не оценки характера; при навязчивом контроле допустима пауза."
+      },
+      "en": {
+        "title": "Describe one entry without judging yourself",
+        "summary": "A diary records food, not character.",
+        "action": "Read one entry neutrally and clarify a practical detail only if needed.",
+        "steps": [
+          "Name the food and circumstances without a “bad day” label.",
+          "Clarify a known detail or simply finish reviewing."
+        ],
+        "example": "“Cafe pasta, ingredients approximately known” rather than “I ruined everything.”",
+        "alternative": "If reviewing increases anxiety, close the diary and discuss support.",
+        "doneWhen": "One entry was read neutrally or a safe break chosen.",
+        "benefit": "This separates information from self-judgement; accuracy does not require blame.",
+        "background": "A diary captures only part of life. Use it for questions and practical actions, not a character judgement; a break is valid if tracking becomes compulsive."
+      }
+    },
+    {
+      "id": "progress-02",
+      "category": "progress",
+      "topic": "comparable-weighing",
+      "basis": "universal",
+      "destination": "weight",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Выберите сопоставимые условия взвешивания",
+        "summary": "Чаще измерять ради приложения не требуется.",
+        "action": "Подготовьте одинаковые удобные условия для следующего планового измерения.",
+        "steps": [
+          "Выберите те же весы и ровную поверхность.",
+          "По возможности сохраняйте похожее время и одежду."
+        ],
+        "example": "Одни весы, привычное утро и похожая одежда; дату записи проверьте при вводе.",
+        "alternative": "Если измерения вызывают тревогу, выберите паузу или обсудите иной способ наблюдения.",
+        "doneWhen": "Условия выбраны; новое измерение не обязательно сегодня.",
+        "benefit": "Сходные условия уменьшают случайные различия, не делая показание точным измерением жира.",
+        "background": "Одни весы, ровная поверхность и похожее время уменьшают случайные различия. Ежедневное взвешивание не требуется; при тревоге можно выбрать более редкий ритм."
+      },
+      "en": {
+        "title": "Choose comparable weighing conditions",
+        "summary": "There is no need to weigh more often for the app.",
+        "action": "Prepare similar comfortable conditions for the next planned reading.",
+        "steps": [
+          "Choose the same scale on a level surface.",
+          "Keep timing and clothing similar when practical."
+        ],
+        "example": "The same scale, usual morning and similar clothing; check the entered date.",
+        "alternative": "If weighing causes distress, pause or discuss another observation approach.",
+        "doneWhen": "Conditions are chosen; a new reading is not required today.",
+        "benefit": "Comparable conditions reduce incidental differences without measuring body fat precisely.",
+        "background": "The same scale, level floor and similar timing reduce incidental differences. Daily weighing is optional; choose a less frequent rhythm if it causes distress."
+      }
+    },
+    {
+      "id": "progress-08",
+      "category": "progress",
+      "topic": "circumference-technique",
+      "basis": "universal",
+      "destination": "weight",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Уточните технику следующего замера",
+        "summary": "Место и натяжение ленты влияют на результат.",
+        "action": "Перед следующим плановым замером выберите одно и то же место.",
+        "steps": [
+          "Расположите ленту ровно и без затягивания.",
+          "Запишите фактическую дату и показатель, не желаемую цифру."
+        ],
+        "example": "Для талии повторите прежнее место; грудь и бёдра учитывайте отдельно.",
+        "alternative": "Если трудно повторить технику или это вызывает тревогу, допустима пауза.",
+        "doneWhen": "Техника проверена; обязательного нового замера сегодня нет.",
+        "benefit": "Повторяемый способ делает наблюдения сопоставимее, но не определяет состав тела.",
+        "background": "Сантиметры зависят от места и натяжения ленты. Повторяйте технику, не затягивайте ленту и не делайте вывод о жировой или мышечной ткани по одному замеру."
+      },
+      "en": {
+        "title": "Check your next measurement technique",
+        "summary": "Tape position and tension affect a reading.",
+        "action": "Before the next planned measurement, choose the same location.",
+        "steps": [
+          "Keep the tape level without pulling it tight.",
+          "Enter the actual date and value rather than a desired number."
+        ],
+        "example": "Repeat the waist location; record chest and hips separately.",
+        "alternative": "Pause if technique is difficult to repeat or measurement causes distress.",
+        "doneWhen": "Technique is checked; an extra reading today is unnecessary.",
+        "benefit": "Repeatable technique improves comparison without establishing body composition.",
+        "background": "Circumferences depend on tape position and tension. Repeat the technique without tightening the tape, and avoid inferring fat or muscle change from one measurement."
+      }
+    },
+    {
+      "id": "progress-16",
+      "category": "progress",
+      "topic": "goal-review",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Запишите один вопрос о текущей цели",
+        "summary": "Цель можно пересмотреть, если она перестала подходить.",
+        "action": "Назовите, что именно в нынешнем плане неудобно или беспокоит.",
+        "steps": [
+          "Выберите один конкретный вопрос.",
+          "При сомнениях о здоровье обсудите его со специалистом без нового запрета."
+        ],
+        "example": "«Мне трудно сохранять такой режим. Какой ориентир подойдёт сейчас?»",
+        "alternative": "Достигнутая цель — повод обсудить поддержание, а не обязательное дальнейшее снижение.",
+        "doneWhen": "Один вопрос сформулирован; цель не изменена автоматически.",
+        "benefit": "Конкретный вопрос помогает обсудить подходящий план, не принимая цифру приложения за медицинское назначение.",
+        "background": "Достигнутую цель можно сменить на поддержание. Безопасность и самочувствие важнее дальнейшего снижения; подходящий ориентир можно обсудить с врачом или диетологом."
+      },
+      "en": {
+        "title": "Write one question about your current goal",
+        "summary": "A goal can be revisited when it no longer fits.",
+        "action": "Name one practical difficulty or concern with the current plan.",
+        "steps": [
+          "Choose one specific question.",
+          "Discuss health concerns with a professional instead of adding a ban."
+        ],
+        "example": "“This routine is difficult to sustain. What goal would fit now?”",
+        "alternative": "A reached target can prompt a maintenance discussion rather than further loss.",
+        "doneWhen": "One question is formulated; no goal changes automatically.",
+        "benefit": "A specific question supports plan review without treating an app number as medical advice.",
+        "background": "A reached target can become maintenance. Safety and wellbeing matter more than further loss; discuss a suitable target with a clinician or dietitian."
+      }
+    },
+    {
+      "id": "facts-04",
+      "category": "facts",
+      "topic": "bread-label",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "niddk-portions"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Выберите хлеб по составу, а не цвету",
+        "summary": "Тёмная корочка не гарантирует цельное зерно.",
+        "action": "Посмотрите состав одного привычного хлеба.",
+        "steps": [
+          "Найдите название муки и зерновых ингредиентов.",
+          "Выберите подходящий вариант по составу, вкусу и ограничениям."
+        ],
+        "example": "Сравните привычный тёмный хлеб и хлеб с указанным цельным зерном.",
+        "alternative": "Не хотите менять хлеб — начните только с чтения состава.",
+        "doneWhen": "Состав одного хлеба прочитан; обязательной замены нет.",
+        "benefit": "Этикетка даёт больше сведений о продукте, чем его цвет.",
+        "background": "Слова на лицевой стороне и цвет не заменяют состав и таблицу пищевой ценности. Сравнивайте продукты на одинаковую массу, учитывая личные ограничения."
+      },
+      "en": {
+        "title": "Choose bread by ingredients, not colour",
+        "summary": "A dark crust does not guarantee whole grain.",
+        "action": "Read the ingredients of one familiar bread.",
+        "steps": [
+          "Find the flour and grain ingredients.",
+          "Choose by composition, preference and restrictions."
+        ],
+        "example": "Compare a familiar dark loaf with a loaf listing whole grains.",
+        "alternative": "Start with reading the label if you do not want to switch bread.",
+        "doneWhen": "One ingredients list is read; switching is optional.",
+        "benefit": "An ingredients list tells you more about bread than its colour.",
+        "background": "Front-of-pack words and colour do not replace ingredients and nutrition information. Compare foods on the same weight basis and account for your restrictions."
+      }
+    },
+    {
+      "id": "facts-06",
+      "category": "facts",
+      "topic": "label-basis",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "niddk-portions"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Сравните этикетки на одинаковую массу",
+        "summary": "Порция производителя и 100 г — разные основания сравнения.",
+        "action": "Сопоставьте два подходящих продукта на одинаковую массу.",
+        "steps": [
+          "Найдите строку «на 100 г» или размер порции.",
+          "Выберите одну общую основу перед сравнением."
+        ],
+        "example": "Один йогурт указан на баночку, другой на 100 г: сначала уточните массу баночки.",
+        "alternative": "Если пересчёт неудобен, сравните продукты с одинаковой формой этикетки.",
+        "doneWhen": "Для сравнения выбрана одинаковая основа.",
+        "benefit": "Так различия в представлении данных не принимаются за различия самого продукта; порция не назначается этикеткой.",
+        "background": "Проверьте, указана ли энергия на 100 г, на порцию или на упаковку. Производитель задаёт способ представления данных, а не обязательный размер вашей еды."
+      },
+      "en": {
+        "title": "Compare labels on the same weight basis",
+        "summary": "A manufacturer’s serving and 100 g are different bases.",
+        "action": "Compare two suitable products on the same weight basis.",
+        "steps": [
+          "Find the per-100-g line or serving size.",
+          "Choose one common basis before comparing."
+        ],
+        "example": "One yogurt lists a pot and another 100 g: first check the pot weight.",
+        "alternative": "Choose similarly labelled products if conversion is inconvenient.",
+        "doneWhen": "A common comparison basis is identified.",
+        "benefit": "This avoids confusing reporting units with food differences; a label does not prescribe your portion.",
+        "background": "Check whether energy is listed per 100 g, serving or package. A manufacturer defines a reporting unit, not a compulsory portion."
+      }
+    },
+    {
+      "id": "facts-09",
+      "category": "facts",
+      "topic": "recipe-uncertainty",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "niddk-portions"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Уточните одну запись готового блюда",
+        "summary": "Одинаковое название не означает одинаковый рецепт.",
+        "action": "Проверьте состав одного часто записываемого блюда.",
+        "steps": [
+          "Сопоставьте известные ингредиенты с записью.",
+          "Исправьте известное или оставьте оценку приблизительной."
+        ],
+        "example": "Ваша паста с фасолью, а выбранная запись с мясом — найдите более подходящий вариант.",
+        "alternative": "Для еды из кафе без рецепта точность может остаться ограниченной.",
+        "doneWhen": "Одна запись проверена без выдуманных точных КБЖУ.",
+        "benefit": "Уточнение уменьшает явное несоответствие, но не доказывает точное потребление или дефицит.",
+        "background": "Каталожное блюдо может отличаться от вашего по ингредиентам и порции. Если рецепт неизвестен, считайте запись оценкой и не делайте точный вывод о дефиците."
+      },
+      "en": {
+        "title": "Clarify one prepared-dish entry",
+        "summary": "The same name does not guarantee the same recipe.",
+        "action": "Check the ingredients of one frequently logged dish.",
+        "steps": [
+          "Compare known ingredients with the entry.",
+          "Correct what is known or keep the estimate approximate."
+        ],
+        "example": "Your pasta has beans but the entry has meat: find a closer option.",
+        "alternative": "A cafe meal without a recipe may remain uncertain.",
+        "doneWhen": "One entry is checked without invented exact nutrients.",
+        "benefit": "Review reduces obvious mismatch without proving exact intake or an energy deficit.",
+        "background": "A catalog dish can differ from yours in ingredients and portion. With an unknown recipe, treat the entry as an estimate rather than proof of an energy deficit."
+      }
+    },
+    {
+      "id": "facts-16",
+      "category": "facts",
+      "topic": "dry-cooked-entry",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "niddk-portions"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Сверьте сухой и готовый вес крупы",
+        "summary": "Одна и та же крупа после варки весит иначе.",
+        "action": "Выберите запись, соответствующую тому, что взвешивали.",
+        "steps": [
+          "Уточните, сухой или готовый продукт был на весах.",
+          "Проверьте то же состояние в названии каталога."
+        ],
+        "example": "Взвесили готовый рис — выбирайте запись для готового риса, а не сухой крупы.",
+        "alternative": "Не помните состояние или массу — оставьте оценку приблизительной.",
+        "doneWhen": "Одна запись сопоставлена с известным состоянием продукта.",
+        "benefit": "Вода при варке меняет массу; согласованность записи предотвращает явную ошибку расчёта.",
+        "background": "При готовке крупа впитывает воду: масса меняется без добавления энергии от воды. Выбирайте в каталоге запись, соответствующую сухому или готовому весу; это правило расчёта, не диета."
+      },
+      "en": {
+        "title": "Match dry and cooked grain entries",
+        "summary": "The same grain weighs differently after cooking.",
+        "action": "Choose an entry matching what was weighed.",
+        "steps": [
+          "Identify whether the weighed food was dry or cooked.",
+          "Check the same state in the catalog description."
+        ],
+        "example": "Weighed cooked rice? Choose cooked rice rather than dry grain.",
+        "alternative": "Unknown state or amount? Keep the estimate approximate.",
+        "doneWhen": "One entry matches the known food state.",
+        "benefit": "Cooking water changes weight; a matching entry prevents an obvious calculation mismatch.",
+        "background": "Grain absorbs water during cooking: weight changes without energy from water. Match the catalog entry to dry or cooked weight; this is bookkeeping, not a diet."
+      }
+    },
+    {
+      "id": "facts-18",
+      "category": "facts",
+      "topic": "portion-uncertainty",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "niddk-portions"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Уточните одну удобную порцию",
+        "summary": "Не нужно добиваться абсолютной точности всего дневника.",
+        "action": "Проверьте одну известную массу или упаковку в записи.",
+        "steps": [
+          "Выберите продукт с понятной массой.",
+          "Уточните только эту деталь и завершите проверку."
+        ],
+        "example": "Йогурт в баночке известной массы вместо случайной стандартной порции.",
+        "alternative": "Для блюда без известного веса допустима приблизительная запись.",
+        "doneWhen": "Одна известная деталь уточнена без требования перепроверить весь день.",
+        "benefit": "Это делает отдельную запись понятнее, сохраняя честные границы точности.",
+        "background": "Размер порции, состав рецепта и этикетка могут давать погрешность. Приложение видит зарегистрированные данные, а не измеряет фактическое потребление."
+      },
+      "en": {
+        "title": "Clarify one convenient portion",
+        "summary": "Perfect accuracy across the diary is unnecessary.",
+        "action": "Review one known weight or package size in an entry.",
+        "steps": [
+          "Choose a product with a known amount.",
+          "Clarify just that detail and finish the review."
+        ],
+        "example": "A yogurt pot of known weight instead of an arbitrary standard serving.",
+        "alternative": "A dish with unknown weight can remain approximate.",
+        "doneWhen": "One known detail is clarified without checking the whole day.",
+        "benefit": "This improves one entry while keeping uncertainty honest.",
+        "background": "Portion size, recipe composition and labels introduce uncertainty. The app sees recorded data rather than measuring actual intake."
+      }
+    },
+    {
+      "id": "today-02",
+      "category": "today",
+      "topic": "ingredient-variety",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Подберите одну новую комбинацию продуктов",
+        "summary": "Разнообразие можно попробовать без сложного рецепта.",
+        "action": "Выберите доступный ингредиент для одного знакомого блюда.",
+        "steps": [
+          "Посмотрите, что уже есть или недорого купить.",
+          "Решите, в какое привычное блюдо его добавить."
+        ],
+        "example": "Фасоль в томатный соус; груша к овсянке; капуста к рису.",
+        "alternative": "Если новое покупать неудобно, иначе сочетайте имеющиеся продукты.",
+        "doneWhen": "Выбрана одна конкретная комбинация, а не только название продукта.",
+        "benefit": "Одна небольшая замена делает меню разнообразнее без обязательного полного пересмотра.",
+        "background": "Покупка доступного овоща, крупы или бобовых — один способ разнообразить меню. Идея не требует специального продукта и не обещает изменения веса."
+      },
+      "en": {
+        "title": "Choose one new ingredient combination",
+        "summary": "Try variety without a complicated recipe.",
+        "action": "Choose an accessible ingredient for one familiar dish.",
+        "steps": [
+          "Check what you have or can afford.",
+          "Decide which familiar dish it will join."
+        ],
+        "example": "Beans in tomato sauce; pear with oats; cabbage with rice.",
+        "alternative": "Recombine existing ingredients if shopping is inconvenient.",
+        "doneWhen": "One specific combination is chosen rather than only naming a food.",
+        "benefit": "A small change adds variety without requiring a whole-menu overhaul.",
+        "background": "Buying an accessible vegetable, grain or pulse is one way to vary meals. No special product or weight change is promised."
+      }
+    },
+    {
+      "id": "today-03",
+      "category": "today",
+      "topic": "meal-time",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Оставьте место для одного приёма пищи",
+        "summary": "Если дела вытесняют еду, начните с одного окна в расписании.",
+        "action": "Выберите удобное время и доступный вариант еды.",
+        "steps": [
+          "Посмотрите на реальное расписание.",
+          "Решите, где и что сможете поесть без сложной готовки."
+        ],
+        "example": "Между встречами — время на суп с хлебом или заранее подготовленный обед.",
+        "alternative": "Если расписание меняется, выберите запасное окно и готовую еду.",
+        "doneWhen": "Для одного приёма пищи выбраны время и доступный вариант.",
+        "benefit": "Связка времени и еды конкретнее общего намерения; пропуск записи не считается пропуском приёма пищи.",
+        "background": "Регулярная возможность поесть помогает организовать день. Если пропущены записи, приложение не знает, была ли пропущена еда; действие можно начать с удобного времени для обеда."
+      },
+      "en": {
+        "title": "Make room for one meal",
+        "summary": "If tasks crowd out food, start with one opening in the schedule.",
+        "action": "Choose a practical time and an accessible meal option.",
+        "steps": [
+          "Check the actual schedule.",
+          "Decide where and what you can eat without complex preparation."
+        ],
+        "example": "Between meetings, make time for soup with bread or a prepared lunch.",
+        "alternative": "With a changing schedule, choose a fallback window and ready-made food.",
+        "doneWhen": "A time and accessible option are chosen for one meal.",
+        "benefit": "Pairing time with food is more specific than an intention; missing logs do not prove missed meals.",
+        "background": "An opportunity to eat helps organize the day. Missing entries do not tell the app whether food was missed; start with a convenient lunch time."
+      }
+    },
+    {
+      "id": "today-07",
+      "category": "today",
+      "topic": "gentle-movement",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Подготовьте короткий доступный маршрут",
+        "summary": "План можно сократить по самочувствию.",
+        "action": "Выберите знакомый маршрут для следующей посильной прогулки или движения на коляске.",
+        "steps": [
+          "Проверьте удобство пути и место отдыха.",
+          "Выберите точку, где легко вернуться раньше."
+        ],
+        "example": "До знакомого сквера и обратно; короткий путь рядом с домом.",
+        "alternative": "Плохая погода или неподходящее состояние — доступное домашнее движение либо отдых.",
+        "doneWhen": "Выбран маршрут с возможностью сократить его; проходить его сегодня не обязательно.",
+        "benefit": "Готовый вариант упрощает выбор посильного движения без требований к скорости и дистанции.",
+        "background": "Посильное движение можно начинать с короткого маршрута. Если он не подходит вашему состоянию, выберите отдых или согласованную альтернативу, без компенсации еды."
+      },
+      "en": {
+        "title": "Prepare a short accessible route",
+        "summary": "The plan can be shortened according to how you feel.",
+        "action": "Choose a familiar route for your next manageable walk or wheeling outing.",
+        "steps": [
+          "Check accessibility and a rest spot.",
+          "Choose an easy point for turning back early."
+        ],
+        "example": "To a familiar small park and back; a short route near home.",
+        "alternative": "Bad weather or an unsuitable condition? Choose accessible indoor movement or rest.",
+        "doneWhen": "A route with a shorter option is chosen; doing it today is optional.",
+        "benefit": "A ready option makes manageable movement easier to choose without speed or distance targets.",
+        "background": "Accessible movement can start with a short route. If unsuitable for your condition, choose rest or an agreed alternative, without compensating for food."
+      }
+    },
+    {
+      "id": "today-09",
+      "category": "today",
+      "topic": "dinner-preparation",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Подготовьте один ингредиент к ужину",
+        "summary": "Выберите то, что можно сделать заранее без полной готовки.",
+        "action": "Подготовьте один компонент будущего ужина по инструкции продукта.",
+        "steps": [
+          "Решите, что будете готовить.",
+          "Проверьте упаковку и безопасный способ подготовки и хранения."
+        ],
+        "example": "Заранее проверить овощи для супа; нужный замороженный продукт разморозить по инструкции.",
+        "alternative": "Нет времени на подготовку — выберите подходящие готовые бобовые и хлеб с овощами.",
+        "doneWhen": "Один компонент безопасно подготовлен или выбран готовый запасной вариант.",
+        "benefit": "Это сокращает вечернюю подготовку, не требуя сложного меню на неделю.",
+        "background": "Размораживайте продукт по инструкции и соблюдайте безопасное хранение. Это практическая идея подготовки, без медицинского обещания."
+      },
+      "en": {
+        "title": "Prepare one dinner ingredient",
+        "summary": "Choose something you can do ahead without cooking the whole meal.",
+        "action": "Prepare one component according to its instructions.",
+        "steps": [
+          "Decide what you will cook.",
+          "Check the package for safe preparation and storage."
+        ],
+        "example": "Check soup vegetables ahead; thaw a needed frozen ingredient as directed.",
+        "alternative": "No prep time? Choose suitable ready-cooked pulses with bread and vegetables.",
+        "doneWhen": "One component is safely prepared or a ready-made fallback chosen.",
+        "benefit": "This reduces evening preparation without a complex weekly menu.",
+        "background": "Thaw and store food according to safe package instructions. This is a preparation idea without a medical outcome claim."
+      }
+    },
+    {
+      "id": "today-15",
+      "category": "today",
+      "topic": "backup-meal",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Соберите запасной вариант еды без плиты",
+        "summary": "Пригодится в поездке или в вечер без сил.",
+        "action": "Выберите доступную комбинацию без готовки и подготовьте её компоненты.",
+        "steps": [
+          "Выберите основу, например хлеб или готовые хлопья.",
+          "Добавьте подходящий белковый продукт и фрукт или овощи."
+        ],
+        "example": "Хлеб + хумус + овощи; йогурт + овсянка + фрукт.",
+        "alternative": "Вне дома можно выбрать готовый сэндвич и подходящий овощ или фрукт.",
+        "doneWhen": "Для одного запасного приёма пищи известны продукты и где их взять.",
+        "benefit": "Готовый запасной вариант уменьшает сложность выбора. Это идея еды без точных КБЖУ.",
+        "background": "Вариант без плиты: цельнозерновой хлеб, хумус и овощи или йогурт с овсянкой и фруктом. Подберите подходящие замены при аллергиях; КБЖУ здесь не вычислялись."
+      },
+      "en": {
+        "title": "Build a no-stove fallback meal",
+        "summary": "Useful when travelling or tired in the evening.",
+        "action": "Choose an accessible no-cook combination and prepare its components.",
+        "steps": [
+          "Choose a base such as bread or ready-to-eat oats.",
+          "Add a suitable protein food and fruit or vegetables."
+        ],
+        "example": "Bread + hummus + vegetables; yogurt + oats + fruit.",
+        "alternative": "Away from home, a suitable ready-made sandwich with fruit or vegetables can work.",
+        "doneWhen": "The foods and where to get them are known for one fallback meal.",
+        "benefit": "A prepared fallback simplifies decisions. This is a meal idea without exact nutrient totals.",
+        "background": "A no-cook option: wholegrain bread, hummus and vegetables, or yogurt with oats and fruit. Adapt for allergies; no nutrient totals have been calculated."
+      }
+    },
+    {
+      "id": "insight-short",
+      "category": "progress",
+      "topic": "comparable-weighing",
+      "basis": "observation",
+      "destination": "insights",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Проверьте даты короткой истории веса",
+        "summary": "Несколько одинаковых цифр не объясняют долгосрочную динамику.",
+        "action": "Посмотрите, сколько реальных дней с измерениями доступно.",
+        "steps": [
+          "Откройте анализ и проверьте период и пропуски.",
+          "Выберите сопоставимые условия для следующего планового измерения."
+        ],
+        "example": "Три одинаковых записи за три дня — повод продолжить наблюдение без срочного урезания еды.",
+        "alternative": "Если измерения вызывают тревогу, можно сделать паузу и обсудить другой подход.",
+        "doneWhen": "Покрытие проверено и выбран безопасный следующий шаг; новое измерение сегодня не требуется.",
+        "benefit": "Это помогает отличить короткий участок от многонедельного наблюдения без диагноза плато.",
+        "background": "Вода, недавняя еда и условия измерения могут влиять на вес. По одной цифре Balance не определяет причину. Сопоставляйте наблюдения за более длительный период без требования взвешиваться чаще."
+      },
+      "en": {
+        "title": "Check the dates in a short weight history",
+        "summary": "A few equal readings do not explain long-term progress.",
+        "action": "Review how many actual measured days are available.",
+        "steps": [
+          "Open insights and check the time span and gaps.",
+          "Choose comparable conditions for the next planned reading."
+        ],
+        "example": "Three equal readings over three days call for longer observation without urgent food restriction.",
+        "alternative": "Pause and discuss another approach if measurement causes distress.",
+        "doneWhen": "Coverage is reviewed and a safe next step chosen; no new reading is required today.",
+        "benefit": "This distinguishes a short stretch from weeks of observation without diagnosing a plateau.",
+        "background": "Fluid, recent food and measuring conditions may affect weight. Balance cannot infer a cause from one number. Compare a longer period without a demand to weigh more often."
+      }
+    },
+    {
+      "id": "insight-stable",
+      "category": "progress",
+      "topic": "plateau-review",
+      "basis": "plateau",
+      "destination": "insights",
+      "sources": [
+        "mayo-plateau",
+        "niddk-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": true,
+      "ru": {
+        "title": "Проверьте одну запись, прежде чем менять план",
+        "summary": "Сначала посмотрите на качество записей, а не уменьшайте еду.",
+        "action": "Откройте один завершённый день и проверьте его состав.",
+        "steps": [
+          "В анализе посмотрите период, измеренные дни и пропуски.",
+          "Выберите знакомый день питания: всё ли внесено, понятны ли порции?",
+          "Уточните одну известную деталь; неизвестное оставьте неизвестным."
+        ],
+        "example": "Вспомнили масло в салате — уточните запись. Не помните количество — не придумывайте точное число.",
+        "alternative": "Нет дневника — запишите условия следующего планового взвешивания; чаще взвешиваться не требуется.",
+        "doneWhen": "Проверен один день или выбран сопоставимый способ следующего измерения.",
+        "benefit": "Проверка помогает отделить ограниченность записей от наблюдаемой стабильности. Она не доказывает причину и не требует сокращения питания.",
+        "background": "При достаточно плотных записях можно заметить устойчивую стабильность. Меньшая масса может требовать меньше энергии, но дневник и вес не доказывают личный энергетический баланс. Проверьте записи и привычный ритм; не уменьшайте питание автоматически."
+      },
+      "en": {
+        "title": "Review one entry before changing the plan",
+        "summary": "Start with record quality rather than cutting food.",
+        "action": "Open one completed day and review what was logged.",
+        "steps": [
+          "Check the observation span, measured days and gaps in insights.",
+          "Choose a familiar food-log day: are entries and portions understandable?",
+          "Clarify one known detail; leave unknown amounts unknown."
+        ],
+        "example": "Remembered oil in a salad? Clarify the entry. If the amount is unknown, do not invent an exact number.",
+        "alternative": "No food log? Note comparable conditions for your next planned weigh-in; extra weigh-ins are unnecessary.",
+        "doneWhen": "One day was reviewed or comparable measuring conditions were chosen.",
+        "benefit": "This separates record limitations from observed stability. It does not establish a cause or call for eating less.",
+        "background": "Sufficiently distributed records can reveal stability. A smaller body may need less energy, but logs and weight do not establish your energy balance. Review records and routines without automatically reducing food."
+      }
+    },
+    {
+      "id": "insight-maintenance",
+      "category": "progress",
+      "topic": "maintenance-routine",
+      "basis": "maintenance",
+      "destination": "none",
+      "sources": [
+        "niddk-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Оставьте одну привычку для поддержания",
+        "summary": "После достижения цели не нужно обязательно продолжать снижение.",
+        "action": "Выберите удобную привычку, которую хотите сохранить без ужесточения.",
+        "steps": [
+          "Назовите то, что уже помогает организовать день.",
+          "Решите, как повторить это в ближайший удобный день."
+        ],
+        "example": "Запасной обед с фасолью; привычное время еды; посильная прогулка ради самочувствия.",
+        "alternative": "В загруженный день оставьте более простой вариант той же привычки.",
+        "doneWhen": "Одна привычка и её посильный вариант выбраны.",
+        "benefit": "Поддержание опирается на устойчивый ритм; приложение не назначает дальнейшее похудение.",
+        "background": "Выбранная цель или стабильные значения около достигнутого ориентира меняют смысл наблюдения. Поддерживайте удобные привычки, разнообразие и посильное движение вместо новых ограничений. Цель приложения не определяет медицински оптимальный вес."
+      },
+      "en": {
+        "title": "Keep one habit for maintenance",
+        "summary": "Reaching a target does not require further loss.",
+        "action": "Choose one practical habit to keep without tightening it.",
+        "steps": [
+          "Name something that already helps organize your day.",
+          "Decide how to repeat it on the next convenient day."
+        ],
+        "example": "A backup bean lunch; a usual meal time; manageable movement for wellbeing.",
+        "alternative": "Keep a simpler version on a demanding day.",
+        "doneWhen": "One habit and a manageable version are chosen.",
+        "benefit": "Maintenance can build on a sustainable routine; the app does not prescribe further loss.",
+        "background": "A maintenance goal or stable readings near a reached target changes the interpretation. Keep practical routines, variety and accessible movement rather than adding restriction. An app target does not define a medically optimal weight."
+      }
+    },
+    {
+      "id": "insight-down",
+      "category": "progress",
+      "topic": "trend-window",
+      "basis": "weight",
+      "destination": "weight",
+      "sources": [
+        "nhs-weigh",
+        "mayo-plateau"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Посмотрите направление за недели",
+        "summary": "Последняя цифра не обязана продолжать ровную линию.",
+        "action": "Откройте график за месяц и проверьте реальные даты.",
+        "steps": [
+          "Сначала найдите период с измерениями.",
+          "Оцените направление ряда без требования снижать каждую следующую цифру."
+        ],
+        "example": "Отдельный подъём внутри снижающейся истории не доказывает отмену всей тенденции.",
+        "alternative": "Если данных мало, используйте статус недостатка данных вместо угадывания темпа.",
+        "doneWhen": "Период и реальные даты просмотрены без прогноза обязательного результата.",
+        "benefit": "Более длинный ряд даёт контекст. Он не измеряет потерю жира; неожиданное снижение или слабость требуют медицинского обсуждения.",
+        "background": "Реальная история может идти вниз с отдельными подъёмами. Алгоритм использует дневные медианы, но не измеряет потерю жира и не гарантирует продолжение темпа. При слабости или неожиданном снижении обсудите состояние с врачом."
+      },
+      "en": {
+        "title": "Review the direction over weeks",
+        "summary": "The latest number need not follow a perfectly straight line.",
+        "action": "Open the monthly graph and check actual dates.",
+        "steps": [
+          "Find the period with real measurements first.",
+          "Review the direction without requiring every next reading to fall."
+        ],
+        "example": "One rise within a downward history does not invalidate the whole pattern.",
+        "alternative": "With little data, use the insufficient-data status rather than guessing a rate.",
+        "doneWhen": "The period and actual dates are reviewed without a promised future result.",
+        "benefit": "A longer series provides context, not a measurement of fat loss; unexpected loss or weakness calls for medical discussion.",
+        "background": "A downward history can include individual rises. The algorithm uses daily medians but does not measure fat loss or guarantee a continued rate. Discuss weakness or unexpected loss with a clinician."
+      }
+    },
+    {
+      "id": "insight-body",
+      "category": "progress",
+      "topic": "metric-comparison",
+      "basis": "body",
+      "destination": "weight",
+      "sources": [
+        "nhs-weigh"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Сравните вес и обхваты по их датам",
+        "summary": "Килограммы и сантиметры не нужно сравнивать напрямую.",
+        "action": "Откройте сравнение и проверьте каждый ряд отдельно.",
+        "steps": [
+          "Найдите даты настоящих измерений.",
+          "Посмотрите направление каждого показателя в собственных единицах."
+        ],
+        "example": "Вес и талия меняются в разном темпе — это разные наблюдения, а не доказательство изменения мышц.",
+        "alternative": "Если замеров нет, оставьте их отсутствующими; новые ради заполнения графика не нужны.",
+        "doneWhen": "Проверены даты доступных рядов без подстановки пропусков.",
+        "benefit": "Раздельное чтение рядов уменьшает путаницу единиц, сохраняя ограничения измерений.",
+        "background": "Сравнивайте каждый ряд по его датам и единицам. Колебания веса и различия техники замера не дают по отдельности измерения мышц или жира. Не подставляйте значения в дни без замеров."
+      },
+      "en": {
+        "title": "Compare weight and circumferences by date",
+        "summary": "Kilograms and centimetres should not be compared directly.",
+        "action": "Open comparison and review each series separately.",
+        "steps": [
+          "Find the actual measurement dates.",
+          "Read each metric’s direction in its own units."
+        ],
+        "example": "Weight and waist changing at different rates are observations, not proof of muscle change.",
+        "alternative": "Leave missing circumferences absent; extra measurements to fill a chart are unnecessary.",
+        "doneWhen": "Dates of available series are checked without filling gaps.",
+        "benefit": "Separate reading avoids confusion between units while keeping measurement limits clear.",
+        "background": "Compare each series using its own dates and units. Weight fluctuations and measuring technique cannot individually measure muscle or fat. Leave dates without readings empty."
+      }
+    },
+    {
+      "id": "meal-breakfast",
+      "category": "nutrition",
+      "topic": "breakfast",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating",
+        "nhs-fibre"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Соберите завтрак без сложного рецепта",
+        "summary": "Выберите одну из двух комбинаций и адаптируйте под свой аппетит.",
+        "action": "Подготовьте продукты для одного удобного завтрака.",
+        "steps": [
+          "Выберите основу: овсянку или хлеб.",
+          "Добавьте подходящий белковый продукт и фрукт или овощ."
+        ],
+        "example": "Овсянка + йогурт + яблоко; хлеб + яйцо + помидор.",
+        "alternative": "Вместо яйца — фасолевая намазка или тофу; вместо молочного — подходящий растительный продукт.",
+        "doneWhen": "Один вариант собран или продукты для него подготовлены.",
+        "benefit": "Готовая комбинация сокращает утренний выбор и объединяет разные группы продуктов. Это идея еды, без расчёта КБЖУ.",
+        "background": "Это примеры сочетания разных групп продуктов. При вегетарианском выборе подойдут бобовая намазка или тофу; при исключении молочного сравните состав обогащённой альтернативы. Размер порции и время еды зависят от вас."
+      },
+      "en": {
+        "title": "Build an easy breakfast",
+        "summary": "Choose one of two combinations and adapt it to your appetite.",
+        "action": "Prepare the ingredients for one convenient breakfast.",
+        "steps": [
+          "Choose oats or bread as a base.",
+          "Add a suitable protein food and fruit or vegetables."
+        ],
+        "example": "Oats + yogurt + apple; bread + egg + tomato.",
+        "alternative": "Use bean spread or tofu instead of egg, or a suitable plant alternative to dairy.",
+        "doneWhen": "One breakfast is assembled or its ingredients are ready.",
+        "benefit": "A ready combination reduces morning decisions and combines food groups. This is a meal idea without calculated nutrients.",
+        "background": "These examples combine food groups. Bean spread or tofu can suit vegetarian choices; compare fortified alternatives when avoiding dairy. Portion size and timing depend on your needs."
+      }
+    },
+    {
+      "id": "meal-lunch",
+      "category": "nutrition",
+      "topic": "meal-building",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Соберите обед из доступных компонентов",
+        "summary": "Выберите основу, белковый продукт и овощи без сложных пропорций.",
+        "action": "Соедините доступные продукты в один удобный обед.",
+        "steps": [
+          "Возьмите знакомую крупу, хлеб или картофель.",
+          "Добавьте подходящий белковый продукт, овощи и заправку по вкусу."
+        ],
+        "example": "Рис + фасоль + капуста + масло; картофель + рыба + огурец; булгур + тофу + овощи.",
+        "alternative": "Подойдут готовая крупа, бобовые из банки и овощи без долгой готовки.",
+        "doneWhen": "Один подходящий вариант собран или его продукты подготовлены.",
+        "benefit": "Сочетание разных групп пищи упрощает разнообразный обед; это идея блюда, без расчёта КБЖУ и обещания сытости для всех.",
+        "background": "Например, чечевица или курица, гречка и овощи с растительным маслом. Сочетание помогает разнообразить рацион; порции не универсальны, а насыщение индивидуально."
+      },
+      "en": {
+        "title": "Build lunch from available components",
+        "summary": "Choose a base, protein food and vegetables without exact ratios.",
+        "action": "Combine accessible foods into one convenient lunch.",
+        "steps": [
+          "Use a familiar grain, bread or potatoes.",
+          "Add a suitable protein food, vegetables and dressing to taste."
+        ],
+        "example": "Rice + beans + cabbage + oil; potato + fish + cucumber; bulgur + tofu + vegetables.",
+        "alternative": "Ready-cooked grain, canned pulses and vegetables save cooking time.",
+        "doneWhen": "One suitable option is assembled or its ingredients prepared.",
+        "benefit": "Food groups offer a practical starting point; this is a meal idea without calculated nutrients or guaranteed fullness.",
+        "background": "Try lentils or chicken with buckwheat and vegetables with plant oil. The combination supports variety; portions are not universal and fullness varies."
+      }
+    },
+    {
+      "id": "meal-dinner",
+      "category": "nutrition",
+      "topic": "quick-dinner",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating",
+        "who-diet"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Выберите ужин с короткой подготовкой",
+        "summary": "С готовыми компонентами можно ориентироваться на 10–20 минут; время зависит от продукта.",
+        "action": "Соберите простой ужин, сохранив привычный гарнир.",
+        "steps": [
+          "Выберите готовый гарнир или продукт с подходящим временем по упаковке.",
+          "Добавьте овощи и готовые бобовые либо тофу, соблюдая инструкцию."
+        ],
+        "example": "Готовый рис + овощи + фасоль; паста + томатный соус + тофу.",
+        "alternative": "Без плиты — хлеб с фасолевой намазкой и овощами.",
+        "doneWhen": "Один вариант приготовлен или выбран с учётом доступного времени.",
+        "benefit": "Готовые компоненты сокращают подготовку; гарнир вечером не требуется запрещать. Это идея еды, не точные КБЖУ.",
+        "background": "Добавьте овощи и доступный источник белка, например фасоль, тофу или рыбу. Само наличие углеводов вечером не доказывает, что питание мешает снижению веса. Учитывайте свой режим и назначения."
+      },
+      "en": {
+        "title": "Choose a dinner with short preparation",
+        "summary": "With ready components, 10–20 minutes may work; timing depends on the product.",
+        "action": "Build a simple dinner while keeping a familiar side.",
+        "steps": [
+          "Choose a ready base or a product with suitable package timing.",
+          "Add vegetables and ready-cooked pulses or tofu, following instructions."
+        ],
+        "example": "Ready rice + vegetables + beans; pasta + tomato sauce + tofu.",
+        "alternative": "Without a stove, try bread with bean spread and vegetables.",
+        "doneWhen": "One option is made or chosen to fit available time.",
+        "benefit": "Ready components reduce preparation; evening sides need not be banned. This is a meal idea, not exact nutrition.",
+        "background": "Add vegetables and an accessible protein source such as beans, tofu or fish. Evening carbohydrate alone does not establish a barrier to weight loss. Consider your routine and care plan."
+      }
+    },
+    {
+      "id": "meal-budget",
+      "category": "nutrition",
+      "topic": "batch-base",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Используйте одну основу для двух блюд",
+        "summary": "Планируйте из обычных круп, бобовых и доступных овощей.",
+        "action": "Выберите два блюда с одним недорогим базовым продуктом.",
+        "steps": [
+          "Проверьте основу и безопасное приготовление и хранение по упаковке.",
+          "Меняйте дополнения вместо покупки двух разных наборов."
+        ],
+        "example": "Рис с фасолью и овощами; рис с яйцом и капустой. Или чечевичный суп и соус.",
+        "alternative": "Если заранее готовить неудобно, используйте подходящие готовые компоненты.",
+        "doneWhen": "Выбраны два блюда с общей основой и подходящий способ подготовки.",
+        "benefit": "Общая основа упрощает покупки и готовку; дорогие продукты и добавки не обязательны.",
+        "background": "Можно приготовить крупу на несколько блюд и менять белковое дополнение. Соблюдайте безопасное хранение и инструкцию продукта. Дорогие добавки для этого не требуются."
+      },
+      "en": {
+        "title": "Use one base for two meals",
+        "summary": "Plan around familiar grains, pulses and accessible vegetables.",
+        "action": "Choose two meals sharing an affordable base.",
+        "steps": [
+          "Check the base and its preparation and storage instructions.",
+          "Vary additions instead of buying two separate sets of foods."
+        ],
+        "example": "Rice with beans and vegetables; rice with egg and cabbage. Or lentil soup and sauce.",
+        "alternative": "Use suitable ready-made components if batch preparation is inconvenient.",
+        "doneWhen": "Two meals and a suitable preparation approach are chosen.",
+        "benefit": "A shared base simplifies shopping and cooking; expensive foods and supplements are unnecessary.",
+        "background": "Prepare a grain for different dishes and vary the protein addition. Follow safe storage and package instructions. Expensive supplements are unnecessary."
+      }
+    },
+    {
+      "id": "food-fibre",
+      "category": "macros",
+      "topic": "fibre-addition",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "nhs-fibre"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Добавьте привычный источник клетчатки",
+        "summary": "Начните с переносимого продукта, а не обязательных отрубей.",
+        "action": "Дополните один приём пищи подходящим растительным продуктом.",
+        "steps": [
+          "Выберите привычный овощ, фрукт, овсянку или бобовые.",
+          "Непривычное добавляйте постепенно, соблюдая лечебные ограничения."
+        ],
+        "example": "Яблоко к овсянке; немного фасоли к рису; овощи к привычному обеду.",
+        "alternative": "При назначенной низковолокнистой диете не меняйте её самостоятельно — уточните подходящий вариант.",
+        "doneWhen": "Один переносимый вариант выбран или уточнён со специалистом.",
+        "benefit": "Разные растительные продукты дают клетчатку; одна небольшая проба конкретнее общего требования есть полезнее.",
+        "background": "Овощи, овсянка, цельнозерновой хлеб и бобовые — разные варианты. Вводите непривычные продукты постепенно. При заболеваниях ЖКТ и лечебной диете согласуйте изменения."
+      },
+      "en": {
+        "title": "Add a familiar fibre source",
+        "summary": "Start with a tolerated food rather than compulsory bran.",
+        "action": "Add a suitable plant food to one meal.",
+        "steps": [
+          "Choose familiar vegetables, fruit, oats or pulses.",
+          "Introduce unfamiliar foods gradually within clinical restrictions."
+        ],
+        "example": "Apple with oats; a little bean with rice; vegetables with a usual lunch.",
+        "alternative": "Do not independently change a prescribed low-fibre diet; clarify a suitable option.",
+        "doneWhen": "One tolerated option is chosen or checked with a professional.",
+        "benefit": "Plant foods supply fibre; one manageable trial is more concrete than a general healthy-eating instruction.",
+        "background": "Vegetables, oats, wholegrain bread and pulses offer different choices. Introduce unfamiliar foods gradually. Discuss changes if you have digestive conditions or a clinical diet."
+      }
+    },
+    {
+      "id": "food-protein",
+      "category": "macros",
+      "topic": "protein-rotation",
+      "basis": "variety",
+      "destination": "food",
+      "sources": [
+        "who-diet",
+        "niddk-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Подберите замену к одному записанному блюду",
+        "summary": "Если среди записей повторяются продукты, попробуйте одну подходящую альтернативу.",
+        "action": "Выберите один знакомый белковый компонент и вариант для чередования.",
+        "steps": [
+          "Откройте знакомый день и найдите подходящий компонент.",
+          "Сохраните остальное блюдо, меняя только один продукт по желанию."
+        ],
+        "example": "В рисе с курицей — фасоль или тофу; к хлебу с сыром — яйцо или бобовая намазка.",
+        "alternative": "Если менять продукт не хочется, приготовьте его другим привычным способом.",
+        "doneWhen": "Выбрана одна подходящая пара для чередования; полный рацион по записям не оценивается.",
+        "benefit": "Это даёт практический вариант разнообразия. Суммы БЖУ не доказывают недостаток белка или точное потребление.",
+        "background": "Сравните записанные блюда. Можно чередовать яйца, рыбу, птицу, подходящие молочные продукты, фасоль или тофу. Неполные записи и суммы БЖУ не доказывают, сколько белка вы реально получили."
+      },
+      "en": {
+        "title": "Choose a substitution for one logged dish",
+        "summary": "If foods recur in your records, try one suitable alternative.",
+        "action": "Choose a familiar protein component and an option to rotate with it.",
+        "steps": [
+          "Open a familiar day and find a suitable component.",
+          "Keep the rest of the meal and change just one food if desired."
+        ],
+        "example": "In rice with chicken, try beans or tofu; rotate cheese on bread with egg or bean spread.",
+        "alternative": "Keep the food but use another familiar preparation if you prefer.",
+        "doneWhen": "One suitable rotation pair is chosen; records do not establish the whole diet.",
+        "benefit": "This offers practical variety. Macro totals do not establish protein deficiency or exact intake.",
+        "background": "Review logged dishes. Eggs, fish, poultry, suitable dairy, beans or tofu offer options. Incomplete entries and macro totals do not establish actual protein intake."
+      }
+    },
+    {
+      "id": "diary-gaps",
+      "category": "habits",
+      "topic": "log-coverage",
+      "basis": "diary",
+      "destination": "food",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Проверьте один завершённый день дневника",
+        "summary": "Отсутствующая запись не означает, что еды не было.",
+        "action": "Просмотрите один день и уточните только то, что действительно помните.",
+        "steps": [
+          "Выберите недавний знакомый день.",
+          "Проверьте основные блюда, напитки и дополнения без требования восстановить всё идеально."
+        ],
+        "example": "Вспомнили перекус и известный продукт — добавьте запись; неизвестное количество не угадывайте.",
+        "alternative": "Если восстановить день трудно, начните с одной удобной записи сегодня.",
+        "doneWhen": "Один день просмотрен или выбрана следующая посильная запись.",
+        "benefit": "Так видны ограничения дневника; даже день с записями не считается автоматически полным.",
+        "background": "Приложение не может проверить полноту дневника. Даже заполненные дни могут не включать напитки, перекусы или добавки. Поэтому средняя записанная энергия не равна точно известному потреблению и не доказывает дефицит."
+      },
+      "en": {
+        "title": "Review one completed food-log day",
+        "summary": "A missing entry does not mean no food was eaten.",
+        "action": "Review one day and clarify only what you actually remember.",
+        "steps": [
+          "Choose a recent familiar day.",
+          "Check meals, drinks and additions without reconstructing everything perfectly."
+        ],
+        "example": "Remembered a snack and known product? Log it without guessing an unknown amount.",
+        "alternative": "If reconstruction is difficult, make one manageable entry today.",
+        "doneWhen": "One day is reviewed or a next manageable entry chosen.",
+        "benefit": "This identifies diary limits; a day with entries is still not automatically complete.",
+        "background": "The app cannot verify diary completeness. Even logged days may omit drinks, snacks or additions. Average logged energy is not exact known consumption and does not establish a deficit."
+      }
+    },
+    {
+      "id": "diary-additions",
+      "category": "habits",
+      "topic": "recipe-ingredients",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "niddk-portions"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Уточните соус в одном знакомом блюде",
+        "summary": "Запись дополнения не означает запрет на него.",
+        "action": "Проверьте один известный соус, масло или добавку в составе блюда.",
+        "steps": [
+          "Выберите блюдо, состав которого знаете.",
+          "Уточните продукт и известное количество либо сохраните приблизительность."
+        ],
+        "example": "В домашнем салате проверьте, учтена ли заправка, если знаете её состав.",
+        "alternative": "Для еды вне дома без рецепта не придумывайте точные КБЖУ.",
+        "doneWhen": "Один известный компонент проверен без сокращения еды.",
+        "benefit": "Так запись лучше описывает блюдо; проверка не доказывает причину стабильного веса.",
+        "background": "Если хотите проверить дневник, посмотрите на заправки, масло при готовке и напитки. Уточнение записи не означает запрет продукта и не требует сокращения еды."
+      },
+      "en": {
+        "title": "Clarify the sauce in one familiar dish",
+        "summary": "Recording an addition does not ban it.",
+        "action": "Review one known sauce, oil or addition in a dish.",
+        "steps": [
+          "Choose food whose ingredients you know.",
+          "Clarify the product and known amount or retain uncertainty."
+        ],
+        "example": "Check whether a home salad includes its dressing when ingredients are known.",
+        "alternative": "Do not invent exact nutrients for food away from home without a recipe.",
+        "doneWhen": "One known component is reviewed without cutting food.",
+        "benefit": "This better describes a dish without proving the cause of stable weight.",
+        "background": "To review a diary, look at dressings, cooking oil and drinks. Clarifying a record does not ban a food or require eating less."
+      }
+    },
+    {
+      "id": "diary-low",
+      "category": "habits",
+      "topic": "low-log-review",
+      "basis": "gentleFuel",
+      "destination": "food",
+      "sources": [
+        "nhs-eating-support",
+        "niddk-planner",
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "При низких записях сначала проверьте полноту",
+        "summary": "Мало записано не значит доказанно мало съедено.",
+        "action": "Выберите один низко заполненный день и спокойно проверьте известные записи.",
+        "steps": [
+          "Посмотрите, всё ли известное внесено, не угадывая неизвестное.",
+          "Если питание действительно ограничено, выберите регулярную еду и подходящую поддержку."
+        ],
+        "example": "Пропущенный известный обед можно записать; если едите недостаточно, обсудить это со специалистом.",
+        "alternative": "Если контроль вызывает навязчивость, допустима пауза и индивидуальная помощь.",
+        "doneWhen": "Проверена полнота либо выбран поддерживающий шаг, без новых ограничений.",
+        "benefit": "Это отделяет возможные пропуски от потребности в помощи. Balance не предлагает уменьшать рацион или компенсировать тренировкой.",
+        "background": "Проверьте полноту записей. Если еда действительно длительно ограничена, есть слабость или навязчивый контроль, обратитесь к врачу или специалисту по питанию. Balance не предлагает урезать рацион или компенсировать его тренировкой."
+      },
+      "en": {
+        "title": "For low logs, review completeness first",
+        "summary": "Little logged is not proof of little eaten.",
+        "action": "Choose one low-log day and gently review known entries.",
+        "steps": [
+          "Check known foods without guessing missing details.",
+          "If eating is genuinely restricted, make room for regular food and suitable support."
+        ],
+        "example": "Log a remembered known lunch; discuss inadequate eating with a professional if relevant.",
+        "alternative": "Pause tracking and seek individual support if checking becomes compulsive.",
+        "doneWhen": "Completeness is reviewed or a supportive step chosen without new restriction.",
+        "benefit": "This separates possible omissions from a need for support. Balance does not suggest cutting food or compensatory exercise.",
+        "background": "Review the entries. If intake is persistently restricted, or you experience weakness or compulsive control, seek clinical or nutrition support. Balance does not suggest cutting food or compensating with exercise."
+      }
+    },
+    {
+      "id": "recovery-stress",
+      "category": "recovery",
+      "topic": "busy-day-support",
+      "basis": "universal",
+      "destination": "food",
+      "sources": [
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Составьте простой план для загруженного дня",
+        "summary": "Поддержите еду и отдых без требования исправить всё сразу.",
+        "action": "Выберите доступный приём пищи и одну посильную передышку.",
+        "steps": [
+          "Подберите еду без сложной готовки.",
+          "Решите, какое дело можно перенести или о какой помощи попросить."
+        ],
+        "example": "Хлеб с хумусом и овощами; йогурт с овсянкой и фруктом, затем спокойная пауза.",
+        "alternative": "Готовая подходящая еда и сообщение близкому тоже вариант.",
+        "doneWhen": "Еда выбрана и одна форма поддержки запланирована или получена.",
+        "benefit": "Конкретный запасной план упрощает день; он не доказывает, что стресс был причиной изменения веса.",
+        "background": "В загруженный день могут измениться аппетит, сон и движение. Приложение не измеряет эти причины. Поддержка, посильный отдых и доступная еда полезнее обвинения себя."
+      },
+      "en": {
+        "title": "Make a simple plan for a demanding day",
+        "summary": "Support eating and rest without fixing everything at once.",
+        "action": "Choose an accessible meal and one manageable breather.",
+        "steps": [
+          "Pick food that needs little preparation.",
+          "Decide which task can wait or what help to request."
+        ],
+        "example": "Bread with hummus and vegetables; yogurt with oats and fruit, then a quiet break.",
+        "alternative": "Suitable ready-made food and a message to someone close can work too.",
+        "doneWhen": "Food is chosen and one form of support planned or received.",
+        "benefit": "A concrete fallback makes the day easier; it does not establish stress as the cause of weight change.",
+        "background": "A demanding day may affect appetite, sleep and movement. The app does not measure these causes. Support, manageable rest and accessible food are more useful than self-blame."
+      }
+    },
+    {
+      "id": "facts-fluid",
+      "category": "facts",
+      "topic": "short-term-fluctuation",
+      "basis": "universal",
+      "destination": "weight",
+      "sources": [
+        "mayo-plateau",
+        "nhs-pms",
+        "cleveland-fluid",
+        "cleveland-exercise"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Сопоставьте условия двух взвешиваний",
+        "summary": "Краткий скачок веса не определяет изменение жира.",
+        "action": "Сравните даты и известные условия двух записей без срочных ограничений.",
+        "steps": [
+          "Посмотрите, сопоставимы ли время и условия.",
+          "Отметьте только известные различия, не выбирая причину по графику."
+        ],
+        "example": "Вечерняя запись после еды и утренняя запись — разные условия.",
+        "alternative": "Если условия неизвестны, оставьте причину неизвестной и выберите сходные условия на будущее.",
+        "doneWhen": "Сравнены известные условия; еда и вода не ограничены ради цифры.",
+        "benefit": "Еда, жидкость и другие факторы могут менять массу; это возможные объяснения, не личный диагноз.",
+        "background": "Соль, изменение количества углеводов и непривычная нагрузка могут сопровождаться изменением воды. Еда в пищеварительном тракте тоже влияет на массу. Гормональные изменения иногда связаны с колебаниями; контекст цикла нельзя вывести по полу. Balance не определяет, какая из причин относится к вам."
+      },
+      "en": {
+        "title": "Compare the conditions of two weigh-ins",
+        "summary": "A short-term jump does not establish a fat change.",
+        "action": "Compare dates and known conditions without urgent restriction.",
+        "steps": [
+          "Check whether timing and conditions are comparable.",
+          "Note only known differences rather than assigning a cause from a chart."
+        ],
+        "example": "An evening reading after food and a morning reading reflect different conditions.",
+        "alternative": "Leave the cause unknown when conditions are unknown; choose comparable conditions next time.",
+        "doneWhen": "Known conditions are compared without restricting food or water for the number.",
+        "benefit": "Food, fluid and other factors may affect weight; these are possibilities, not a personal diagnosis.",
+        "background": "Salt, carbohydrate changes and unfamiliar activity may accompany changes in body water. Digestive contents also affect weight. Hormonal changes can accompany fluctuations; sex alone does not reveal cycle context. Balance cannot identify which explanation applies to you."
+      }
+    },
+    {
+      "id": "activity-context",
+      "category": "activity",
+      "topic": "gentle-movement",
+      "basis": "steps",
+      "destination": "none",
+      "sources": [
+        "niddk-eating"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Выберите посильную паузу после просмотра шагов",
+        "summary": "Записи шагов дают контекст, но не обязательную норму.",
+        "action": "После просмотра доступных записей выберите комфортное движение или отдых.",
+        "steps": [
+          "Проверьте, есть ли завершённые дни и было ли устройство с вами.",
+          "Выберите знакомую доступную паузу без цели сжечь еду."
+        ],
+        "example": "После работы — короткая прогулка, доступное движение на коляске или смена положения.",
+        "alternative": "Если данные неполны или движение не подходит, можно остановиться на отдыхе.",
+        "doneWhen": "Ограничения записей проверены и выбран безопасный вариант.",
+        "benefit": "Так цифры связываются с реальными обстоятельствами без вывода о расходе калорий или причине стабильности.",
+        "background": "Если устройство было с вами, записи помогут вспомнить более спокойные дни. Но пропуски и неполный день ограничивают сравнение. Шаги не дают точного расхода калорий и не доказывают причину стабильности веса."
+      },
+      "en": {
+        "title": "Choose a manageable break after reviewing steps",
+        "summary": "Step records offer context rather than a required target.",
+        "action": "After reviewing available records, choose comfortable movement or rest.",
+        "steps": [
+          "Check for completed days and whether you carried the device.",
+          "Choose a familiar accessible break without trying to burn off food."
+        ],
+        "example": "After work: a short walk, wheeling or a position change.",
+        "alternative": "Rest is valid if records are incomplete or movement unsuitable.",
+        "doneWhen": "Record limits are checked and a safe option chosen.",
+        "benefit": "This connects numbers with circumstances without inferring calorie use or the cause of stability.",
+        "background": "When the device was with you, records may help recall quieter days. Missing data and partial days limit comparisons. Steps do not provide exact expenditure or explain stable weight."
+      }
+    },
+    {
+      "id": "care-context",
+      "category": "mindful",
+      "topic": "professional-support",
+      "basis": "universal",
+      "destination": "none",
+      "sources": [
+        "nhs-eating-support",
+        "niddk-planner",
+        "cdc-habits"
+      ],
+      "version": 4,
+      "weightManagementOnly": false,
+      "ru": {
+        "title": "Подготовьте один вопрос для специалиста",
+        "summary": "Если общих советов недостаточно, начните с конкретной ситуации.",
+        "action": "Запишите один вопрос о безопасном и подходящем вам плане.",
+        "steps": [
+          "Назовите ограничение или то, что долго беспокоит.",
+          "Подготовьте известные даты или пример, если это удобно."
+        ],
+        "example": "«Какой режим питания подойдёт при моих ограничениях?»; «Что обсудить при длительной стабильности?»",
+        "alternative": "Не хотите вести записи — достаточно одного устного вопроса.",
+        "doneWhen": "Подготовлен вопрос без самостоятельного назначения диеты, лекарств или анализов.",
+        "benefit": "Индивидуальная помощь учитывает возраст, беременность, лактацию, риск РПП и медицинские ограничения, которые общая статья не оценивает.",
+        "background": "Для несовершеннолетних, беременности, грудного вскармливания, риска расстройства питания и известных противопоказаний нужны индивидуальные рекомендации. Если контекст не уточнён, Balance не назначает персональные нормы или усиление ограничений."
+      },
+      "en": {
+        "title": "Prepare one question for a professional",
+        "summary": "When general tips are insufficient, start with a specific situation.",
+        "action": "Write one question about a safe plan that suits you.",
+        "steps": [
+          "Name a restriction or a persistent concern.",
+          "Prepare known dates or an example if convenient."
+        ],
+        "example": "“What eating routine suits my restrictions?”; “What should we review about persistent stability?”",
+        "alternative": "One spoken question is enough if you prefer not to keep notes.",
+        "doneWhen": "A question is ready without self-prescribing a diet, medicines or tests.",
+        "benefit": "Individual support considers age, pregnancy, breastfeeding, eating-disorder risk and medical restrictions that a general article cannot assess.",
+        "background": "Minors, pregnancy, breastfeeding, eating-disorder risk and known contraindications call for individual guidance. With unknown context, Balance does not prescribe personal targets or tighter restrictions."
+      }
+    }
+  ],
+  "aliases": {
+    "nutrition-03": "food-protein",
+    "nutrition-06": "meal-breakfast",
+    "nutrition-07": "meal-lunch",
+    "nutrition-08": "meal-dinner",
+    "nutrition-10": "nutrition-01",
+    "nutrition-11": "nutrition-02",
+    "nutrition-12": "meal-lunch",
+    "nutrition-13": "nutrition-05",
+    "nutrition-14": "nutrition-09",
+    "nutrition-15": "meal-breakfast",
+    "nutrition-16": "meal-lunch",
+    "nutrition-17": "meal-dinner",
+    "macros-05": "macros-13",
+    "macros-06": "food-fibre",
+    "macros-07": "food-fibre",
+    "macros-08": "macros-01",
+    "macros-09": "macros-02",
+    "macros-10": "food-protein",
+    "macros-11": "macros-04",
+    "macros-12": "macros-13",
+    "macros-14": "food-fibre",
+    "macros-15": "macros-01",
+    "macros-16": "macros-02",
+    "macros-18": "diary-low",
+    "hydration-01": "hydration-03",
+    "hydration-02": "hydration-05",
+    "hydration-06": "hydration-03",
+    "hydration-08": "hydration-07",
+    "hydration-09": "hydration-18",
+    "hydration-11": "hydration-03",
+    "hydration-12": "hydration-05",
+    "hydration-13": "hydration-07",
+    "hydration-14": "hydration-04",
+    "hydration-15": "hydration-18",
+    "hydration-16": "hydration-03",
+    "hydration-17": "hydration-05",
+    "activity-05": "activity-18",
+    "activity-06": "today-07",
+    "activity-07": "activity-02",
+    "activity-08": "activity-03",
+    "activity-09": "activity-18",
+    "activity-10": "activity-18",
+    "activity-11": "today-07",
+    "activity-12": "activity-02",
+    "activity-14": "activity-context",
+    "activity-15": "activity-18",
+    "activity-16": "today-07",
+    "activity-17": "activity-02",
+    "recovery-02": "recovery-04",
+    "recovery-03": "recovery-06",
+    "recovery-05": "recovery-01",
+    "recovery-08": "recovery-stress",
+    "recovery-09": "recovery-01",
+    "recovery-10": "recovery-04",
+    "recovery-11": "recovery-06",
+    "recovery-12": "recovery-07",
+    "recovery-13": "recovery-01",
+    "recovery-14": "recovery-17",
+    "recovery-16": "recovery-stress",
+    "recovery-18": "recovery-04",
+    "habits-02": "mindful-09",
+    "habits-03": "today-15",
+    "habits-05": "habits-15",
+    "habits-07": "today-02",
+    "habits-08": "mindful-09",
+    "habits-09": "today-15",
+    "habits-10": "meal-budget",
+    "habits-11": "habits-15",
+    "habits-12": "diary-additions",
+    "habits-13": "today-02",
+    "habits-17": "habits-15",
+    "habits-18": "diary-additions",
+    "mindful-01": "mindful-02",
+    "mindful-04": "mindful-09",
+    "mindful-05": "recovery-stress",
+    "mindful-06": "care-context",
+    "mindful-07": "mindful-02",
+    "mindful-10": "mindful-09",
+    "mindful-11": "recovery-stress",
+    "mindful-13": "mindful-02",
+    "mindful-14": "mindful-16",
+    "mindful-15": "mindful-08",
+    "mindful-17": "recovery-stress",
+    "mindful-18": "care-context",
+    "progress-03": "insight-down",
+    "progress-04": "insight-short",
+    "progress-05": "diary-gaps",
+    "progress-06": "insight-short",
+    "progress-07": "insight-down",
+    "progress-09": "progress-02",
+    "progress-10": "progress-02",
+    "progress-11": "insight-short",
+    "progress-14": "facts-18",
+    "progress-15": "insight-short",
+    "progress-17": "progress-08",
+    "progress-18": "today-02",
+    "facts-01": "hydration-05",
+    "facts-02": "nutrition-02",
+    "facts-03": "meal-budget",
+    "facts-05": "macros-01",
+    "facts-07": "facts-fluid",
+    "facts-08": "macros-02",
+    "facts-10": "food-fibre",
+    "facts-11": "care-context",
+    "facts-12": "facts-06",
+    "facts-14": "hydration-03",
+    "facts-15": "facts-06",
+    "facts-17": "macros-03",
+    "today-01": "today-02",
+    "today-04": "today-09",
+    "today-05": "nutrition-01",
+    "today-06": "today-15",
+    "today-08": "today-03",
+    "today-10": "today-09",
+    "today-11": "nutrition-01",
+    "today-12": "today-15",
+    "today-14": "today-03",
+    "today-16": "today-09",
+    "today-17": "nutrition-01",
+    "today-18": "today-15",
+    "nutrition-04": "meal-lunch",
+    "macros-17": "food-fibre",
+    "hydration-10": "hydration-18",
+    "activity-01": "today-07",
+    "activity-13": "activity-18",
+    "recovery-15": "recovery-01",
+    "habits-01": "today-02",
+    "habits-04": "mindful-09",
+    "habits-06": "today-15",
+    "habits-14": "meal-budget",
+    "mindful-03": "mindful-16",
+    "mindful-12": "recovery-stress",
+    "progress-01": "insight-down",
+    "progress-12": "insight-short",
+    "progress-13": "insight-body",
+    "facts-13": "food-fibre",
+    "today-13": "nutrition-01",
+    "insight-long": "care-context",
+    "recovery-appetite": "recovery-stress",
+    "nutrition-18": "diary-low"
+  }
+}

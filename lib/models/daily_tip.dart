@@ -105,7 +105,7 @@ class DailyTip {
     if (basis != TipBasis.universal) 'optInAndRealSignal',
     if (weightManagementOnly) 'adultSafetyConfirmed',
   ];
-  DailyTip asLegacy(String legacyId) => DailyTip(
+  DailyTip asLegacy(String legacyId, {String? canonicalId}) => DailyTip(
     id: legacyId,
     category: category,
     ru: ru,
@@ -118,7 +118,7 @@ class DailyTip {
     weightManagementOnly: weightManagementOnly,
     usesLoggedMacros: usesLoggedMacros,
     retired: true,
-    canonicalId: id,
+    canonicalId: canonicalId ?? id,
     topic: topicKey,
     destination: destination,
     version: version,

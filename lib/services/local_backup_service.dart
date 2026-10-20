@@ -23,7 +23,7 @@ class LocalBackupService {
     Iterable<ProductRetailerRelation> productRetailerRelations = const [],
     String appVersion = const String.fromEnvironment(
       'BALANCE_APP_VERSION',
-      defaultValue: '1.0.0+22',
+      defaultValue: '1.0.0+23',
     ),
   }) {
     final favorites = favoriteProductIds.toSet().toList()..sort();

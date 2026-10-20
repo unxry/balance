@@ -25,7 +25,7 @@ void main() {
           reason: tip.id,
         );
         expect(tip.evidenceLevel, isNot(TipEvidenceLevel.unverified));
-        expect(tip.version, 4);
+        expect(tip.version, inInclusiveRange(4, 5));
         expect(tip.safetyTags, isNotEmpty);
         expect(tip.contraindicationRules, isNotEmpty);
         for (final copy in [tip.ru, tip.en]) {
@@ -36,7 +36,7 @@ void main() {
       }
       for (final source in tipSources.values) {
         expect(Uri.parse(source.url).scheme, 'https');
-        expect(source.checkedOn, '2026-10-19');
+        expect(source.checkedOn, anyOf('2026-10-19', '2026-10-20'));
       }
     },
   );

@@ -48,12 +48,12 @@ void main() {
   });
 
   test(
-    '60 practical articles, all 180 legacy IDs, bilingual content and compatible aliases',
+    '150 practical articles, all 180 legacy IDs, bilingual content and compatible aliases',
     () {
-      expect(activeDailyTips, hasLength(60));
-      expect(dailyTipsCatalog.map((tip) => tip.id).toSet(), hasLength(200));
-      expect(activeDailyTips.map((tip) => tip.ru.body).toSet(), hasLength(60));
-      expect(activeDailyTips.map((tip) => tip.en.body).toSet(), hasLength(60));
+      expect(activeDailyTips, hasLength(150));
+      expect(dailyTipsCatalog.map((tip) => tip.id).toSet(), hasLength(295));
+      expect(activeDailyTips.map((tip) => tip.ru.body).toSet(), hasLength(150));
+      expect(activeDailyTips.map((tip) => tip.en.body).toSet(), hasLength(150));
       for (final category in TipCategory.values) {
         expect(
           activeDailyTips.where((tip) => tip.category == category).length,

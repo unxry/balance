@@ -12,6 +12,54 @@ class TipSource {
 }
 
 const tipSources = <String, TipSource>{
+  'gov-food-dates': TipSource(
+    'gov-food-dates',
+    'GOV.UK · Best before and use-by dates',
+    'https://www.gov.uk/understanding-food-labelling/best-before-and-use-by-dates',
+    'Различие безопасности и качества в маркировке use by / best before; местные правила могут отличаться.',
+    'Safety versus quality in use-by / best-before labelling; local rules may differ.',
+    checkedOn: '2026-10-20',
+  ),
+  "fsa-chilling": TipSource(
+    "fsa-chilling",
+    "Food Standards Agency · Chilling, freezing and defrosting",
+    "https://www.gov.uk/government/publications/how-to-chill-freeze-and-defrost-food-safely/how-to-chill-freeze-and-defrost-food-safely",
+    "Охлаждение, маркировка, хранение и разморозка; важны инструкции конкретного продукта.",
+    "Chilling, labelling, storage and defrosting; product-specific instructions matter.",
+    checkedOn: "2026-10-20",
+  ),
+  "fsa-cooking": TipSource(
+    "fsa-cooking",
+    "Food Standards Agency · Cooking your food",
+    "https://www.gov.uk/government/publications/cooking-your-food/cooking-your-food",
+    "Полная готовность, гигиена сырой еды и равномерный разогрев; не источник рецептов или КБЖУ.",
+    "Thorough cooking, raw-food hygiene and even reheating; not a recipe or nutrient source.",
+    checkedOn: "2026-10-20",
+  ),
+  "fda-allergens": TipSource(
+    "fda-allergens",
+    "FDA · Food allergies",
+    "https://www.fda.gov/food/nutrition-food-labeling-and-critical-foods/food-allergies",
+    "Маркировка аллергенов и перекрёстный контакт; название блюда не определяет безопасность.",
+    "Allergen labels and cross-contact; a dish name does not establish safety.",
+    checkedOn: "2026-10-20",
+  ),
+  "cdc-accessible": TipSource(
+    "cdc-accessible",
+    "CDC · Chronic conditions & disabilities activity",
+    "https://www.cdc.gov/physical-activity-basics/guidelines/chronic-health-conditions-and-disabilities.html",
+    "Адаптированная активность; тип и объём при ограничениях обсуждаются индивидуально.",
+    "Adapted activity; discuss suitable types and amounts individually when needed.",
+    checkedOn: "2026-10-20",
+  ),
+  "nhs-sleep": TipSource(
+    "nhs-sleep",
+    "NHS · Fall asleep faster and sleep better",
+    "https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/how-to-fall-asleep-faster-and-sleep-better/",
+    "Бытовая поддержка распорядка сна; стойкие трудности требуют индивидуальной помощи.",
+    "Everyday sleep-routine ideas; persistent difficulties need individual support.",
+    checkedOn: "2026-10-20",
+  ),
   'cleveland-fluid': TipSource(
     'cleveland-fluid',
     'Cleveland Clinic · Weight fluctuations',

@@ -1,12 +1,17 @@
 import '../models/daily_tip.dart';
 
-// Existing IDs resolve to revised content; retired aliases never enter rotation.
+// Retired copy stays readable; only active plans enter daily rotation.
 final dailyTipsCatalog = <DailyTip>[
   ...activeDailyTips,
+  ...retiredDailyTips,
   for (final entry in legacyTipAliases.entries)
-    activeDailyTips
-        .singleWhere((tip) => tip.id == entry.value)
-        .asLegacy(entry.key),
+    if (!retiredDailyTips.any((tip) => tip.id == entry.key))
+      [...activeDailyTips, ...retiredDailyTips]
+          .singleWhere(
+            (tip) =>
+                tip.id == (preservedLegacyContent[entry.key] ?? entry.value),
+          )
+          .asLegacy(entry.key, canonicalId: entry.value),
 ];
 
 const activeDailyTips = <DailyTip>[
@@ -55,7 +60,7 @@ const activeDailyTips = <DailyTip>[
   ),
   DailyTip(
     id: "nutrition-02",
-    topic: "quick-dinner",
+    topic: "meal-building",
     destination: TipDestination.food,
     category: TipCategory.nutrition,
     basis: TipBasis.universal,
@@ -138,48 +143,6 @@ const activeDailyTips = <DailyTip>[
     ),
   ),
   DailyTip(
-    id: "nutrition-09",
-    topic: "backup-meal",
-    destination: TipDestination.food,
-    category: TipCategory.nutrition,
-    basis: TipBasis.universal,
-    sourceIds: ["cdc-eating"],
-    evidenceLevel: TipEvidenceLevel.guidance,
-    ru: TipCopy(
-      "Соберите обед с фасолью без плиты",
-      "Консервы могут стать основой обычного обеда.",
-      task: "Соедините готовые бобовые, хлеб и овощи.",
-      steps: [
-        "Проверьте состав подходящей банки и подготовьте бобовые по упаковке.",
-        "Добавьте хлеб, овощи и подходящую заправку.",
-      ],
-      example: "Фасоль + помидор + хлеб; нут + огурец + лепёшка.",
-      alternative:
-          "Нет бобовых — подойдут яйцо или готовая рыба, если подходят вам.",
-      doneWhen: "Один вариант обеда собран; количества выбраны по потребности.",
-      why:
-          "Готовые продукты сокращают готовку и дают несколько групп пищи без сложного рецепта.",
-      explanation:
-          "Консервированные бобовые экономят время и позволяют добавить растительный белок. Сравните соль на этикетке, при желании промойте. Выбирайте продукт, который подходит вашим ограничениям.",
-    ),
-    en: TipCopy(
-      "Build a no-stove bean lunch",
-      "Canned foods can be the base of an ordinary lunch.",
-      task: "Combine ready-cooked pulses, bread and vegetables.",
-      steps: [
-        "Check a suitable can and prepare the pulses as directed.",
-        "Add bread, vegetables and a suitable dressing.",
-      ],
-      example: "Beans + tomato + bread; chickpeas + cucumber + flatbread.",
-      alternative: "No pulses? Try egg or ready-to-eat fish if suitable.",
-      doneWhen: "One lunch is assembled in amounts that suit your needs.",
-      why:
-          "Ready-to-eat foods save cooking and combine food groups without a complex recipe.",
-      explanation:
-          "Canned pulses save time and add a plant-protein option. Compare label sodium and rinse if desired. Choose a product compatible with your restrictions.",
-    ),
-  ),
-  DailyTip(
     id: "macros-01",
     topic: "protein-rotation",
     destination: TipDestination.food,
@@ -221,48 +184,6 @@ const activeDailyTips = <DailyTip>[
           "Protein foods differ in their other nutrients. No high-protein target is prescribed.",
       explanation:
           "Protein helps maintain tissues. Different foods also supply other nutrients, so rotate accessible choices. No universal high-protein target is prescribed here.",
-    ),
-  ),
-  DailyTip(
-    id: "macros-02",
-    topic: "meal-building",
-    destination: TipDestination.food,
-    category: TipCategory.macros,
-    basis: TipBasis.universal,
-    sourceIds: ["who-diet"],
-    evidenceLevel: TipEvidenceLevel.guidance,
-    ru: TipCopy(
-      "Дополните гарнир вместо запрета",
-      "Хлеб, рис или картофель могут остаться в меню.",
-      task:
-          "Добавьте к привычному гарниру овощи и подходящий белковый продукт.",
-      steps: [
-        "Выберите гарнир, который вам нравится.",
-        "Добавьте два подходящих компонента без обязательных пропорций.",
-      ],
-      example: "Картофель + рыба + капуста; рис + фасоль + овощи.",
-      alternative: "Если нет времени, подойдут готовые подходящие компоненты.",
-      doneWhen: "Составлен один приём пищи с привычным гарниром.",
-      why:
-          "Так проще сочетать разные группы пищи, не запрещая углеводы целиком.",
-      explanation:
-          "Важны весь рацион и подходящие порции, а не запрет группы продуктов. Цельнозерновые варианты и бобовые дают клетчатку. Хлеб, картофель, рис, паста и фрукты могут оставаться в меню.",
-    ),
-    en: TipCopy(
-      "Complete a side rather than banning it",
-      "Bread, rice or potatoes can stay on the menu.",
-      task: "Add vegetables and a suitable protein food to a familiar side.",
-      steps: [
-        "Choose a side you enjoy.",
-        "Add two suitable components without compulsory ratios.",
-      ],
-      example: "Potato + fish + cabbage; rice + beans + vegetables.",
-      alternative: "Use suitable ready-made components when time is short.",
-      doneWhen: "One meal includes a familiar side with additions.",
-      why:
-          "This combines food groups without banning carbohydrates altogether.",
-      explanation:
-          "The whole eating pattern and suitable portions matter more than banning a food group. Whole grains and pulses supply fibre. Bread, potatoes, rice, pasta and fruit can remain on the menu.",
     ),
   ),
   DailyTip(
@@ -356,7 +277,7 @@ const activeDailyTips = <DailyTip>[
   ),
   DailyTip(
     id: "macros-13",
-    topic: "yogurt-choice",
+    topic: "dairy-alternative-choice",
     destination: TipDestination.food,
     category: TipCategory.macros,
     basis: TipBasis.universal,
@@ -625,51 +546,6 @@ const activeDailyTips = <DailyTip>[
     ),
   ),
   DailyTip(
-    id: "activity-02",
-    topic: "gentle-movement",
-    destination: TipDestination.none,
-    category: TipCategory.activity,
-    basis: TipBasis.universal,
-    sourceIds: ["niddk-eating"],
-    evidenceLevel: TipEvidenceLevel.guidance,
-    ru: TipCopy(
-      "Выберите доступное движение на паузу",
-      "Способ зависит от возможностей и самочувствия сегодня.",
-      task: "Попробуйте один комфортный вариант движения, если он безопасен.",
-      steps: [
-        "Выберите знакомое действие без цели по калориям.",
-        "Остановитесь при боли, головокружении или другом дискомфорте.",
-      ],
-      example:
-          "Короткая прогулка; движение на коляске; знакомые адаптированные движения.",
-      alternative:
-          "Если движение сейчас не подходит, выберите отдых или согласованный со специалистом вариант.",
-      doneWhen:
-          "Один безопасный вариант попробован или осознанно выбран отдых.",
-      why:
-          "Посильное движение можно включать в обычный день без обязательной интенсивной тренировки.",
-      explanation:
-          "Общая активность включает бытовое и адаптированное движение. Приложение не знает всей нагрузки по одному счётчику шагов. Выбирайте подходящий способ, а не обязательную тренировку.",
-    ),
-    en: TipCopy(
-      "Choose an accessible movement break",
-      "The option depends on your abilities and wellbeing today.",
-      task: "Try one comfortable movement option if it is safe.",
-      steps: [
-        "Choose something familiar without a calorie goal.",
-        "Stop for pain, dizziness or other discomfort.",
-      ],
-      example: "A short walk; wheeling; familiar adapted movement.",
-      alternative:
-          "If movement is unsuitable, choose rest or an agreed professional alternative.",
-      doneWhen: "One safe option is tried or rest is deliberately chosen.",
-      why:
-          "Accessible movement can fit an ordinary day without a compulsory intense workout.",
-      explanation:
-          "Activity includes household tasks and adapted movement. A step counter does not capture all effort. Choose a suitable option rather than a compulsory workout.",
-    ),
-  ),
-  DailyTip(
     id: "activity-03",
     topic: "work-break",
     destination: TipDestination.none,
@@ -761,7 +637,7 @@ const activeDailyTips = <DailyTip>[
   ),
   DailyTip(
     id: "activity-18",
-    topic: "movement-without-compensation",
+    topic: "load-adjustment",
     destination: TipDestination.none,
     category: TipCategory.activity,
     basis: TipBasis.universal,
@@ -847,7 +723,7 @@ const activeDailyTips = <DailyTip>[
   ),
   DailyTip(
     id: "recovery-04",
-    topic: "sleep-environment",
+    topic: "rest-environment",
     destination: TipDestination.none,
     category: TipCategory.recovery,
     basis: TipBasis.universal,
@@ -1522,7 +1398,7 @@ const activeDailyTips = <DailyTip>[
   ),
   DailyTip(
     id: "facts-09",
-    topic: "recipe-uncertainty",
+    topic: "recipe-ingredients",
     destination: TipDestination.food,
     category: TipCategory.facts,
     basis: TipBasis.universal,
@@ -2204,49 +2080,6 @@ const activeDailyTips = <DailyTip>[
     ),
   ),
   DailyTip(
-    id: "meal-dinner",
-    topic: "quick-dinner",
-    destination: TipDestination.food,
-    category: TipCategory.nutrition,
-    basis: TipBasis.universal,
-    sourceIds: ["cdc-eating", "who-diet"],
-    evidenceLevel: TipEvidenceLevel.guidance,
-    ru: TipCopy(
-      "Выберите ужин с короткой подготовкой",
-      "С готовыми компонентами можно ориентироваться на 10–20 минут; время зависит от продукта.",
-      task: "Соберите простой ужин, сохранив привычный гарнир.",
-      steps: [
-        "Выберите готовый гарнир или продукт с подходящим временем по упаковке.",
-        "Добавьте овощи и готовые бобовые либо тофу, соблюдая инструкцию.",
-      ],
-      example: "Готовый рис + овощи + фасоль; паста + томатный соус + тофу.",
-      alternative: "Без плиты — хлеб с фасолевой намазкой и овощами.",
-      doneWhen:
-          "Один вариант приготовлен или выбран с учётом доступного времени.",
-      why:
-          "Готовые компоненты сокращают подготовку; гарнир вечером не требуется запрещать. Это идея еды, не точные КБЖУ.",
-      explanation:
-          "Добавьте овощи и доступный источник белка, например фасоль, тофу или рыбу. Само наличие углеводов вечером не доказывает, что питание мешает снижению веса. Учитывайте свой режим и назначения.",
-    ),
-    en: TipCopy(
-      "Choose a dinner with short preparation",
-      "With ready components, 10–20 minutes may work; timing depends on the product.",
-      task: "Build a simple dinner while keeping a familiar side.",
-      steps: [
-        "Choose a ready base or a product with suitable package timing.",
-        "Add vegetables and ready-cooked pulses or tofu, following instructions.",
-      ],
-      example: "Ready rice + vegetables + beans; pasta + tomato sauce + tofu.",
-      alternative:
-          "Without a stove, try bread with bean spread and vegetables.",
-      doneWhen: "One option is made or chosen to fit available time.",
-      why:
-          "Ready components reduce preparation; evening sides need not be banned. This is a meal idea, not exact nutrition.",
-      explanation:
-          "Add vegetables and an accessible protein source such as beans, tofu or fish. Evening carbohydrate alone does not establish a barrier to weight loss. Consider your routine and care plan.",
-    ),
-  ),
-  DailyTip(
     id: "meal-budget",
     topic: "batch-base",
     destination: TipDestination.food,
@@ -2290,52 +2123,6 @@ const activeDailyTips = <DailyTip>[
           "A shared base simplifies shopping and cooking; expensive foods and supplements are unnecessary.",
       explanation:
           "Prepare a grain for different dishes and vary the protein addition. Follow safe storage and package instructions. Expensive supplements are unnecessary.",
-    ),
-  ),
-  DailyTip(
-    id: "food-fibre",
-    topic: "fibre-addition",
-    destination: TipDestination.food,
-    category: TipCategory.macros,
-    basis: TipBasis.universal,
-    sourceIds: ["nhs-fibre"],
-    evidenceLevel: TipEvidenceLevel.guidance,
-    ru: TipCopy(
-      "Добавьте привычный источник клетчатки",
-      "Начните с переносимого продукта, а не обязательных отрубей.",
-      task: "Дополните один приём пищи подходящим растительным продуктом.",
-      steps: [
-        "Выберите привычный овощ, фрукт, овсянку или бобовые.",
-        "Непривычное добавляйте постепенно, соблюдая лечебные ограничения.",
-      ],
-      example:
-          "Яблоко к овсянке; немного фасоли к рису; овощи к привычному обеду.",
-      alternative:
-          "При назначенной низковолокнистой диете не меняйте её самостоятельно — уточните подходящий вариант.",
-      doneWhen: "Один переносимый вариант выбран или уточнён со специалистом.",
-      why:
-          "Разные растительные продукты дают клетчатку; одна небольшая проба конкретнее общего требования есть полезнее.",
-      explanation:
-          "Овощи, овсянка, цельнозерновой хлеб и бобовые — разные варианты. Вводите непривычные продукты постепенно. При заболеваниях ЖКТ и лечебной диете согласуйте изменения.",
-    ),
-    en: TipCopy(
-      "Add a familiar fibre source",
-      "Start with a tolerated food rather than compulsory bran.",
-      task: "Add a suitable plant food to one meal.",
-      steps: [
-        "Choose familiar vegetables, fruit, oats or pulses.",
-        "Introduce unfamiliar foods gradually within clinical restrictions.",
-      ],
-      example:
-          "Apple with oats; a little bean with rice; vegetables with a usual lunch.",
-      alternative:
-          "Do not independently change a prescribed low-fibre diet; clarify a suitable option.",
-      doneWhen:
-          "One tolerated option is chosen or checked with a professional.",
-      why:
-          "Plant foods supply fibre; one manageable trial is more concrete than a general healthy-eating instruction.",
-      explanation:
-          "Vegetables, oats, wholegrain bread and pulses offer different choices. Introduce unfamiliar foods gradually. Discuss changes if you have digestive conditions or a clinical diet.",
     ),
   ),
   DailyTip(
@@ -2480,7 +2267,7 @@ const activeDailyTips = <DailyTip>[
   ),
   DailyTip(
     id: "diary-low",
-    topic: "low-log-review",
+    topic: "log-coverage",
     destination: TipDestination.food,
     category: TipCategory.habits,
     basis: TipBasis.gentleFuel,
@@ -2716,32 +2503,4378 @@ const activeDailyTips = <DailyTip>[
           "Minors, pregnancy, breastfeeding, eating-disorder risk and known contraindications call for individual guidance. With unknown context, Balance does not prescribe personal targets or tighter restrictions.",
     ),
   ),
+  DailyTip(
+    id: "meal-no-fridge",
+    topic: "packed-lunch-storage",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-chilling"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Обед без холодильника",
+      "Если на работе негде охлаждать еду.",
+      task:
+          "Выберите продукты, которые до открытия можно хранить без холодильника.",
+      steps: [
+        "Прочитайте условия хранения каждого продукта.",
+        "Соберите еду перед приёмом пищи, не храните открытые остатки в тепле.",
+      ],
+      example:
+          "Хлеб, целый фрукт и маленькая банка фасоли, открытая перед едой.",
+      alternative:
+          "Купите охлаждённую готовую еду непосредственно перед обедом.",
+      doneWhen: "Выбран обед с проверенными условиями хранения.",
+      why:
+          "Хранение становится частью плана обеда, а не неожиданной проблемой.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Lunch without a fridge",
+      "For a workplace without chilled storage.",
+      task:
+          "Choose foods labelled for room-temperature storage before opening.",
+      steps: [
+        "Read storage instructions for each item.",
+        "Assemble at mealtime; do not keep opened leftovers warm.",
+      ],
+      example:
+          "Bread, whole fruit and a small bean tin opened just before eating.",
+      alternative: "Buy a chilled ready meal immediately before lunch.",
+      doneWhen: "A lunch with checked storage needs is chosen.",
+      why: "Storage becomes part of the lunch plan rather than a surprise.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-canteen",
+    topic: "meal-canteen",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Сориентируйтесь в столовой",
+      "Когда меню заранее неизвестно.",
+      task:
+          "Найдите в сегодняшнем меню подходящие основное блюдо и дополнение.",
+      steps: [
+        "Посмотрите весь доступный выбор.",
+        "Уточните состав незнакомого блюда и выберите сочетание по своим потребностям.",
+      ],
+      example: "Рыба с картофелем и салатом; чечевичный суп с хлебом.",
+      alternative:
+          "Если выбора мало, возьмите подходящее готовое сочетание без требования идеальной тарелки.",
+      doneWhen: "Выбрано конкретное сочетание из доступного меню.",
+      why:
+          "Решение опирается на реальный выбор, а не на недоступное идеальное меню.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Navigate a canteen menu",
+      "When the menu is not known in advance.",
+      task: "Find a suitable main and accompaniment on today’s menu.",
+      steps: [
+        "Look at the available choices.",
+        "Ask about unfamiliar ingredients and choose a combination for your needs.",
+      ],
+      example: "Fish with potato and salad; lentil soup with bread.",
+      alternative:
+          "With limited choice, use a suitable available meal without requiring a perfect plate.",
+      doneWhen: "A specific available combination is chosen.",
+      why:
+          "The decision uses real options rather than an unavailable ideal menu.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-buffet",
+    topic: "meal-buffet",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Сначала осмотритесь у общего стола",
+      "Если трудно выбрать среди множества блюд.",
+      task: "Перед выбором еды спокойно осмотрите доступные блюда.",
+      steps: [
+        "Найдите знакомые и подходящие продукты.",
+        "Выберите желанное сочетание; за добавкой можно вернуться.",
+      ],
+      example:
+          "На общем столе найдите плов, овощи и подходящую закуску, затем решите, что хочется.",
+      alternative: "Попросите хозяина назвать состав нескольких блюд.",
+      doneWhen: "Сделан осознанный выбор без запрета на добавку.",
+      why:
+          "Короткий обзор упрощает выбор среди множества вариантов без подсчёта каждого кусочка.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Look around a buffet first",
+      "When many dishes make choosing difficult.",
+      task: "Look over the available dishes before choosing food.",
+      steps: [
+        "Find familiar foods that suit you.",
+        "Choose a combination you want; returning for more is allowed.",
+      ],
+      example:
+          "Find rice pilaf, vegetables and a suitable starter, then decide what appeals.",
+      alternative: "Ask the host about a few dishes.",
+      doneWhen: "A considered choice is made without banning seconds.",
+      why:
+          "A brief overview simplifies a crowded choice without counting every bite.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-delivery-budget",
+    topic: "meal-delivery-budget",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Заказ еды в пределах бюджета",
+      "Когда нужна доставка без сложной готовки.",
+      task: "Сравните итоговую цену двух подходящих заказов.",
+      steps: [
+        "Проверьте доставку, минимальную сумму и состав блюда.",
+        "Выберите заказ, который подходит по еде и полной стоимости.",
+      ],
+      example:
+          "Суп с хлебом из соседнего кафе может стоить иначе после оплаты доставки.",
+      alternative:
+          "Самовывоз или готовая еда поблизости, если это удобно и доступно.",
+      doneWhen: "Выбран вариант с известной итоговой ценой.",
+      why:
+          "Полная стоимость помогает избежать неожиданной траты при заказе еды.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Order within a food budget",
+      "When delivery replaces cooking.",
+      task: "Compare the full price of two suitable orders.",
+      steps: [
+        "Check delivery fees, minimum spend and meal contents.",
+        "Choose food that suits both your needs and the total budget.",
+      ],
+      example:
+          "Nearby soup with bread may cost differently after delivery fees.",
+      alternative: "Use collection or nearby prepared food if accessible.",
+      doneWhen: "An option with a known total price is chosen.",
+      why: "The full price helps prevent an unexpected food expense.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-shift-handover",
+    topic: "meal-time",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Еда при сменном графике",
+      "Если смена сдвигает обычные часы еды.",
+      task: "Привяжите один приём пищи к реальной паузе на смене.",
+      steps: [
+        "Уточните время доступного перерыва и хранения еды.",
+        "Подготовьте основной вариант и вариант при переносе паузы.",
+      ],
+      example:
+          "Обед в доступный перерыв; при переносе — подходящий перекус до следующей возможности поесть.",
+      alternative:
+          "Уточните возможность перерыва с руководителем, если еда регулярно недоступна.",
+      doneWhen: "Есть план для обычной и сдвинутой паузы.",
+      why:
+          "План учитывает устройство смены, не требует есть по чужому расписанию.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Food around shift work",
+      "When a shift moves usual meal times.",
+      task: "Anchor one meal to an actual break on your shift.",
+      steps: [
+        "Check break times and food storage access.",
+        "Choose a main option and a fallback for a delayed break.",
+      ],
+      example:
+          "Lunch in the available break; a suitable snack if the break moves.",
+      alternative:
+          "Discuss access to a break if eating is regularly impractical.",
+      doneWhen: "Both the usual and delayed break have a food plan.",
+      why: "The plan follows the shift rather than someone else’s timetable.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-family-components",
+    topic: "meal-family-components",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Один ужин с разными предпочтениями",
+      "Если дома едят по-разному.",
+      task: "Подайте компоненты ужина отдельно для самостоятельного сочетания.",
+      steps: [
+        "Выберите общую основу.",
+        "Разложите подходящие белковые продукты, овощи и соус отдельно.",
+      ],
+      example: "Картофель, фасоль, рыба и овощи отдельными блюдами.",
+      alternative:
+          "Оставьте одну общую основу и одно индивидуальное дополнение.",
+      doneWhen:
+          "Семья может собрать разные сочетания без нескольких полных ужинов.",
+      why:
+          "Раздельная подача учитывает предпочтения и уменьшает объём отдельной готовки.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "One dinner, different preferences",
+      "When household preferences differ.",
+      task: "Serve dinner components separately for people to combine.",
+      steps: [
+        "Choose a shared base.",
+        "Set out suitable protein foods, vegetables and sauce separately.",
+      ],
+      example: "Potato, beans, fish and vegetables in separate dishes.",
+      alternative: "Use one shared base and one individual addition.",
+      doneWhen:
+          "Different combinations are available without cooking several full dinners.",
+      why:
+          "Separate components accommodate preferences with less separate cooking.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-single-shop",
+    topic: "meal-single-shop",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Покупки для одного человека",
+      "Если большая упаковка часто остаётся несъеденной.",
+      task:
+          "Сравните пригодную к использованию стоимость маленькой и большой упаковки.",
+      steps: [
+        "Оцените, сколько реально используете до срока хранения.",
+        "Выберите размер или делимый замороженный продукт под свои возможности.",
+      ],
+      example:
+          "Небольшой йогурт вместо большой банки; замороженные овощи, которые можно брать частями.",
+      alternative: "Разделите покупку с близким, если это удобно.",
+      doneWhen: "Выбран размер с понятным использованием остатка.",
+      why: "Дешевле за килограмм не всегда означает дешевле за съеденную еду.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Shop for one person",
+      "When large packs often go unused.",
+      task: "Compare usable cost rather than only the price per kilogram.",
+      steps: [
+        "Consider how much you can use within storage limits.",
+        "Choose a pack size or separable frozen food that fits.",
+      ],
+      example:
+          "A small yogurt pot; frozen vegetables that can be taken in portions.",
+      alternative: "Share a purchase with someone if convenient.",
+      doneWhen: "A pack size with a clear use for the remainder is chosen.",
+      why:
+          "A lower unit price does not always mean cheaper food actually eaten.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-low-appetite",
+    topic: "meal-low-appetite",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["nhs-eating-support"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Еда, когда большая тарелка не привлекает",
+      "Если сейчас проще начать с небольшого объёма.",
+      task: "Выберите небольшую привычную еду с возможностью добавить позже.",
+      steps: [
+        "Возьмите переносимые продукты без требования доесть большую порцию.",
+        "Оставьте доступное дополнение на случай дальнейшего аппетита.",
+      ],
+      example: "Небольшой бутерброд с яйцом и суп; рядом ещё хлеб.",
+      alternative:
+          "Если снижение аппетита держится или мешает есть, обсудите это со специалистом.",
+      doneWhen:
+          "Есть доступная еда и возможность продолжить, без цели урезать рацион.",
+      why:
+          "Небольшое начало может быть удобнее большой тарелки; это не план ограничения еды.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "When a large plate feels unappealing",
+      "If a smaller amount feels easier to start with.",
+      task: "Choose familiar food in a manageable amount with more available.",
+      steps: [
+        "Use tolerated foods without requiring a large serving.",
+        "Keep an addition available if you want more.",
+      ],
+      example: "A small egg sandwich and soup, with more bread available.",
+      alternative:
+          "Discuss persistent appetite loss or difficulty eating with a professional.",
+      doneWhen:
+          "Food and the option to continue are available, without a restriction goal.",
+      why:
+          "A small start may be more manageable; this is not a food-reduction plan.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-soft-texture",
+    topic: "meal-soft-texture",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Измените текстуру привычного блюда",
+      "Когда просто хочется более мягкой еды.",
+      task: "Переделайте знакомое блюдо в мягкую комбинацию.",
+      steps: [
+        "Выберите привычные переносимые продукты.",
+        "Разомните или измельчите их и сохраните разные компоненты еды.",
+      ],
+      example: "Картофельное пюре с мягкой фасолью и тушёной морковью.",
+      alternative:
+          "Обычная текстура тоже подходит; при трудностях глотания нужна индивидуальная помощь.",
+      doneWhen:
+          "Выбрана удобная текстура без самостоятельного лечения проблем глотания.",
+      why:
+          "Изменение текстуры даёт другой способ использовать привычные продукты.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Change a familiar meal’s texture",
+      "When softer food simply sounds more appealing.",
+      task: "Turn familiar foods into a soft combination.",
+      steps: [
+        "Choose tolerated familiar ingredients.",
+        "Mash or soften them while keeping different meal components.",
+      ],
+      example: "Mashed potato with soft beans and stewed carrot.",
+      alternative:
+          "Keep the usual texture if preferred; swallowing difficulty needs individual advice.",
+      doneWhen:
+          "A comfortable texture is chosen without self-treating swallowing problems.",
+      why: "Changing texture offers another way to use familiar ingredients.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-one-burner",
+    topic: "meal-one-burner",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Ужин на одной конфорке",
+      "Если одновременно можно готовить только в одной кастрюле.",
+      task: "Расположите этапы готовки по времени готовности продуктов.",
+      steps: [
+        "Прочитайте инструкции выбранных продуктов.",
+        "Сначала готовьте самый долгий компонент, затем добавляйте подходящие остальные.",
+      ],
+      example: "Овощной суп: картофель раньше, готовая фасоль ближе к концу.",
+      alternative:
+          "Возьмите готовую основу, если последовательная готовка неудобна.",
+      doneWhen:
+          "Выбран порядок, при котором все компоненты доведены до готовности.",
+      why: "Последовательность помогает обойтись ограниченным оборудованием.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Dinner with one burner",
+      "When only one pot can be used at a time.",
+      task: "Order cooking steps by the ingredients’ cooking times.",
+      steps: [
+        "Read the instructions for your ingredients.",
+        "Start the slowest component first, adding suitable others later.",
+      ],
+      example: "Vegetable soup: potato first, ready-cooked beans near the end.",
+      alternative:
+          "Use a ready-cooked base if sequential cooking is impractical.",
+      doneWhen: "A sequence that cooks every component properly is chosen.",
+      why: "Sequencing makes a meal possible with limited equipment.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-cultural-staple",
+    topic: "meal-building",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["who-diet"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Сохраните привычное национальное блюдо",
+      "Если советы кажутся чуждыми вашей кухне.",
+      task: "Найдите подходящее дополнение к любимому традиционному блюду.",
+      steps: [
+        "Сохраните знакомую основу и способ подачи.",
+        "Выберите привычное для вашей кухни дополнение по потребностям.",
+      ],
+      example: "К плову — овощи; к лепёшке — бобовое блюдо; к гречке — рыба.",
+      alternative:
+          "Оставьте блюдо как есть и обсудите адаптацию лечебной диеты со специалистом.",
+      doneWhen: "Намечено сочетание, которое сохраняет знакомую кухню.",
+      why:
+          "Разнообразие можно строить на своих привычках без замены всей кухни.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Keep a familiar cultural dish",
+      "When food advice feels distant from your cuisine.",
+      task: "Find a suitable accompaniment for a favourite traditional dish.",
+      steps: [
+        "Keep the familiar base and way of serving.",
+        "Choose an accompaniment from your cuisine for your needs.",
+      ],
+      example:
+          "Vegetables with pilaf; pulses with flatbread; fish with buckwheat.",
+      alternative:
+          "Keep the dish as it is and discuss clinical adaptations with a professional.",
+      doneWhen: "A combination that preserves familiar cuisine is identified.",
+      why:
+          "Variety can build on existing food traditions without replacing them.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-soup-main",
+    topic: "meal-soup-main",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Суп как основной приём пищи",
+      "Если обычного лёгкого супа вам недостаточно.",
+      task:
+          "Подберите дополнение, которое сделает суп удобным основным блюдом.",
+      steps: [
+        "Посмотрите, что уже есть в супе.",
+        "Добавьте недостающий удобный компонент по аппетиту.",
+      ],
+      example:
+          "К овощному бульону — хлеб с фасолевой намазкой; к чечевичному супу — хлеб и овощи.",
+      alternative:
+          "Подойдёт другое привычное основное блюдо, если суп не хочется.",
+      doneWhen: "Выбрано дополнение к конкретному супу.",
+      why:
+          "Дополнение позволяет учитывать состав супа и собственную потребность в еде.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Make soup a main meal",
+      "When a light soup alone is not enough for you.",
+      task: "Choose an accompaniment that makes soup a useful main meal.",
+      steps: [
+        "Check what the soup already contains.",
+        "Add a convenient component according to appetite.",
+      ],
+      example:
+          "Bread with bean spread alongside vegetable broth; bread and vegetables with lentil soup.",
+      alternative: "Choose another familiar main if soup is unappealing.",
+      doneWhen: "An accompaniment to a particular soup is chosen.",
+      why:
+          "The addition accounts for both the soup’s contents and your need for food.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-sandwich-packing",
+    topic: "meal-sandwich-packing",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-chilling"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Сэндвич, который удобно взять с собой",
+      "Если начинка размокает до обеда.",
+      task: "Упакуйте влажные компоненты отдельно до еды.",
+      steps: [
+        "Выберите подходящие хлеб и начинку.",
+        "Отделите помидор или соус и соблюдайте условия охлаждения начинки.",
+      ],
+      example:
+          "Хлеб и сыр в одном контейнере, помидор отдельно; соединить перед едой.",
+      alternative: "Купите или соберите сэндвич непосредственно перед обедом.",
+      doneWhen: "Выбран способ сборки и безопасного хранения.",
+      why: "Раздельная упаковка сохраняет удобную текстуру еды в дороге.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Pack a sandwich that travels well",
+      "When fillings make bread soggy before lunch.",
+      task: "Keep wet ingredients separate until eating.",
+      steps: [
+        "Choose suitable bread and filling.",
+        "Separate tomato or sauce and follow chilled-storage instructions.",
+      ],
+      example:
+          "Bread and cheese together, tomato separately; assemble at mealtime.",
+      alternative: "Buy or assemble the sandwich just before lunch.",
+      doneWhen: "An assembly and safe storage plan is chosen.",
+      why: "Separate packing keeps a convenient texture when taking food out.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-guest-preferences",
+    topic: "meal-guest-preferences",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fda-allergens"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Уточните еду перед встречей",
+      "Если готовите для другого человека.",
+      task: "Спросите об ограничениях и удобном блюде до покупки продуктов.",
+      steps: [
+        "Уточните аллергии и личные предпочтения напрямую.",
+        "Согласуйте одно подходящее блюдо и приготовление без перекрёстного контакта аллергенов.",
+      ],
+      example:
+          "Спросите, подходит ли паста с овощами и как безопасно заменить сыр.",
+      alternative:
+          "Пусть гость предложит знакомый безопасный вариант; не угадывайте по внешности.",
+      doneWhen: "Согласован конкретный вариант еды и его ограничения.",
+      why: "Прямой вопрос полезнее догадки о том, что человек может есть.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Ask before cooking for a guest",
+      "When preparing food for someone else.",
+      task: "Ask about restrictions and a comfortable dish before shopping.",
+      steps: [
+        "Check allergies and preferences directly.",
+        "Agree one suitable dish and preparation that avoids allergen cross-contact.",
+      ],
+      example:
+          "Ask whether vegetable pasta works and how to replace cheese safely.",
+      alternative:
+          "Invite the guest to suggest a familiar safe option; do not guess from appearance.",
+      doneWhen: "A particular meal and its limits are agreed.",
+      why:
+          "A direct question is more useful than guessing what someone can eat.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-restaurant-allergy",
+    topic: "meal-restaurant-allergy",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["fda-allergens"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Уточните аллерген в кафе",
+      "Если состав блюда влияет на вашу безопасность.",
+      task:
+          "Задайте сотруднику прямой вопрос о составе и перекрёстном контакте.",
+      steps: [
+        "Назовите конкретный аллерген и спросите о приготовлении.",
+        "Если безопасность не могут подтвердить, выберите подтверждённый вариант.",
+      ],
+      example:
+          "Спросите про орехи не только в соусе, но и при приготовлении блюда.",
+      alternative: "Выберите другое место или знакомую безопасную еду.",
+      doneWhen:
+          "Получен ясный ответ или выбран другой вариант без риска наугад.",
+      why:
+          "Название блюда само по себе не описывает все ингредиенты и приготовление.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Check an allergen at a cafe",
+      "When ingredients affect your safety.",
+      task: "Ask staff directly about ingredients and allergen cross-contact.",
+      steps: [
+        "Name the specific allergen and ask about preparation.",
+        "If safety cannot be confirmed, choose a confirmed option.",
+      ],
+      example: "Ask about nuts in both the sauce and the preparation process.",
+      alternative: "Choose another venue or familiar safe food.",
+      doneWhen:
+          "You have a clear answer or another option without guessing safety.",
+      why:
+          "A dish’s name alone does not describe every ingredient and preparation step.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-seasonal-swap",
+    topic: "meal-seasonal-swap",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Замените дорогой овощ по способу готовки",
+      "Если ингредиент из рецепта сейчас дорогой.",
+      task: "Подберите доступную замену с похожим способом приготовления.",
+      steps: [
+        "Определите роль овоща: салат, тушение или суп.",
+        "Сравните доступные свежие и замороженные варианты.",
+      ],
+      example:
+          "Для тушения вместо дорогого перца — морковь и капуста с учётом времени готовки.",
+      alternative: "Выберите другой рецепт из уже имеющихся продуктов.",
+      doneWhen: "Есть подходящая по цене и приготовлению замена.",
+      why:
+          "Замена учитывает рецепт, а не требует покупать один определённый овощ.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Swap an expensive vegetable by cooking role",
+      "When a recipe ingredient costs too much.",
+      task: "Choose an affordable replacement that suits the cooking method.",
+      steps: [
+        "Identify its role: salad, stew or soup.",
+        "Compare available fresh and frozen options.",
+      ],
+      example:
+          "For a stew, use carrot and cabbage instead of costly pepper, adjusting cooking time.",
+      alternative: "Choose another recipe using food already available.",
+      doneWhen: "A replacement fits both price and preparation.",
+      why:
+          "The swap follows the recipe’s needs without requiring one particular vegetable.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-ready-heat",
+    topic: "meal-ready-heat",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Разогрейте готовое блюдо равномерно",
+      "Если пользуетесь микроволновкой.",
+      task: "Следуйте инструкции разогрева и проверьте всё блюдо.",
+      steps: [
+        "Посмотрите мощность, время и необходимость перемешивания.",
+        "Перемешайте или переверните, если указано, и выдержите нужную паузу.",
+      ],
+      example:
+          "Готовое овощное рагу: перемешать по инструкции, чтобы не осталось холодных участков.",
+      alternative:
+          "Выберите другой указанный на упаковке способ приготовления.",
+      doneWhen: "Блюдо разогрето по инструкции по всему объёму.",
+      why:
+          "Микроволновка может греть неравномерно; один горячий край недостаточен.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Heat a ready meal evenly",
+      "When using a microwave.",
+      task: "Follow the heating instructions and check the whole meal.",
+      steps: [
+        "Check power, time and any stirring instructions.",
+        "Stir or turn as directed and allow the stated standing time.",
+      ],
+      example:
+          "A prepared vegetable stew: stir as directed to avoid cold pockets.",
+      alternative: "Use another preparation method listed on the pack.",
+      doneWhen: "The meal is heated throughout according to instructions.",
+      why: "Microwaves can heat unevenly; one hot edge is not enough.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-cold-transport",
+    topic: "packed-lunch-storage",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["fsa-chilling"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Доставка домашнего обеда в холоде",
+      "Если дорога до холодильника занимает время.",
+      task: "Спланируйте охлаждение скоропортящегося обеда в пути.",
+      steps: [
+        "Проверьте условия хранения и доступ к холодильнику.",
+        "Используйте подходящую термосумку с холодовыми элементами и уберите еду в холодильник по прибытии.",
+      ],
+      example:
+          "Охлаждённый контейнер с пастой и фасолью в термосумке, затем в холодильник.",
+      alternative:
+          "Если холод обеспечить нельзя, выберите продукты без охлаждения до открытия.",
+      doneWhen: "Выбран способ поддерживать нужное хранение в дороге.",
+      why: "Контейнер сам по себе не обеспечивает безопасную температуру.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Keep a packed lunch chilled in transit",
+      "When travel separates two fridges.",
+      task: "Plan chilled storage for a perishable packed lunch.",
+      steps: [
+        "Check storage needs and fridge access.",
+        "Use a suitable insulated bag with ice packs, then refrigerate on arrival.",
+      ],
+      example:
+          "Chilled pasta and beans in an insulated bag, then into a fridge.",
+      alternative:
+          "If chilling is unavailable, choose foods shelf-stable until opened.",
+      doneWhen: "A way to maintain required storage in transit is chosen.",
+      why: "A container alone does not provide a safe storage temperature.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-access-help",
+    topic: "meal-access-help",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Найдите доступ к еде при нехватке средств",
+      "Если дело в доступности еды, а не в рецептах.",
+      task: "Узнайте один реальный вариант продуктовой поддержки поблизости.",
+      steps: [
+        "Проверьте местную социальную службу или организацию помощи.",
+        "Уточните условия получения и подходящие вам продукты.",
+      ],
+      example:
+          "Узнать время выдачи продуктового набора и необходимость записи.",
+      alternative: "Попросите близкого помочь найти актуальные контакты.",
+      doneWhen:
+          "Проверен один доступный вариант или подготовлен вопрос о помощи.",
+      why:
+          "Практическая поддержка уместнее требования лучше планировать при нехватке еды.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Find food support when money is short",
+      "When food access matters more than recipes.",
+      task: "Check one real local source of food support.",
+      steps: [
+        "Look for a local social service or food-support organisation.",
+        "Ask about access requirements and foods that suit you.",
+      ],
+      example: "Check collection times and whether an appointment is needed.",
+      alternative: "Ask someone trusted to help find current contacts.",
+      doneWhen:
+          "One possible source or a practical request for help is identified.",
+      why:
+          "Practical support is more useful than demanding better planning when food is scarce.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-share-prep",
+    topic: "food-support",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Разделите подготовку ужина",
+      "Если вся работа с едой лежит на одном человеке.",
+      task:
+          "Договоритесь об одной конкретной части готовки с другим человеком.",
+      steps: [
+        "Назовите отдельную задачу и время.",
+        "Передайте её вместе с нужными продуктами или инструкцией.",
+      ],
+      example:
+          "Один готовит крупу, другой моет подходящие овощи и накрывает стол.",
+      alternative:
+          "Если готовите один, выберите готовый компонент вместо одной задачи.",
+      doneWhen: "Согласована одна конкретная задача или готовая замена.",
+      why:
+          "Понятная небольшая часть работы проще общей просьбы помочь с ужином.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Share one dinner-preparation task",
+      "When one person carries all the food work.",
+      task: "Agree one specific cooking task with another person.",
+      steps: [
+        "Name a separate task and a time.",
+        "Provide the ingredients or instructions needed.",
+      ],
+      example:
+          "One person cooks grain, another washes suitable vegetables and sets the table.",
+      alternative: "Cooking alone? Replace one task with a prepared component.",
+      doneWhen: "One specific task or prepared replacement is agreed.",
+      why:
+          "A defined small task is easier to share than a general request for dinner help.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-spice-separate",
+    topic: "meal-spice-separate",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Одна основа с разной остротой",
+      "Если дома по-разному любят специи.",
+      task: "Отделите мягкую порцию до добавления острой приправы.",
+      steps: [
+        "Приготовьте общую основу до готовности.",
+        "Добавьте подходящую приправу отдельно в нужную порцию.",
+      ],
+      example:
+          "Фасоль с томатами: мягкая часть отдельно, чили добавить только желающим.",
+      alternative: "Подайте подходящие специи отдельно за столом.",
+      doneWhen: "Одна основа подходит разным вкусовым предпочтениям.",
+      why:
+          "Отдельная приправа даёт выбор без приготовления нескольких разных блюд.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "One base with different spice levels",
+      "When household spice preferences differ.",
+      task: "Set aside a mild portion before adding hot seasoning.",
+      steps: [
+        "Cook the shared base fully.",
+        "Add suitable seasoning only to the portions that want it.",
+      ],
+      example:
+          "Beans with tomatoes: keep a mild portion, add chilli to the rest.",
+      alternative: "Serve suitable seasonings separately at the table.",
+      doneWhen: "One base accommodates different spice preferences.",
+      why: "Separate seasoning offers choice without several different meals.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "meal-pantry-order",
+    topic: "meal-pantry-order",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Выберите ужин по доступному времени",
+      "Если продукты есть, но непонятно, что успеть приготовить.",
+      task: "Сравните время приготовления двух имеющихся основ.",
+      steps: [
+        "Прочитайте инструкции на крупе, пасте или бобовых.",
+        "Выберите основу под сегодняшнее время и добавьте доступные компоненты.",
+      ],
+      example:
+          "Быстрая паста с фасолью вместо сухой фасоли, которую ещё нужно замачивать.",
+      alternative: "Выберите готовую подходящую основу, если готовить некогда.",
+      doneWhen: "Выбран вариант, который помещается в реальное время.",
+      why:
+          "Проверка времени заранее снижает риск остаться без запланированной еды.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Choose dinner by available cooking time",
+      "When food is available but preparation time is unclear.",
+      task: "Compare the preparation time of two bases you already have.",
+      steps: [
+        "Read directions on grains, pasta or pulses.",
+        "Pick a base for today’s time and add accessible components.",
+      ],
+      example:
+          "Quick pasta with ready beans instead of dry beans needing soaking.",
+      alternative:
+          "Use a suitable ready-cooked base when cooking is impractical.",
+      doneWhen: "The chosen option fits the time actually available.",
+      why: "Checking time in advance makes the food plan more workable.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-overnight-oats",
+    topic: "cook-overnight-oats",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-chilling"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Овсянка без утренней варки",
+      "Если утром удобнее достать готовый завтрак.",
+      task: "Замочите подходящие хлопья в холодильнике по инструкции продукта.",
+      steps: [
+        "Соедините хлопья с подходящим молоком или йогуртом.",
+        "Закройте, охладите и добавьте фрукт перед едой, соблюдая сроки упаковок.",
+      ],
+      example: "Хлопья, подходящий йогурт и тёртое яблоко.",
+      alternative:
+          "Если хлопья требуют варки, сварите их по инструкции вместо замачивания.",
+      doneWhen:
+          "Подготовлен завтрак с подходящими хлопьями и безопасным хранением.",
+      why:
+          "Холодная подготовка переносит часть утренней работы на удобное время.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Overnight oats without morning cooking",
+      "When a ready breakfast is easier in the morning.",
+      task: "Soak suitable oats in the fridge as directed on the pack.",
+      steps: [
+        "Mix oats with suitable milk or yogurt.",
+        "Cover and chill; add fruit at serving, following storage limits.",
+      ],
+      example: "Oats, suitable yogurt and grated apple.",
+      alternative:
+          "If the oats require cooking, cook them as directed instead of soaking.",
+      doneWhen: "Breakfast uses suitable oats and a safe storage plan.",
+      why:
+          "Cold preparation moves some morning work to a more convenient time.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-savoury-porridge",
+    topic: "cook-savoury-porridge",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Несладкая каша на завтрак",
+      "Если сладкий завтрак не нравится.",
+      task: "Приготовьте кашу с несладкими дополнениями.",
+      steps: [
+        "Сварите подходящую крупу по упаковке.",
+        "Добавьте готовую фасоль или полностью приготовленное яйцо и овощи.",
+      ],
+      example: "Гречка с фасолью и помидором.",
+      alternative: "Используйте рис или овсянку, если гречки нет.",
+      doneWhen: "Выбрана или приготовлена одна несладкая комбинация.",
+      why:
+          "Каша остаётся удобной основой и для тех, кто не любит сладкий вкус.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Savoury breakfast porridge",
+      "When a sweet breakfast does not appeal.",
+      task: "Make a grain bowl with savoury additions.",
+      steps: [
+        "Cook a suitable grain as directed.",
+        "Add ready-cooked beans or a fully cooked egg and vegetables.",
+      ],
+      example: "Buckwheat with beans and tomato.",
+      alternative: "Use rice or oats if buckwheat is unavailable.",
+      doneWhen: "One savoury combination is chosen or prepared.",
+      why: "A grain bowl remains useful when sweet flavours are unappealing.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-egg-vegetable-pan",
+    topic: "egg-vegetable-cooking",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Овощная яичница на сковороде",
+      "Если есть яйца и немного овощей.",
+      task: "Приготовьте овощи с яйцом до полной готовности.",
+      steps: [
+        "Нарежьте подходящие овощи и прогрейте до мягкости.",
+        "Добавьте яйцо, доведите до готовности и подайте с хлебом.",
+      ],
+      example: "Помидор и кабачок с яйцом; рядом хлеб.",
+      alternative:
+          "Вместо яйца приготовьте с овощами подходящий тофу по упаковке.",
+      doneWhen:
+          "Есть горячее сочетание с полностью приготовленным яйцом или заменой.",
+      why: "Одна сковорода объединяет доступные овощи и белковый компонент.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Vegetable egg skillet",
+      "When eggs and a few vegetables are available.",
+      task: "Cook vegetables with egg until fully done.",
+      steps: [
+        "Chop suitable vegetables and cook until tender.",
+        "Add egg, cook fully and serve with bread.",
+      ],
+      example: "Tomato and courgette with egg, plus bread.",
+      alternative:
+          "Cook suitable tofu with the vegetables as directed instead.",
+      doneWhen:
+          "A hot combination with fully cooked egg or an alternative is ready.",
+      why: "One pan combines accessible vegetables and a protein food.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-jacket-potato",
+    topic: "cook-jacket-potato",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Картофель с готовой начинкой",
+      "Когда нужна сытная основа без сложного рецепта.",
+      task: "Приготовьте картофель и добавьте готовую начинку.",
+      steps: [
+        "Вымойте картофель и приготовьте безопасным способом по инструкции техники.",
+        "Разрежьте и добавьте горячую фасоль с томатами; подайте овощи.",
+      ],
+      example: "Запечённый картофель с фасолью и капустным салатом.",
+      alternative:
+          "Подойдёт отварной картофель с подходящим творогом или тофу.",
+      doneWhen:
+          "Выбрана начинка и полностью приготовленная картофельная основа.",
+      why: "Готовая начинка сокращает отдельные этапы приготовления.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Potato with a ready filling",
+      "For a substantial base without a complicated recipe.",
+      task: "Cook a potato and add a prepared filling.",
+      steps: [
+        "Wash and cook the potato safely using your appliance instructions.",
+        "Split and add hot beans with tomatoes; serve vegetables alongside.",
+      ],
+      example: "Baked potato with beans and cabbage salad.",
+      alternative: "Use boiled potato with suitable cottage cheese or tofu.",
+      doneWhen: "A filling and fully cooked potato base are chosen.",
+      why: "A ready filling reduces separate preparation steps.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-lentil-bolognese",
+    topic: "pulse-introduction",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Томатный соус с чечевицей",
+      "Если хочется недорогую начинку к пасте.",
+      task: "Сделайте густой томатный соус с чечевицей.",
+      steps: [
+        "Приготовьте чечевицу по упаковке.",
+        "Соедините с томатами и морковью, доведите до готовности и подайте с пастой.",
+      ],
+      example: "Красная чечевица, протёртые томаты и тёртая морковь.",
+      alternative: "Готовая фасоль сократит время приготовления соуса.",
+      doneWhen: "Есть густой соус, а не только добавка сырой чечевицы.",
+      why:
+          "Бобовые становятся основной частью соуса с доступными ингредиентами.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Lentil tomato pasta sauce",
+      "For an affordable pasta topping.",
+      task: "Make a thick tomato sauce with lentils.",
+      steps: [
+        "Cook lentils as directed on the pack.",
+        "Combine with tomatoes and carrot, cook fully and serve with pasta.",
+      ],
+      example: "Red lentils, passata and grated carrot.",
+      alternative: "Ready-cooked beans shorten the sauce preparation.",
+      doneWhen:
+          "A thick sauce is prepared rather than adding uncooked lentils.",
+      why:
+          "Pulses become the main sauce component using accessible ingredients.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-chickpea-mash",
+    topic: "cook-chickpea-mash",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Намазка из готового нута",
+      "Если хочется начинку для хлеба без плиты.",
+      task: "Разомните готовый нут с подходящей заправкой.",
+      steps: [
+        "Подготовьте нут по упаковке и разомните вилкой.",
+        "Добавьте немного подходящего масла или йогурта и подайте с хлебом и овощами.",
+      ],
+      example: "Нут, масло и зелень; рядом хлеб и огурец.",
+      alternative:
+          "Готовая белая фасоль тоже разминается вилкой; кунжут не обязателен.",
+      doneWhen: "Приготовлена переносимая по составу намазка.",
+      why: "Разминание превращает готовые бобовые в другую удобную текстуру.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Mash ready-cooked chickpeas into a spread",
+      "For a bread filling without a hob.",
+      task: "Mash ready-cooked chickpeas with a suitable dressing.",
+      steps: [
+        "Prepare chickpeas as directed and mash with a fork.",
+        "Add suitable oil or yogurt and serve with bread and vegetables.",
+      ],
+      example: "Chickpeas, oil and herbs; bread and cucumber alongside.",
+      alternative:
+          "Ready-cooked white beans also mash easily; sesame is optional.",
+      doneWhen: "A spread with suitable ingredients is prepared.",
+      why: "Mashing turns ready pulses into a convenient different texture.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-tofu-crumble",
+    topic: "cook-tofu-crumble",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Тофу с овощами в крошке",
+      "Если хочется попробовать тофу без сложного маринада.",
+      task: "Раскрошите тофу и приготовьте с подходящими овощами.",
+      steps: [
+        "Проверьте состав и инструкцию тофу.",
+        "Раскрошите, приготовьте по упаковке с овощами и подайте с рисом или хлебом.",
+      ],
+      example: "Тофу с морковью и помидором на сковороде.",
+      alternative:
+          "Если соя не подходит, выберите полностью приготовленное яйцо.",
+      doneWhen: "Выбран или приготовлен вариант с проверенным составом.",
+      why:
+          "Раскрошенный тофу легко распределить по блюду без отдельного маринования.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Tofu and vegetable scramble",
+      "To try tofu without a complicated marinade.",
+      task: "Crumble tofu and cook it with suitable vegetables.",
+      steps: [
+        "Check tofu ingredients and preparation directions.",
+        "Crumble and cook as directed with vegetables; serve with rice or bread.",
+      ],
+      example: "Tofu, carrot and tomato in a pan.",
+      alternative: "Use a fully cooked egg if soy is unsuitable.",
+      doneWhen: "An option with checked ingredients is chosen or prepared.",
+      why:
+          "Crumbled tofu distributes through a dish without a separate marinade.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-fish-parcel",
+    topic: "cook-fish-parcel",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Рыба с овощами в форме",
+      "Если есть духовка и подходящая рыба.",
+      task: "Запеките рыбу с овощами по инструкции продукта.",
+      steps: [
+        "Проверьте разморозку и время приготовления рыбы.",
+        "Положите в подходящую форму с овощами и доведите всё до готовности; добавьте гарнир.",
+      ],
+      example: "Рыба с кабачком в форме, рядом картофель.",
+      alternative:
+          "Возьмите подходящий тофу с овощами, соблюдая его инструкцию.",
+      doneWhen: "Все компоненты приготовлены, выбран гарнир.",
+      why: "Приготовление в одной форме сокращает количество отдельной посуды.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Fish and vegetables in a baking dish",
+      "When an oven and suitable fish are available.",
+      task: "Bake fish with vegetables following the product instructions.",
+      steps: [
+        "Check defrosting and cooking directions.",
+        "Use an oven-safe dish with vegetables and cook fully; add a side.",
+      ],
+      example: "Fish and courgette in a dish, with potato alongside.",
+      alternative:
+          "Use suitable tofu and vegetables following its own instructions.",
+      doneWhen: "All components are cooked and a side is chosen.",
+      why: "One baking dish reduces separate cookware.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-tray-chicken",
+    topic: "cook-tray-chicken",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Курица и овощи на противне",
+      "Если удобно готовить в духовке.",
+      task: "Приготовьте курицу с овощами, разделяя сырое и готовое.",
+      steps: [
+        "Подготовьте овощи отдельно от сырой курицы и вымойте инвентарь.",
+        "Запеките по безопасной инструкции до полной готовности; подайте с подходящим гарниром.",
+      ],
+      example: "Курица, морковь и картофель на противне.",
+      alternative:
+          "Вместо сырой курицы используйте подходящую растительную замену по её инструкции.",
+      doneWhen:
+          "Блюдо полностью приготовлено без контакта готовой еды с сырой курицей.",
+      why:
+          "Один противень упрощает готовку, но не отменяет гигиену сырого мяса.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Chicken and vegetables on a tray",
+      "When oven cooking is convenient.",
+      task:
+          "Cook chicken with vegetables while separating raw and ready-to-eat food.",
+      steps: [
+        "Prepare vegetables separately from raw chicken and clean utensils.",
+        "Bake following safe instructions until fully cooked; serve with a suitable side.",
+      ],
+      example: "Chicken, carrot and potato on a tray.",
+      alternative:
+          "Use a suitable plant alternative following its own instructions.",
+      doneWhen:
+          "The meal is fully cooked without raw chicken contacting ready-to-eat food.",
+      why: "One tray simplifies cooking while raw-meat hygiene still matters.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-cabbage-noodles",
+    topic: "cook-cabbage-noodles",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Лапша с капустой и фасолью",
+      "Если нужен бюджетный горячий обед.",
+      task:
+          "Соедините приготовленную лапшу с тушёной капустой и готовой фасолью.",
+      steps: [
+        "Приготовьте лапшу по упаковке, капусту потушите до удобной мягкости.",
+        "Добавьте готовую фасоль и подходящую заправку, прогрейте.",
+      ],
+      example: "Лапша, белокочанная капуста, морковь и фасоль.",
+      alternative:
+          "Вместо лапши подойдёт картофель; соус выбирайте по ограничениям.",
+      doneWhen: "Приготовлено одно сочетание с капустой, основой и бобовыми.",
+      why: "Недорогая капуста используется как основная часть горячего блюда.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Noodles with cabbage and beans",
+      "For an affordable hot lunch.",
+      task: "Combine cooked noodles with stewed cabbage and ready beans.",
+      steps: [
+        "Cook noodles as directed and soften cabbage to your preference.",
+        "Add ready beans and suitable seasoning; heat through.",
+      ],
+      example: "Noodles, white cabbage, carrot and beans.",
+      alternative:
+          "Use potato instead of noodles; choose sauces for your restrictions.",
+      doneWhen: "One combination of cabbage, a base and pulses is prepared.",
+      why: "Affordable cabbage becomes a main part of a hot meal.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-couscous-kettle",
+    topic: "cook-couscous-kettle",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Кускус по инструкции без плиты",
+      "Если есть только чайник и подходящая крупа.",
+      task:
+          "Приготовьте кускус, допускающий запаривание, и добавьте готовые компоненты.",
+      steps: [
+        "Убедитесь по упаковке, что крупу можно запарить в жаростойкой посуде.",
+        "Приготовьте указанным способом и добавьте готовый нут и овощи.",
+      ],
+      example: "Кускус с нутом, помидором и подходящим маслом.",
+      alternative:
+          "Если крупа требует варки, выберите хлеб с готовой начинкой.",
+      doneWhen:
+          "Выбран продукт и способ приготовления, подходящие для оборудования.",
+      why:
+          "Проверенная инструкция позволяет использовать чайник без догадок о готовности.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Couscous prepared with a kettle",
+      "When only a kettle and a suitable grain are available.",
+      task: "Prepare couscous labelled for soaking and add ready ingredients.",
+      steps: [
+        "Confirm the pack allows soaking in a heatproof bowl.",
+        "Follow directions, then add ready chickpeas and vegetables.",
+      ],
+      example: "Couscous with chickpeas, tomato and suitable oil.",
+      alternative:
+          "If the grain requires boiling, use bread with a ready filling.",
+      doneWhen: "The product and preparation suit the equipment available.",
+      why:
+          "Checking directions makes kettle preparation workable without guessing doneness.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-stuffed-wrap",
+    topic: "cook-stuffed-wrap",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Рулет с начинкой без сложной сборки",
+      "Для еды, которую удобно держать в руках.",
+      task: "Сверните лепёшку с готовой начинкой и нарезанными овощами.",
+      steps: [
+        "Выберите подходящую лепёшку и готовый белковый продукт.",
+        "Разложите начинку полосой, добавьте овощи и сверните края.",
+      ],
+      example: "Лепёшка с готовой фасолью, огурцом и йогуртовым соусом.",
+      alternative:
+          "Та же начинка в тарелке с хлебом, если сворачивать неудобно.",
+      doneWhen: "Есть рулет или удобная тарелочная версия.",
+      why:
+          "Одинаковые компоненты можно подать в форме, удобной для ваших возможностей.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Fold a filled wrap",
+      "For food that is convenient to hold.",
+      task: "Fold a flatbread around ready filling and cut vegetables.",
+      steps: [
+        "Choose a suitable flatbread and ready protein food.",
+        "Arrange filling in a strip, add vegetables and fold the edges.",
+      ],
+      example: "Flatbread with ready beans, cucumber and yogurt sauce.",
+      alternative:
+          "Serve the same filling in a bowl with bread if folding is difficult.",
+      doneWhen: "A wrap or convenient bowl version is ready.",
+      why: "The same components can take a form that suits your abilities.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-split-pea-soup",
+    topic: "cook-split-pea-soup",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Гороховый суп с запасом времени",
+      "Если есть время на длительную варку.",
+      task: "Приготовьте суп из сухого колотого гороха по упаковке.",
+      steps: [
+        "Проверьте необходимость замачивания и длительность варки.",
+        "Варите до готовности с подходящими овощами; подайте с хлебом.",
+      ],
+      example: "Колотый горох, морковь и лук без обязательных копчёностей.",
+      alternative:
+          "При нехватке времени выберите готовую фасоль для другого супа.",
+      doneWhen: "Учтено время и горох полностью приготовлен.",
+      why:
+          "Сухой горох даёт бюджетную основу, если заранее учесть время готовки.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Split-pea soup with enough cooking time",
+      "When a longer simmer fits your day.",
+      task: "Make soup using dried split peas as directed.",
+      steps: [
+        "Check soaking needs and cooking time.",
+        "Cook fully with suitable vegetables; serve with bread.",
+      ],
+      example: "Split peas, carrot and onion without requiring smoked meat.",
+      alternative: "Use ready beans in another soup when time is short.",
+      doneWhen: "Cooking time is allowed and peas are fully cooked.",
+      why:
+          "Dried peas offer an affordable base when preparation time is planned.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-frittata-leftovers",
+    topic: "cook-frittata-leftovers",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking", "fsa-chilling"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Запеканка из безопасно сохранённых овощей",
+      "Если остались готовые овощи с известным хранением.",
+      task:
+          "Используйте подходящие остатки овощей в полностью приготовленной яичной запеканке.",
+      steps: [
+        "Проверьте сроки и охлаждение остатков; сомнительное не используйте.",
+        "Соедините с яйцом и запеките до полной готовности.",
+      ],
+      example: "Сохранённые по правилам брокколи и картофель с яйцом.",
+      alternative:
+          "Используйте свежеприготовленные овощи, если хранение неизвестно.",
+      doneWhen: "Выбраны безопасные овощи и полностью приготовлена запеканка.",
+      why:
+          "Остатки получают новое применение без предположения, что любая вчерашняя еда безопасна.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Bake safely stored vegetables into a frittata",
+      "When cooked vegetables remain with known storage.",
+      task: "Use suitable vegetable leftovers in a fully cooked egg bake.",
+      steps: [
+        "Check storage time and chilling; do not use doubtful leftovers.",
+        "Combine with egg and bake until fully cooked.",
+      ],
+      example: "Properly stored broccoli and potato with egg.",
+      alternative: "Use freshly cooked vegetables if storage is unknown.",
+      doneWhen: "Suitable vegetables are chosen and the bake is fully cooked.",
+      why:
+          "Leftovers get another use without assuming all yesterday’s food is safe.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "kitchen-separate-board",
+    topic: "raw-ready-separation",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Отделите сырые продукты от готовых",
+      "Если готовите сырое мясо, рыбу и еду без последующей готовки.",
+      task: "Выделите отдельные чистые доску и приборы для готовой еды.",
+      steps: [
+        "Сначала подготовьте продукты, которые не будут готовиться, чистым инвентарём.",
+        "После сырых продуктов вымойте руки, поверхности и инвентарь перед готовой едой.",
+      ],
+      example: "Салат нарезать чистым ножом отдельно от сырой курицы.",
+      alternative:
+          "Используйте другой чистый комплект или выберите блюдо без работы с сырым мясом.",
+      doneWhen: "Готовая еда отделена от сырья и использован чистый инвентарь.",
+      why:
+          "Разделение уменьшает перенос загрязнения между разными этапами готовки.",
+      explanation:
+          "Учитывайте инструкции, свои ограничения и безопасные условия. Это бытовой пример без расчёта личной нормы.",
+    ),
+    en: TipCopy(
+      "Separate raw and ready-to-eat foods",
+      "When preparing raw meat or fish alongside food eaten without cooking.",
+      task: "Use separate clean boards and utensils for ready-to-eat food.",
+      steps: [
+        "Prepare food eaten without cooking first with clean equipment.",
+        "After raw food, wash hands, surfaces and utensils before handling ready-to-eat food.",
+      ],
+      example: "Cut salad with a clean knife separately from raw chicken.",
+      alternative:
+          "Use another clean set or choose a meal without handling raw meat.",
+      doneWhen:
+          "Ready-to-eat food is separate from raw ingredients with clean equipment.",
+      why:
+          "Separation reduces contamination between different preparation stages.",
+      explanation:
+          "Follow instructions, your restrictions and safe conditions. This is an everyday example without a prescribed personal target.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-buckwheat-mushroom",
+    topic: "cook-buckwheat-mushroom",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Гречка с грибами и фасолью",
+      "Если хочется горячую крупу с выраженным вкусом.",
+      task: "Приготовьте гречку с покупными грибами и готовой фасолью.",
+      steps: [
+        "Сварите гречку по упаковке и отдельно приготовьте грибы до готовности.",
+        "Соедините с готовой фасолью и подходящей заправкой.",
+      ],
+      example: "Гречка, шампиньоны и белая фасоль.",
+      alternative:
+          "Если грибы не подходят, используйте тушёную морковь; лесные грибы для этого плана не нужны.",
+      doneWhen: "Крупа и грибы готовы, добавлен бобовый компонент.",
+      why:
+          "Грибы дают вкус, а бобовые дополняют крупу; грибы не объявляются заменой белкового продукта.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Buckwheat with mushrooms and beans",
+      "For a hot grain dish with a savoury flavour.",
+      task: "Cook buckwheat with shop-bought mushrooms and ready beans.",
+      steps: [
+        "Cook buckwheat as directed and cook mushrooms fully separately.",
+        "Combine with ready beans and suitable seasoning.",
+      ],
+      example: "Buckwheat, button mushrooms and white beans.",
+      alternative:
+          "Use stewed carrot if mushrooms are unsuitable; wild mushrooms are unnecessary.",
+      doneWhen: "Grain and mushrooms are cooked and pulses added.",
+      why:
+          "Mushrooms provide flavour while beans complement the grain; mushrooms are not treated as a protein replacement.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "kitchen-fridge-thaw",
+    topic: "dinner-preparation",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["fsa-chilling"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Разморозка с защитой соседних продуктов",
+      "Если планируете готовить замороженный продукт.",
+      task:
+          "Проверьте инструкцию и организуйте безопасную разморозку в холодильнике.",
+      steps: [
+        "Если нужна разморозка, положите продукт в подходящую ёмкость для сбора жидкости.",
+        "Дайте нужное время и используйте по инструкции; не оставляйте на столе ради ускорения.",
+      ],
+      example:
+          "Рыба в закрытой подходящей ёмкости отдельно от готового салата.",
+      alternative:
+          "Продукт, допускающий готовку из заморозки, готовьте по его инструкции.",
+      doneWhen: "Выбран безопасный способ с учётом времени и жидкости.",
+      why: "Ёмкость и место защищают другие продукты во время разморозки.",
+      explanation:
+          "Учитывайте инструкции, свои ограничения и безопасные условия. Это бытовой пример без расчёта личной нормы.",
+    ),
+    en: TipCopy(
+      "Defrost while protecting nearby food",
+      "When planning to cook a frozen product.",
+      task: "Check directions and arrange safe fridge defrosting.",
+      steps: [
+        "If defrosting is needed, use a suitable container to catch drips.",
+        "Allow enough time and use as directed; do not speed it up on the counter.",
+      ],
+      example:
+          "Fish in a suitable covered container separate from ready salad.",
+      alternative:
+          "Cook from frozen only when the product instructions allow it.",
+      doneWhen: "A safe method accounts for time and drips.",
+      why: "The container and location protect other food while defrosting.",
+      explanation:
+          "Follow instructions, your restrictions and safe conditions. This is an everyday example without a prescribed personal target.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-frozen-fruit-bowl",
+    topic: "cook-frozen-fruit-bowl",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Завтрак с замороженными ягодами",
+      "Если свежие фрукты сейчас дороги.",
+      task:
+          "Подготовьте замороженные ягоды строго по упаковке для готового завтрака.",
+      steps: [
+        "Проверьте, нужны ли ягодам термообработка или разморозка.",
+        "Подготовьте указанным способом и добавьте к каше с подходящим йогуртом.",
+      ],
+      example: "Каша с приготовленными по упаковке ягодами и йогуртом.",
+      alternative: "Подойдёт нарезанное яблоко без покупки ягод.",
+      doneWhen:
+          "Ягоды использованы после нужной подготовки или выбрана замена.",
+      why:
+          "Замороженный продукт удобен, но не всегда предназначен для еды прямо из пакета.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Breakfast with frozen berries",
+      "When fresh fruit is expensive.",
+      task: "Prepare frozen berries exactly as labelled for a ready breakfast.",
+      steps: [
+        "Check whether heating or defrosting is required.",
+        "Prepare as directed, then add to porridge with suitable yogurt.",
+      ],
+      example: "Porridge with label-prepared berries and yogurt.",
+      alternative: "Use a chopped apple instead of buying berries.",
+      doneWhen: "Berries are prepared as required or an alternative is chosen.",
+      why:
+          "Frozen fruit is convenient but is not always intended to be eaten straight from the pack.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-microwave-vegetable",
+    topic: "cook-microwave-vegetable",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Овощи в микроволновке",
+      "Если не хочется разогревать духовку.",
+      task:
+          "Приготовьте овощи в подходящей посуде по инструкции техники или упаковки.",
+      steps: [
+        "Проверьте безопасность посуды и требования к крышке.",
+        "Приготовьте, перемешайте при необходимости и осторожно откройте от себя.",
+      ],
+      example: "Овощная смесь к готовой крупе и фасоли.",
+      alternative:
+          "Отварите овощи обычным способом, если нет подходящей посуды.",
+      doneWhen: "Выбран безопасный способ и овощи доведены до готовности.",
+      why:
+          "Микроволновка даёт ещё один способ готовки с меньшим количеством посуды.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Microwave vegetables safely",
+      "When heating an oven is inconvenient.",
+      task:
+          "Cook vegetables in suitable cookware following appliance or pack directions.",
+      steps: [
+        "Check cookware safety and lid instructions.",
+        "Cook, stir if needed and open carefully away from you.",
+      ],
+      example: "Vegetable mix alongside ready grain and beans.",
+      alternative:
+          "Boil vegetables normally if suitable cookware is unavailable.",
+      doneWhen: "A safe method is chosen and vegetables are cooked.",
+      why: "A microwave offers another preparation method with less cookware.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-roast-vegetable-sauce",
+    topic: "cook-roast-vegetable-sauce",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Соус из приготовленных овощей",
+      "Если хочется другой текстуры к пасте.",
+      task: "Превратите приготовленные овощи в соус с бобовыми.",
+      steps: [
+        "Приготовьте подходящие овощи до мягкости.",
+        "Разомните с готовой белой фасолью и добавьте жидкость до удобной густоты.",
+      ],
+      example: "Морковь и белая фасоль в соусе к пасте.",
+      alternative:
+          "Разомните вилкой вместо блендера или оставьте овощи кусочками.",
+      doneWhen: "Получен соус удобной густоты.",
+      why:
+          "Изменение формы помогает использовать овощи без покупки готового соуса.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Turn cooked vegetables into a sauce",
+      "For a different pasta texture.",
+      task: "Make a sauce from cooked vegetables and pulses.",
+      steps: [
+        "Cook suitable vegetables until soft.",
+        "Mash with ready white beans and add liquid to a useful consistency.",
+      ],
+      example: "Carrot and white bean sauce for pasta.",
+      alternative:
+          "Use a fork instead of a blender, or keep the vegetables in pieces.",
+      doneWhen: "A sauce with a comfortable consistency is made.",
+      why: "Changing the form uses vegetables without buying a prepared sauce.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-potato-bean-cakes",
+    topic: "cook-potato-bean-cakes",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Картофельно-фасолевые лепёшки",
+      "Если хочется формованное горячее блюдо без мяса.",
+      task:
+          "Сформируйте лепёшки из приготовленного картофеля и готовой фасоли.",
+      steps: [
+        "Разомните полностью приготовленные компоненты и добавьте подходящую приправу.",
+        "Сформируйте небольшие лепёшки и приготовьте до горячей середины; подайте овощи.",
+      ],
+      example: "Картофель, фасоль и зелень; рядом капустный салат.",
+      alternative: "Если масса не держит форму, подайте её как горячее пюре.",
+      doneWhen: "Приготовлены лепёшки или удобное горячее пюре.",
+      why: "Два недорогих продукта дают другую форму знакомого сочетания.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Potato and bean patties",
+      "For a shaped hot dish without meat.",
+      task: "Shape cooked potato and ready beans into patties.",
+      steps: [
+        "Mash fully cooked components with suitable seasoning.",
+        "Form small patties and cook until hot throughout; serve vegetables.",
+      ],
+      example: "Potato, beans and herbs with cabbage salad.",
+      alternative: "Serve as hot mash if the mixture will not hold its shape.",
+      doneWhen: "Patties or convenient hot mash are prepared.",
+      why:
+          "Two affordable foods give a different form to a familiar combination.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-shakshuka",
+    topic: "egg-vegetable-cooking",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating", "fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Яйца в томатном соусе",
+      "Если нужен горячий ужин с хлебом.",
+      task:
+          "Приготовьте яйца в прогретом томатно-овощном соусе до полной готовности.",
+      steps: [
+        "Потушите томаты с подходящими овощами.",
+        "Добавьте яйца и готовьте до полной готовности, подайте с хлебом.",
+      ],
+      example: "Томаты, перец и яйца; хлеб для соуса.",
+      alternative: "Готовая фасоль в том же соусе вместо яйца.",
+      doneWhen: "Соус и белковый компонент полностью приготовлены.",
+      why:
+          "Соус одновременно готовит начинку и становится дополнением к хлебу.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Eggs in tomato sauce",
+      "For a hot dinner with bread.",
+      task: "Cook eggs fully in a hot tomato and vegetable sauce.",
+      steps: [
+        "Simmer tomatoes with suitable vegetables.",
+        "Add eggs, cook fully and serve with bread.",
+      ],
+      example: "Tomatoes, pepper and eggs, with bread for the sauce.",
+      alternative: "Use ready beans in the same sauce instead of eggs.",
+      doneWhen: "The sauce and protein component are fully cooked.",
+      why: "The sauce cooks the filling and accompanies the bread.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "cook-yogurt-dip",
+    topic: "cook-yogurt-dip",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Соус из подходящего йогурта",
+      "Если хочется отдельную заправку к нескольким компонентам.",
+      task: "Смешайте подходящий йогурт с зеленью для соуса.",
+      steps: [
+        "Проверьте состав, срок и условия хранения йогурта.",
+        "Добавьте знакомую зелень и подайте отдельно к основному блюду.",
+      ],
+      example: "Йогурт с укропом к картофелю, фасоли и огурцу.",
+      alternative:
+          "Используйте подходящую растительную основу; молочный соус не обязателен.",
+      doneWhen: "Приготовлен соус с подходящим составом.",
+      why:
+          "Отдельный соус меняет вкус знакомого блюда без замены всех компонентов.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Make a suitable yogurt dip",
+      "For a separate dressing with several meal components.",
+      task: "Mix suitable yogurt with herbs for a dip.",
+      steps: [
+        "Check ingredients, date and storage instructions.",
+        "Add familiar herbs and serve separately with the main meal.",
+      ],
+      example: "Yogurt and dill with potato, beans and cucumber.",
+      alternative: "Use a suitable plant-based base; dairy is optional.",
+      doneWhen: "A dip with suitable ingredients is prepared.",
+      why:
+          "A separate dip changes a familiar meal’s flavour without replacing every component.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "food-fortified-plant",
+    topic: "dairy-alternative-choice",
+    category: TipCategory.macros,
+    version: 5,
+    sourceIds: ["who-diet"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Растительный напиток для замены молока",
+      "Если вы выбираете растительную замену.",
+      task: "Проверьте белок и обогащение на упаковке выбранного напитка.",
+      steps: [
+        "Сравните состав на одинаковый объём.",
+        "Учитывайте подходящие вам белок, кальций и ограничения, а не только название.",
+      ],
+      example:
+          "Два овсяных напитка могут отличаться по обогащению; соевый — по белку.",
+      alternative:
+          "Если замена нужна по лечебным причинам, уточните подходящий продукт со специалистом.",
+      doneWhen: "Выбран продукт с прочитанным составом.",
+      why:
+          "Растительные напитки не становятся равноценными молоку только из-за похожей упаковки.",
+      explanation:
+          "Сравнение продуктов не назначает личную норму. Учитывайте аллергию, переносимость и назначенную диету.",
+    ),
+    en: TipCopy(
+      "A plant drink as a milk replacement",
+      "When choosing a plant-based alternative.",
+      task: "Check protein and fortification on the chosen drink’s label.",
+      steps: [
+        "Compare ingredients on the same volume basis.",
+        "Consider suitable protein, calcium and restrictions rather than the name alone.",
+      ],
+      example:
+          "Two oat drinks may differ in fortification; soy may differ in protein.",
+      alternative:
+          "Check a suitable product with a professional for a clinical substitution.",
+      doneWhen: "A product is chosen after reading its composition.",
+      why:
+          "Similar packaging does not make plant drinks nutritionally identical to milk.",
+      explanation:
+          "Food comparisons do not prescribe a personal target. Respect allergies, tolerance and prescribed diets.",
+    ),
+  ),
+
+  DailyTip(
+    id: "food-nut-alternative",
+    topic: "food-nut-alternative",
+    category: TipCategory.macros,
+    version: 5,
+    sourceIds: ["who-diet", "fda-allergens"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Замена ореховой пасты по ограничениям",
+      "Если орехи вам не подходят.",
+      task: "Подберите безопасную намазку вместо ореховой пасты.",
+      steps: [
+        "Прочитайте состав и предупреждения о перекрёстном контакте.",
+        "Выберите знакомый переносимый продукт для хлеба или каши.",
+      ],
+      example: "Подходящая бобовая намазка вместо ореховой пасты на хлебе.",
+      alternative:
+          "При сложной аллергии используйте уже согласованный безопасный продукт, не пробуйте наугад.",
+      doneWhen: "Найдена подтверждённо подходящая замена.",
+      why:
+          "Замена сохраняет удобный способ еды без требования употреблять орехи.",
+      explanation:
+          "Сравнение продуктов не назначает личную норму. Учитывайте аллергию, переносимость и назначенную диету.",
+    ),
+    en: TipCopy(
+      "Replace nut butter for your restrictions",
+      "When nuts do not suit you.",
+      task: "Find a safe spread instead of nut butter.",
+      steps: [
+        "Read ingredients and cross-contact warnings.",
+        "Choose a familiar tolerated product for bread or porridge.",
+      ],
+      example: "A suitable bean spread instead of nut butter on bread.",
+      alternative:
+          "With complex allergy, use an already agreed safe food rather than experimenting.",
+      doneWhen: "A confirmed suitable replacement is found.",
+      why:
+          "A replacement preserves a convenient food format without requiring nuts.",
+      explanation:
+          "Food comparisons do not prescribe a personal target. Respect allergies, tolerance and prescribed diets.",
+    ),
+  ),
+
+  DailyTip(
+    id: "food-grain-transition",
+    topic: "food-grain-transition",
+    category: TipCategory.macros,
+    version: 5,
+    sourceIds: ["nhs-fibre"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Проба цельнозерновой крупы без полной замены",
+      "Если хочется попробовать другую крупу.",
+      task:
+          "Смешайте небольшое количество подходящей цельнозерновой крупы с привычной.",
+      steps: [
+        "Приготовьте крупы отдельно по их инструкциям.",
+        "Соедините в удобном соотношении и оцените вкус и переносимость.",
+      ],
+      example: "Часть готового бурого риса с привычным белым рисом.",
+      alternative:
+          "При лечебном ограничении клетчатки следуйте своему плану, не меняйте крупу самостоятельно.",
+      doneWhen: "Попробовано удобное сочетание или сохранён лечебный вариант.",
+      why:
+          "Смешивание позволяет оценить новый вкус постепенно, без обязательной полной замены.",
+      explanation:
+          "Сравнение продуктов не назначает личную норму. Учитывайте аллергию, переносимость и назначенную диету.",
+    ),
+    en: TipCopy(
+      "Try a whole grain without a full switch",
+      "When trying a different grain.",
+      task: "Mix a little suitable whole grain with a familiar grain.",
+      steps: [
+        "Cook each grain separately as directed.",
+        "Combine in a comfortable ratio and assess taste and tolerance.",
+      ],
+      example: "Some cooked brown rice mixed with familiar white rice.",
+      alternative:
+          "Follow prescribed fibre restrictions rather than changing grain independently.",
+      doneWhen: "A manageable mixture is tried or a clinical option retained.",
+      why:
+          "Mixing allows a gradual taste trial without requiring a complete switch.",
+      explanation:
+          "Food comparisons do not prescribe a personal target. Respect allergies, tolerance and prescribed diets.",
+    ),
+  ),
+
+  DailyTip(
+    id: "food-pulse-rinse",
+    topic: "food-pulse-rinse",
+    category: TipCategory.macros,
+    version: 5,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Подготовьте консервированные бобовые",
+      "Если хотите использовать готовую фасоль или нут.",
+      task: "Проверьте, как подготовить одну банку бобовых к еде.",
+      steps: [
+        "Прочитайте состав и способ употребления.",
+        "Слейте или промойте, если это подходит продукту и инструкции, затем добавьте в блюдо.",
+      ],
+      example: "Фасоль без соуса после подготовки в салат с хлебом.",
+      alternative:
+          "Бобовые в готовом соусе используйте по их инструкции, промывка не обязательна.",
+      doneWhen: "Бобовые подготовлены подходящим способом.",
+      why:
+          "Разные консервы требуют разной подготовки; не нужно автоматически промывать любой продукт.",
+      explanation:
+          "Сравнение продуктов не назначает личную норму. Учитывайте аллергию, переносимость и назначенную диету.",
+    ),
+    en: TipCopy(
+      "Prepare a tin of pulses",
+      "When using ready beans or chickpeas.",
+      task: "Check how to prepare one tin for eating.",
+      steps: [
+        "Read ingredients and serving directions.",
+        "Drain or rinse when suitable and directed, then add to a meal.",
+      ],
+      example: "Prepared plain beans in a salad with bread.",
+      alternative:
+          "Use beans in sauce as directed; rinsing is optional rather than universal.",
+      doneWhen: "The pulses are prepared appropriately.",
+      why:
+          "Different tins need different preparation; not every product should automatically be rinsed.",
+      explanation:
+          "Food comparisons do not prescribe a personal target. Respect allergies, tolerance and prescribed diets.",
+    ),
+  ),
+
+  DailyTip(
+    id: "food-fibre-tolerance",
+    topic: "food-fibre-tolerance",
+    category: TipCategory.macros,
+    version: 5,
+    sourceIds: ["nhs-fibre"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Удобный темп изменения клетчатки",
+      "Если новая богатая клетчаткой еда вызывает дискомфорт.",
+      task:
+          "Вернитесь к переносимому количеству и меняйте один продукт за раз.",
+      steps: [
+        "Отметьте, какой продукт и какое изменение предшествовали дискомфорту.",
+        "Выберите знакомую переносимую еду; при стойких симптомах обсудите их со специалистом.",
+      ],
+      example:
+          "Вместо большой новой порции бобовых — привычное блюдо с небольшим переносимым дополнением.",
+      alternative:
+          "При назначенной диете не экспериментируйте, уточните её со специалистом.",
+      doneWhen: "Выбран переносимый вариант без обязанности терпеть симптомы.",
+      why:
+          "Постепенность помогает оценить переносимость, но не устанавливает причину симптомов.",
+      explanation:
+          "Сравнение продуктов не назначает личную норму. Учитывайте аллергию, переносимость и назначенную диету.",
+    ),
+    en: TipCopy(
+      "A comfortable pace for fibre changes",
+      "If a new high-fibre food feels uncomfortable.",
+      task: "Return to a tolerated amount and change one food at a time.",
+      steps: [
+        "Notice which food and change preceded discomfort.",
+        "Use familiar tolerated food; discuss persistent symptoms with a professional.",
+      ],
+      example:
+          "Instead of a large new serving of pulses, use a familiar meal with a small tolerated addition.",
+      alternative:
+          "With a prescribed diet, seek individual advice rather than experimenting.",
+      doneWhen:
+          "A tolerated option is chosen without requiring you to endure symptoms.",
+      why:
+          "Gradual change helps assess tolerance but does not establish the cause of symptoms.",
+      explanation:
+          "Food comparisons do not prescribe a personal target. Respect allergies, tolerance and prescribed diets.",
+    ),
+  ),
+
+  DailyTip(
+    id: "food-protein-pack-cost",
+    topic: "food-protein-pack-cost",
+    category: TipCategory.macros,
+    version: 5,
+    sourceIds: ["who-diet"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Сравните стоимость белкового компонента",
+      "Если привычный продукт стал дорогим.",
+      task: "Сравните стоимость двух подходящих вариантов для одного блюда.",
+      steps: [
+        "Посмотрите цену и реально используемый объём.",
+        "Выберите вариант, учитывая готовку, хранение и ограничения.",
+      ],
+      example:
+          "Для обеда сравнить готовую фасоль и яйца, а не искать дорогой специальный продукт.",
+      alternative:
+          "Оставьте знакомый вариант, если замена требует недоступного оборудования.",
+      doneWhen: "Выбран доступный компонент с учётом полной подготовки.",
+      why:
+          "Цена упаковки и удобство готовки вместе помогают выбрать реальную замену.",
+      explanation:
+          "Сравнение продуктов не назначает личную норму. Учитывайте аллергию, переносимость и назначенную диету.",
+    ),
+    en: TipCopy(
+      "Compare the cost of a protein component",
+      "When a familiar food becomes expensive.",
+      task: "Compare two suitable options for one dish.",
+      steps: [
+        "Check price and the amount you can actually use.",
+        "Consider cooking, storage and restrictions before choosing.",
+      ],
+      example:
+          "Compare ready beans and eggs for lunch rather than seeking a costly specialist product.",
+      alternative:
+          "Keep the familiar option if a replacement needs unavailable equipment.",
+      doneWhen:
+          "An accessible component is chosen with preparation considered.",
+      why:
+          "Pack price and preparation together make a substitution more realistic.",
+      explanation:
+          "Food comparisons do not prescribe a personal target. Respect allergies, tolerance and prescribed diets.",
+    ),
+  ),
+
+  DailyTip(
+    id: "food-fat-cooking-role",
+    topic: "food-fat-cooking-role",
+    category: TipCategory.macros,
+    version: 5,
+    sourceIds: ["who-diet"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Масло для конкретного способа готовки",
+      "Если неясно, какое масло использовать.",
+      task: "Проверьте назначение имеющегося масла для нагрева или заправки.",
+      steps: [
+        "Прочитайте инструкцию и условия хранения.",
+        "Используйте подходящее масло по назначению без обязательной покупки нового.",
+      ],
+      example:
+          "Масло, указанное для заправки, оставить для салата, для сковороды выбрать подходящее по маркировке.",
+      alternative:
+          "Выберите иной способ приготовления, если подходящего масла нет.",
+      doneWhen: "Выбран продукт, соответствующий способу использования.",
+      why:
+          "Различие способов применения полезнее общего правила добавлять любое масло.",
+      explanation:
+          "Сравнение продуктов не назначает личную норму. Учитывайте аллергию, переносимость и назначенную диету.",
+    ),
+    en: TipCopy(
+      "Choose oil for its cooking role",
+      "When unsure which oil to use.",
+      task: "Check whether your oil is intended for heating or dressing.",
+      steps: [
+        "Read usage and storage instructions.",
+        "Use a suitable oil for its labelled role without requiring a new purchase.",
+      ],
+      example:
+          "Keep an oil labelled for dressing for salad; use a heating-suitable oil for a pan.",
+      alternative:
+          "Choose another cooking method if a suitable oil is unavailable.",
+      doneWhen: "The product matches the intended use.",
+      why:
+          "Matching the cooking role is more useful than adding any oil automatically.",
+      explanation:
+          "Food comparisons do not prescribe a personal target. Respect allergies, tolerance and prescribed diets.",
+    ),
+  ),
+
+  DailyTip(
+    id: "food-gluten-substitution",
+    topic: "food-gluten-substitution",
+    category: TipCategory.macros,
+    version: 5,
+    sourceIds: ["cdc-eating", "fda-allergens"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Основа блюда без пшеницы при необходимости",
+      "Если пшеница не подходит по вашим ограничениям.",
+      task: "Подберите подходящую основу вместо пшеничной пасты.",
+      steps: [
+        "Уточните свои ограничения и прочитайте маркировку продукта.",
+        "Выберите безопасную крупу или картофель и сохраните подходящие остальные компоненты.",
+      ],
+      example: "Картофель с фасолью и овощами вместо пшеничной пасты.",
+      alternative:
+          "При целиакии учитывайте сертификацию и перекрёстный контакт по своему лечебному плану.",
+      doneWhen: "Выбрана основа с проверенной пригодностью.",
+      why:
+          "Замена решает конкретное ограничение; отказ от глютена не предлагается всем.",
+      explanation:
+          "Сравнение продуктов не назначает личную норму. Учитывайте аллергию, переносимость и назначенную диету.",
+    ),
+    en: TipCopy(
+      "A wheat-free meal base when needed",
+      "When wheat does not fit your restrictions.",
+      task: "Find a suitable base instead of wheat pasta.",
+      steps: [
+        "Clarify your restrictions and read the product label.",
+        "Choose safe grain or potato and keep the suitable remaining components.",
+      ],
+      example: "Potato with beans and vegetables instead of wheat pasta.",
+      alternative:
+          "For coeliac disease, follow your care plan on certification and cross-contact.",
+      doneWhen: "A base with checked suitability is chosen.",
+      why:
+          "The swap addresses a specific restriction; gluten avoidance is not suggested for everyone.",
+      explanation:
+          "Food comparisons do not prescribe a personal target. Respect allergies, tolerance and prescribed diets.",
+    ),
+  ),
+
+  DailyTip(
+    id: "move-indoor-space",
+    topic: "move-indoor-space",
+    category: TipCategory.activity,
+    version: 5,
+    sourceIds: ["cdc-accessible"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Освободите место для домашнего движения",
+      "Если хотите двигаться дома.",
+      task: "Проверьте один небольшой участок на препятствия.",
+      steps: [
+        "Уберите скользящие предметы и провода, если можете безопасно.",
+        "Выберите знакомое доступное движение в свободном месте или отдых.",
+      ],
+      example:
+          "Освободить проход для спокойного движения по комнате или на коляске.",
+      alternative:
+          "Попросите помочь с тяжёлыми предметами; не переносите их ради плана.",
+      doneWhen: "Подготовлено безопасное место или выбран другой вариант.",
+      why: "Устранение препятствия делает домашнее движение доступнее.",
+      explanation:
+          "Выбирайте знакомую посильную нагрузку; отдых допустим. При боли, головокружении или другом дискомфорте остановитесь. Новые ограничения обсудите со специалистом.",
+    ),
+    en: TipCopy(
+      "Clear space for indoor movement",
+      "When you want to move at home.",
+      task: "Check one small area for obstacles.",
+      steps: [
+        "Remove loose objects and cables when safe to do so.",
+        "Choose familiar accessible movement in the clear space or rest.",
+      ],
+      example: "Clear a path for comfortable indoor walking or wheeling.",
+      alternative:
+          "Ask for help with heavy objects rather than moving them for this plan.",
+      doneWhen: "A safe space or another option is chosen.",
+      why: "Removing an obstacle can make indoor movement more accessible.",
+      explanation:
+          "Choose familiar manageable activity; rest is valid. Stop with pain, dizziness or other discomfort. Discuss new limitations with a professional.",
+    ),
+  ),
+
+  DailyTip(
+    id: "move-chair-mobility",
+    topic: "move-chair-mobility",
+    category: TipCategory.activity,
+    version: 5,
+    sourceIds: ["cdc-accessible"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Знакомое движение сидя",
+      "Если удобнее оставаться сидя.",
+      task: "Попробуйте одно уже знакомое комфортное движение сидя.",
+      steps: [
+        "Используйте устойчивое подходящее сиденье и своё согласованное движение.",
+        "Выполните в удобном объёме и остановитесь при дискомфорте.",
+      ],
+      example:
+          "Знакомое мягкое движение плечами, если оно вам разрешено и удобно.",
+      alternative:
+          "Отдых или совет специалиста по подходящему движению при ограничениях.",
+      doneWhen:
+          "Оценена переносимость одного знакомого движения без обязательного числа повторов.",
+      why:
+          "Сидячий вариант позволяет выбирать движение с учётом доступных возможностей.",
+      explanation:
+          "Выбирайте знакомую посильную нагрузку; отдых допустим. При боли, головокружении или другом дискомфорте остановитесь. Новые ограничения обсудите со специалистом.",
+    ),
+    en: TipCopy(
+      "A familiar seated movement",
+      "When staying seated is more comfortable.",
+      task: "Try one already familiar comfortable seated movement.",
+      steps: [
+        "Use suitable stable seating and a movement agreed for you.",
+        "Do a comfortable amount and stop if uncomfortable.",
+      ],
+      example:
+          "A familiar gentle shoulder movement if allowed and comfortable.",
+      alternative:
+          "Rest or ask a professional about suitable movement for your limitations.",
+      doneWhen:
+          "One familiar movement is considered without a required repetition count.",
+      why: "A seated option accommodates the abilities available to you.",
+      explanation:
+          "Choose familiar manageable activity; rest is valid. Stop with pain, dizziness or other discomfort. Discuss new limitations with a professional.",
+    ),
+  ),
+
+  DailyTip(
+    id: "move-carry-task",
+    topic: "move-carry-task",
+    category: TipCategory.activity,
+    version: 5,
+    sourceIds: ["cdc-accessible"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Разделите переноску вещей",
+      "Если бытовая задача требует неприятного усилия.",
+      task: "Разбейте переноску на удобные части или попросите помощь.",
+      steps: [
+        "Оцените путь и вес без проверки своих пределов.",
+        "Возьмите меньшую нагрузку или организуйте помощь.",
+      ],
+      example:
+          "Несколько лёгких пакетов вместо одного тяжёлого, если ходить вам удобно.",
+      alternative: "Доставка, тележка или помощь другого человека.",
+      doneWhen:
+          "Выбран способ выполнить задачу без требования терпеть нагрузку.",
+      why:
+          "Бытовое движение можно адаптировать, а не превращать в испытание силы.",
+      explanation:
+          "Выбирайте знакомую посильную нагрузку; отдых допустим. При боли, головокружении или другом дискомфорте остановитесь. Новые ограничения обсудите со специалистом.",
+    ),
+    en: TipCopy(
+      "Split a carrying task",
+      "When a household task feels too demanding.",
+      task: "Break carrying into manageable parts or ask for help.",
+      steps: [
+        "Consider the route and weight without testing your limits.",
+        "Use a smaller load or arrange assistance.",
+      ],
+      example:
+          "Several light bags instead of one heavy bag if walking suits you.",
+      alternative: "Use delivery, a trolley or another person’s help.",
+      doneWhen: "A way to do the task without enduring strain is chosen.",
+      why:
+          "Household movement can be adapted rather than turned into a strength test.",
+      explanation:
+          "Choose familiar manageable activity; rest is valid. Stop with pain, dizziness or other discomfort. Discuss new limitations with a professional.",
+    ),
+  ),
+
+  DailyTip(
+    id: "move-social-meeting",
+    topic: "move-social-meeting",
+    category: TipCategory.activity,
+    version: 5,
+    sourceIds: ["cdc-accessible"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Встреча с возможностью движения",
+      "Если хочется совместить общение и посильную активность.",
+      task:
+          "Предложите знакомому встречу с удобным для обоих форматом движения.",
+      steps: [
+        "Согласуйте доступность и возможность остановиться.",
+        "Выберите короткую встречу без соревнования по темпу.",
+      ],
+      example:
+          "Прогулка или движение на коляске рядом с местом, где можно посидеть.",
+      alternative: "Встреча сидя тоже подходит, если движение сейчас неудобно.",
+      doneWhen: "Согласован формат с учётом обоих людей.",
+      why:
+          "Совместный план учитывает доступность, а не требует подстраиваться под чужую скорость.",
+      explanation:
+          "Выбирайте знакомую посильную нагрузку; отдых допустим. При боли, головокружении или другом дискомфорте остановитесь. Новые ограничения обсудите со специалистом.",
+    ),
+    en: TipCopy(
+      "A meeting with optional movement",
+      "To combine company and manageable activity.",
+      task: "Suggest a meeting with movement that works for both people.",
+      steps: [
+        "Agree accessibility and the option to stop.",
+        "Choose a short meeting without competing on pace.",
+      ],
+      example: "Walking or wheeling near a place to sit.",
+      alternative:
+          "A seated meeting is equally valid if movement is unsuitable.",
+      doneWhen: "A format that suits both people is agreed.",
+      why:
+          "A shared plan accounts for access rather than requiring someone else’s pace.",
+      explanation:
+          "Choose familiar manageable activity; rest is valid. Stop with pain, dizziness or other discomfort. Discuss new limitations with a professional.",
+    ),
+  ),
+
+  DailyTip(
+    id: "move-first-class",
+    topic: "move-first-class",
+    category: TipCategory.activity,
+    version: 5,
+    sourceIds: ["cdc-accessible"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Проверьте доступность занятия до записи",
+      "Если рассматриваете новое занятие.",
+      task:
+          "Задайте организатору один конкретный вопрос об адаптации нагрузки.",
+      steps: [
+        "Назовите нужное вам условие без обязательного раскрытия диагноза.",
+        "Уточните возможность облегчить движение и сделать паузу.",
+      ],
+      example:
+          "Спросить, можно ли выполнять часть занятия сидя и выходить на отдых.",
+      alternative:
+          "Выберите знакомое движение или индивидуальную консультацию вместо занятия.",
+      doneWhen: "Получен ответ об адаптации до оплаты или записи.",
+      why: "Проверка доступности заранее помогает выбрать подходящий формат.",
+      explanation:
+          "Выбирайте знакомую посильную нагрузку; отдых допустим. При боли, головокружении или другом дискомфорте остановитесь. Новые ограничения обсудите со специалистом.",
+    ),
+    en: TipCopy(
+      "Check a class before booking",
+      "When considering a new activity class.",
+      task:
+          "Ask the organiser a specific question about adapting the activity.",
+      steps: [
+        "Name an access need without having to disclose a diagnosis.",
+        "Check options for easier movements and breaks.",
+      ],
+      example:
+          "Ask whether some movements can be seated and breaks are allowed.",
+      alternative:
+          "Use familiar movement or individual advice instead of a class.",
+      doneWhen: "Adaptation information is obtained before paying or booking.",
+      why: "Checking access in advance supports a suitable choice of format.",
+      explanation:
+          "Choose familiar manageable activity; rest is valid. Stop with pain, dizziness or other discomfort. Discuss new limitations with a professional.",
+    ),
+  ),
+
+  DailyTip(
+    id: "move-weather-decision",
+    topic: "gentle-movement",
+    category: TipCategory.activity,
+    version: 5,
+    sourceIds: ["cdc-accessible"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "План на небезопасную погоду",
+      "Если жара, лёд или другое условие мешает выходу.",
+      task: "Замените уличное движение доступным безопасным вариантом.",
+      steps: [
+        "Проверьте местные условия и свои ограничения.",
+        "Перенесите выход или выберите знакомое движение внутри, не догоняя объём.",
+      ],
+      example:
+          "При гололёде — доступное движение дома вместо прогулки по скользкой дорожке.",
+      alternative: "Отдых и перенос прогулки на другой день.",
+      doneWhen: "План изменён с учётом условий без компенсации.",
+      why: "Изменение среды важнее выполнения заранее выбранной дистанции.",
+      explanation:
+          "Выбирайте знакомую посильную нагрузку; отдых допустим. При боли, головокружении или другом дискомфорте остановитесь. Новые ограничения обсудите со специалистом.",
+    ),
+    en: TipCopy(
+      "Adapt movement to unsafe weather",
+      "When heat, ice or another condition makes going out unsuitable.",
+      task: "Replace outdoor movement with an accessible safe option.",
+      steps: [
+        "Check local conditions and your restrictions.",
+        "Postpone going out or use familiar indoor movement without catching up volume.",
+      ],
+      example: "On icy paths, choose accessible indoor movement instead.",
+      alternative: "Rest and move the outing to another day.",
+      doneWhen: "The plan reflects conditions without compensation.",
+      why: "Changing conditions matter more than completing a preset distance.",
+      explanation:
+          "Choose familiar manageable activity; rest is valid. Stop with pain, dizziness or other discomfort. Discuss new limitations with a professional.",
+    ),
+  ),
+
+  DailyTip(
+    id: "move-activity-menu",
+    topic: "move-activity-menu",
+    category: TipCategory.activity,
+    version: 5,
+    sourceIds: ["cdc-accessible"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Выберите движение по интересу",
+      "Если привычная активность наскучила.",
+      task: "Составьте пару приятных доступных вариантов разного типа.",
+      steps: [
+        "Вспомните знакомые движения, которые нравятся.",
+        "Выберите один по сегодняшним возможностям, без цели сжечь еду.",
+      ],
+      example: "Знакомое движение под музыку или спокойный уход за растениями.",
+      alternative:
+          "Отдых тоже остаётся вариантом; новые ограничения обсудите со специалистом.",
+      doneWhen:
+          "Выбраны два реально доступных варианта, один подходит на сегодня.",
+      why: "Интерес помогает расширить выбор за пределы одного счётчика шагов.",
+      explanation:
+          "Выбирайте знакомую посильную нагрузку; отдых допустим. При боли, головокружении или другом дискомфорте остановитесь. Новые ограничения обсудите со специалистом.",
+    ),
+    en: TipCopy(
+      "Choose movement by interest",
+      "When your usual activity feels dull.",
+      task: "List a couple of enjoyable accessible options of different types.",
+      steps: [
+        "Recall familiar movements you enjoy.",
+        "Choose one for today’s abilities without a food-burning goal.",
+      ],
+      example: "Familiar movement to music or gentle plant care.",
+      alternative:
+          "Rest remains an option; discuss new limitations with a professional.",
+      doneWhen: "Two realistic options are listed and one suits today.",
+      why: "Interest broadens the choice beyond one step counter.",
+      explanation:
+          "Choose familiar manageable activity; rest is valid. Stop with pain, dizziness or other discomfort. Discuss new limitations with a professional.",
+    ),
+  ),
+
+  DailyTip(
+    id: "move-restart-gap",
+    topic: "load-adjustment",
+    category: TipCategory.activity,
+    version: 5,
+    sourceIds: ["cdc-accessible"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Возвращение после перерыва без догоняния",
+      "Если давно не делали привычное движение.",
+      task:
+          "Вернитесь к облегчённому знакомому варианту, если он вам подходит.",
+      steps: [
+        "Оцените сегодняшнее самочувствие и ограничения.",
+        "Выберите меньший удобный объём без попытки вернуть прежний результат сразу.",
+      ],
+      example: "Короткая знакомая прогулка вместо прежнего длинного маршрута.",
+      alternative:
+          "После болезни, травмы или новых симптомов сначала уточните безопасный возврат со специалистом.",
+      doneWhen: "Выбран посильный возврат или профессиональная консультация.",
+      why: "Перерыв не создаёт долг, который нужно отработать нагрузкой.",
+      explanation:
+          "Выбирайте знакомую посильную нагрузку; отдых допустим. При боли, головокружении или другом дискомфорте остановитесь. Новые ограничения обсудите со специалистом.",
+    ),
+    en: TipCopy(
+      "Return after a break without catching up",
+      "When you have paused a familiar activity.",
+      task: "Return to an easier familiar version if suitable.",
+      steps: [
+        "Consider today’s wellbeing and restrictions.",
+        "Choose a smaller comfortable amount without immediately restoring past performance.",
+      ],
+      example: "A short familiar outing instead of a former long route.",
+      alternative:
+          "After illness, injury or new symptoms, check a safe return with a professional first.",
+      doneWhen: "A manageable return or professional advice is chosen.",
+      why: "A break does not create an activity debt to repay.",
+      explanation:
+          "Choose familiar manageable activity; rest is valid. Stop with pain, dizziness or other discomfort. Discuss new limitations with a professional.",
+    ),
+  ),
+
+  DailyTip(
+    id: "move-accessible-destination",
+    topic: "move-accessible-destination",
+    category: TipCategory.activity,
+    version: 5,
+    sourceIds: ["cdc-accessible"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Проверьте доступность места назначения",
+      "Если планируете выйти в новое место.",
+      task: "Уточните один важный барьер до выхода.",
+      steps: [
+        "Проверьте вход, покрытие или доступный туалет по своим потребностям.",
+        "Наметьте подходящий путь или другое место.",
+      ],
+      example: "Узнать, есть ли доступный вход в парк и удобное покрытие.",
+      alternative:
+          "Выберите знакомое доступное место, если информация не подтверждена.",
+      doneWhen: "Проверено нужное условие и есть запасной вариант.",
+      why:
+          "Проверка конкретного барьера помогает избежать недоступного маршрута.",
+      explanation:
+          "Выбирайте знакомую посильную нагрузку; отдых допустим. При боли, головокружении или другом дискомфорте остановитесь. Новые ограничения обсудите со специалистом.",
+    ),
+    en: TipCopy(
+      "Check access at your destination",
+      "When planning to visit somewhere new.",
+      task: "Check one important access barrier before leaving.",
+      steps: [
+        "Verify the entrance, surface or accessible toilet according to your needs.",
+        "Choose a workable route or another venue.",
+      ],
+      example: "Check an accessible park entrance and suitable paths.",
+      alternative:
+          "Use a familiar accessible place if information is unconfirmed.",
+      doneWhen: "A required access feature and fallback are checked.",
+      why: "Checking a specific barrier helps avoid an inaccessible outing.",
+      explanation:
+          "Choose familiar manageable activity; rest is valid. Stop with pain, dizziness or other discomfort. Discuss new limitations with a professional.",
+    ),
+  ),
+
+  DailyTip(
+    id: "move-pace-conversation",
+    topic: "load-adjustment",
+    category: TipCategory.activity,
+    version: 5,
+    sourceIds: ["cdc-accessible"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Удобный темп без гонки",
+      "Если знакомое движение становится неприятно тяжёлым.",
+      task: "Снизьте темп или остановитесь по самочувствию.",
+      steps: [
+        "Заметьте, остаётся ли обычное движение комфортным.",
+        "Уменьшите темп, выберите паузу; необычные симптомы обсудите со специалистом.",
+      ],
+      example:
+          "На прогулке перейти к удобному темпу вместо попытки держаться за другим человеком.",
+      alternative: "Отдых, если даже облегчённое движение сейчас не подходит.",
+      doneWhen: "Темп адаптирован или движение прекращено при дискомфорте.",
+      why: "Чужая скорость не является обязательной нагрузкой для вас.",
+      explanation:
+          "Выбирайте знакомую посильную нагрузку; отдых допустим. При боли, головокружении или другом дискомфорте остановитесь. Новые ограничения обсудите со специалистом.",
+    ),
+    en: TipCopy(
+      "Use a comfortable pace",
+      "When familiar movement feels unpleasantly hard.",
+      task: "Slow down or stop according to how you feel.",
+      steps: [
+        "Notice whether the usual movement remains comfortable.",
+        "Ease the pace or pause; discuss unusual symptoms with a professional.",
+      ],
+      example:
+          "Walk at your own comfortable pace rather than keeping up with someone else.",
+      alternative: "Rest if even easier movement is unsuitable.",
+      doneWhen: "The pace is adapted or movement stopped if uncomfortable.",
+      why: "Another person’s speed is not your required workload.",
+      explanation:
+          "Choose familiar manageable activity; rest is valid. Stop with pain, dizziness or other discomfort. Discuss new limitations with a professional.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-two-day-menu",
+    topic: "plan-two-day-menu",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Меню только на два ближайших дня",
+      "Если недельный план слишком громоздкий.",
+      task: "Распишите два дня с учётом реально доступных приёмов пищи.",
+      steps: [
+        "Посмотрите расписание и продукты дома.",
+        "Выберите еду на два дня и оставьте одно место для изменения.",
+      ],
+      example:
+          "На завтра суп, на следующий день паста; ужин можно заменить готовой едой.",
+      alternative: "Запланируйте один день, если два пока неудобны.",
+      doneWhen: "Есть короткий план с допустимым изменением.",
+      why:
+          "Меньший горизонт уменьшает объём решений без требования спланировать всю неделю.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Plan only the next two days",
+      "When a weekly menu feels unwieldy.",
+      task: "Sketch two days around the meals actually accessible to you.",
+      steps: [
+        "Check your schedule and food at home.",
+        "Choose food for two days and leave one option flexible.",
+      ],
+      example:
+          "Soup tomorrow, pasta the next day; dinner can switch to prepared food.",
+      alternative: "Plan one day if two feels impractical.",
+      doneWhen: "A short plan includes room for change.",
+      why:
+          "A shorter horizon reduces decisions without requiring a whole-week plan.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-freezer-label",
+    topic: "plan-freezer-label",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["fsa-chilling"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Подпишите одну заготовку",
+      "Если в морозилке трудно узнать контейнеры.",
+      task: "Подпишите название и дату заморозки одной безопасной заготовки.",
+      steps: [
+        "Выберите еду с известным составом и хранением.",
+        "Добавьте читаемую подпись и нужный способ разморозки по инструкции.",
+      ],
+      example: "«Овощной суп, дата заморозки» на контейнере.",
+      alternative:
+          "При неизвестном хранении не придумывайте дату и не используйте сомнительную еду.",
+      doneWhen: "Одна заготовка получила правдивую подпись.",
+      why:
+          "Подпись позволяет понять содержимое и срок, не полагаясь на память.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Label one freezer portion",
+      "When freezer containers are hard to identify.",
+      task:
+          "Label one safely prepared portion with its name and freezing date.",
+      steps: [
+        "Choose food with known contents and storage.",
+        "Add a readable label and relevant defrosting instructions.",
+      ],
+      example: "“Vegetable soup, freezing date” on the container.",
+      alternative:
+          "Do not invent a date or use doubtful food when storage is unknown.",
+      doneWhen: "One portion has an accurate label.",
+      why: "A label makes contents and timing clear without relying on memory.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-first-use-shelf",
+    topic: "plan-first-use-shelf",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["fsa-chilling"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Поставьте продукты по очереди использования",
+      "Если забываете уже открытые упаковки.",
+      task: "Выделите место для продуктов, которые нужно использовать раньше.",
+      steps: [
+        "Проверьте сроки и условия хранения без оценки безопасности по запаху.",
+        "Передвиньте подходящие продукты вперёд, соблюдая правила хранения.",
+      ],
+      example:
+          "Открытый подходящий йогурт впереди закрытого, с учётом инструкции после открытия.",
+      alternative:
+          "Запишите один продукт на видном списке, если переставлять неудобно.",
+      doneWhen: "У одного продукта понятен приоритет использования.",
+      why:
+          "Очередь использования помогает заметить доступную еду до покупки новой.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Arrange food by use priority",
+      "When opened packs get forgotten.",
+      task: "Make a place for food that should be used sooner.",
+      steps: [
+        "Check dates and storage instructions rather than judging safety by smell.",
+        "Bring suitable items forward while respecting storage rules.",
+      ],
+      example:
+          "An opened suitable yogurt before a sealed one, following after-opening directions.",
+      alternative: "List one item visibly if rearranging is difficult.",
+      doneWhen: "One item has a clear use priority.",
+      why:
+          "A use-first order helps you notice available food before buying more.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-batch-freeze",
+    topic: "plan-batch-freeze",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["fsa-chilling"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Разделите большую готовку на порции",
+      "Если приготовили больше, чем скоро используете.",
+      task: "Быстро охладите и уберите безопасные порции на хранение.",
+      steps: [
+        "Разделите еду для быстрого охлаждения и уберите в холодильник или морозилку в пределах 1–2 часов.",
+        "Подпишите замороженные порции; сроки и разморозку проверяйте по продукту.",
+      ],
+      example:
+          "Лишние порции овощного супа разделить по контейнерам и заморозить.",
+      alternative:
+          "Готовьте меньше, если нет возможности безопасно охлаждать и хранить.",
+      doneWhen: "Лишняя еда безопасно разделена и убрана вовремя.",
+      why: "Небольшие порции облегчают охлаждение и дальнейшее использование.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Divide a larger batch into portions",
+      "When you cook more than you will soon use.",
+      task: "Cool food promptly and store suitable portions safely.",
+      steps: [
+        "Divide for quicker cooling and refrigerate or freeze within 1–2 hours.",
+        "Label frozen portions; check food-specific storage and defrosting guidance.",
+      ],
+      example: "Divide extra vegetable soup into containers and freeze.",
+      alternative: "Cook less if safe cooling and storage are unavailable.",
+      doneWhen: "Extra food is divided and stored safely in time.",
+      why: "Smaller portions make cooling and later use easier.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-shopping-route",
+    topic: "plan-shopping-route",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Список по отделам магазина",
+      "Если покупки отнимают много сил.",
+      task: "Сгруппируйте короткий список по отделам знакомого магазина.",
+      steps: [
+        "Выберите нужные продукты из конкретного плана еды.",
+        "Разместите их в порядке доступного маршрута.",
+      ],
+      example:
+          "Крупа и фасоль вместе в списке, охлаждённые продукты ближе к завершению покупок.",
+      alternative:
+          "Используйте заказ или помощь с покупками, если магазин недоступен.",
+      doneWhen: "Список соответствует удобному маршруту или способу заказа.",
+      why: "Порядок списка уменьшает лишние перемещения при покупке еды.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Group a shopping list by store section",
+      "When shopping takes too much effort.",
+      task: "Group a short list by sections in a familiar shop.",
+      steps: [
+        "Choose needed foods from a specific meal plan.",
+        "Arrange them in an accessible route order.",
+      ],
+      example:
+          "List grains and beans together, with chilled foods near the end.",
+      alternative: "Use ordering or help if the shop is inaccessible.",
+      doneWhen: "The list fits a useful route or ordering method.",
+      why: "An ordered list reduces unnecessary movement while buying food.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-online-substitution",
+    topic: "plan-online-substitution",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["fda-allergens", "cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Проверьте замену в продуктовом заказе",
+      "Если магазин заменил товар без вас.",
+      task: "Перечитайте состав одного заменённого продукта до использования.",
+      steps: [
+        "Сверьте ограничения, аллергенную маркировку и хранение.",
+        "Примите подходящую замену или запросите возврат по правилам магазина.",
+      ],
+      example:
+          "Вместо обычного соевого напитка привезли продукт с другим составом.",
+      alternative:
+          "Отключите неподходящие автоматические замены в следующем заказе.",
+      doneWhen: "Замена проверена, неподходящий продукт не использован наугад.",
+      why: "Похожее название не гарантирует тот же состав.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Check a grocery substitution",
+      "When a shop replaces an item for you.",
+      task: "Reread one replacement product’s label before using it.",
+      steps: [
+        "Check restrictions, allergen labelling and storage.",
+        "Accept a suitable replacement or request a return under store rules.",
+      ],
+      example: "A substituted soy drink has a different ingredient list.",
+      alternative:
+          "Disable unsuitable automatic substitutions in the next order.",
+      doneWhen: "The replacement is checked rather than used on assumption.",
+      why: "A similar name does not guarantee the same composition.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-cooking-tool",
+    topic: "plan-cooking-tool",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Уберите одно препятствие к готовке",
+      "Если перед едой приходится долго искать нужное.",
+      task: "Подготовьте один часто используемый безопасный инструмент.",
+      steps: [
+        "Назовите, что обычно задерживает приготовление.",
+        "Положите чистый нужный предмет в доступное место.",
+      ],
+      example:
+          "Чистая открывалка рядом с консервами, вне доступа маленьких детей.",
+      alternative:
+          "Выберите упаковку с удобным открыванием, если инструментом трудно пользоваться.",
+      doneWhen: "Одно конкретное препятствие стало меньше.",
+      why:
+          "Доступный инструмент сокращает подготовку без полного переустройства кухни.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Remove one cooking obstacle",
+      "When finding equipment delays a meal.",
+      task: "Make one frequently used safe tool accessible.",
+      steps: [
+        "Name the item that usually delays preparation.",
+        "Place the clean item somewhere accessible and safe.",
+      ],
+      example: "A clean tin opener near tins, out of small children’s reach.",
+      alternative:
+          "Use easier-opening packaging if a tool is difficult to operate.",
+      doneWhen: "One specific obstacle is reduced.",
+      why:
+          "An accessible tool shortens preparation without reorganising the whole kitchen.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-backup-appointment",
+    topic: "meal-time",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "План еды на день с приёмом у специалиста",
+      "Если дорога и ожидание меняют расписание.",
+      task:
+          "Подготовьте вариант еды вокруг длительной встречи с учётом указаний.",
+      steps: [
+        "Проверьте, нет ли специальных требований к еде или питью перед приёмом.",
+        "Спланируйте подходящую еду до или после встречи, не нарушая указаний.",
+      ],
+      example: "После приёма — доступное кафе или безопасно хранимый обед.",
+      alternative: "При неясных требованиях заранее уточните их в учреждении.",
+      doneWhen: "Есть план еды, согласованный с требованиями встречи.",
+      why:
+          "Ожидание меньше нарушает еду, а специальные инструкции сохраняются.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Food around a long appointment",
+      "When travel and waiting change the schedule.",
+      task: "Plan food around the appointment while following instructions.",
+      steps: [
+        "Check for any food or drink requirements before attending.",
+        "Arrange suitable food before or afterwards without breaking those instructions.",
+      ],
+      example: "A nearby cafe or safely stored lunch after the appointment.",
+      alternative: "Ask the provider beforehand if requirements are unclear.",
+      doneWhen: "A food plan fits the appointment’s instructions.",
+      why:
+          "Waiting need not displace food while special instructions are respected.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-change-cue",
+    topic: "plan-change-cue",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Проверьте, работает ли напоминание",
+      "Если сигнал о еде постоянно попадает на неудобный момент.",
+      task:
+          "Перенесите одно собственное напоминание на реально доступное событие.",
+      steps: [
+        "Посмотрите, что обычно мешает ответить на сигнал.",
+        "Выберите доступный момент и проверьте удобство, без добавления новых сигналов.",
+      ],
+      example: "Напоминание подготовить обед после завершения рабочего звонка.",
+      alternative:
+          "Уберите сигнал, если он вызывает тревогу; выберите записку или помощь.",
+      doneWhen: "Одно напоминание адаптировано или отключено осознанно.",
+      why: "Удобство сигнала полезнее увеличения количества уведомлений.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Check whether a reminder works",
+      "When a food reminder repeatedly arrives at an awkward moment.",
+      task: "Move one personal reminder to a genuinely accessible cue.",
+      steps: [
+        "Notice what usually blocks responding to it.",
+        "Choose a workable moment and assess convenience without adding more alerts.",
+      ],
+      example: "A reminder to prepare lunch after a work call ends.",
+      alternative:
+          "Remove an anxiety-provoking alert; use a note or support instead.",
+      doneWhen: "One reminder is adapted or intentionally removed.",
+      why: "A usable cue matters more than adding more notifications.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-choice-default",
+    topic: "plan-choice-default",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Сохраните один удачный вариант еды",
+      "Если удачное сочетание трудно вспомнить в занятый день.",
+      task: "Запишите состав одного удобного блюда в личном списке.",
+      steps: [
+        "Вспомните конкретное сочетание, которое уже подошло.",
+        "Сохраните короткий список компонентов и способ подготовки.",
+      ],
+      example: "«Гречка, фасоль, огурец; крупа по упаковке» в заметке.",
+      alternative: "Фотография блюда с подписью, если так удобнее.",
+      doneWhen: "Есть доступная подсказка к одному проверенному блюду.",
+      why:
+          "Сохранённый вариант уменьшает повторное решение одной и той же бытовой задачи.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Keep one meal that worked",
+      "When a useful combination is hard to recall on busy days.",
+      task: "Record one convenient meal in your personal list.",
+      steps: [
+        "Recall a particular combination that suited you.",
+        "Save a short ingredient and preparation note.",
+      ],
+      example:
+          "“Buckwheat, beans, cucumber; cook grain as labelled” in a note.",
+      alternative: "Use a labelled meal photo if easier.",
+      doneWhen: "A prompt for one tried meal is accessible.",
+      why:
+          "A saved option reduces having to solve the same everyday choice again.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-eating-space",
+    topic: "plan-eating-space",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Подготовьте доступное место для еды",
+      "Если рабочие вещи занимают весь стол.",
+      task: "Освободите небольшой удобный участок для одного приёма пищи.",
+      steps: [
+        "Уберите мешающие предметы без тяжёлой перестановки.",
+        "Подготовьте подходящие посуду и сиденье по своим потребностям.",
+      ],
+      example: "Освободить край стола для тарелки и чашки.",
+      alternative:
+          "Подойдёт другое устойчивое доступное место; идеальная сервировка не нужна.",
+      doneWhen: "Одно место позволяет удобно разместить еду.",
+      why:
+          "Пространство помогает поесть без необходимости сначала разбирать всю комнату.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Make an accessible place to eat",
+      "When work items fill the table.",
+      task: "Clear a small comfortable space for one meal.",
+      steps: [
+        "Move obstructing items without heavy rearranging.",
+        "Prepare suitable tableware and seating for your needs.",
+      ],
+      example: "Clear a table corner for a plate and cup.",
+      alternative:
+          "Use another stable accessible place; perfect table-setting is unnecessary.",
+      doneWhen: "One space can comfortably hold food.",
+      why:
+          "A small space makes eating possible without first tidying the whole room.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-split-recipe",
+    topic: "plan-split-recipe",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Уменьшите рецепт до нужного объёма",
+      "Если рецепт рассчитан на слишком большую компанию.",
+      task:
+          "Пересчитайте один знакомый рецепт под доступное хранение и число едоков.",
+      steps: [
+        "Определите, какая часть рецепта нужна.",
+        "Пропорционально измените ингредиенты, а время и готовность проверьте отдельно.",
+      ],
+      example:
+          "Половина овощного супа при небольшой кастрюле; время не делить автоматически пополам.",
+      alternative:
+          "Приготовьте полный объём только при возможности безопасно сохранить остатки.",
+      doneWhen: "Выбран подходящий объём и отдельно проверена готовность.",
+      why:
+          "Меньший объём учитывает возможности кухни, а не заставляет готовить лишнее.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Scale a recipe to the amount needed",
+      "When a recipe serves too many people.",
+      task: "Scale one familiar recipe to your diners and storage access.",
+      steps: [
+        "Decide what fraction of the recipe you need.",
+        "Scale ingredients proportionally but check cooking time and doneness separately.",
+      ],
+      example:
+          "Half a vegetable soup recipe in a smaller pot; do not automatically halve cooking time.",
+      alternative: "Cook the full amount only with safe storage for leftovers.",
+      doneWhen:
+          "An appropriate amount is chosen and doneness checked separately.",
+      why:
+          "A smaller batch fits the kitchen rather than requiring excess cooking.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "plan-request-food-help",
+    topic: "food-support",
+    category: TipCategory.habits,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Попросите конкретную помощь с едой",
+      "Если трудно справиться с покупками или готовкой.",
+      task: "Сформулируйте одну выполнимую просьбу близкому человеку.",
+      steps: [
+        "Выберите задачу, которая сейчас мешает поесть.",
+        "Назовите конкретный продукт, действие и удобное время.",
+      ],
+      example: "«Можешь купить хлеб и фасоль по дороге сегодня?»",
+      alternative:
+          "Готовая подходящая еда или социальная поддержка, если личная помощь недоступна.",
+      doneWhen: "Есть конкретная просьба или выбран другой доступный способ.",
+      why:
+          "Определённая просьба облегчает получение помощи без требования справляться одному.",
+      explanation:
+          "Это добровольный способ организовать быт, а не оценка дисциплины. Выбирайте доступное; при тревоге от контроля можно сделать паузу. Соблюдайте условия хранения продуктов.",
+    ),
+    en: TipCopy(
+      "Ask for specific food help",
+      "When shopping or cooking is difficult to manage.",
+      task: "Make one practical request to someone trusted.",
+      steps: [
+        "Choose the task currently making food difficult.",
+        "Name a specific product or action and a useful time.",
+      ],
+      example: "“Could you pick up bread and beans on your way today?”",
+      alternative:
+          "Use suitable prepared food or community support when personal help is unavailable.",
+      doneWhen:
+          "A specific request or another accessible option is identified.",
+      why:
+          "A clear request makes help easier without requiring you to manage alone.",
+      explanation:
+          "This is an optional way to organise daily tasks, not a discipline score. Choose what is accessible; pause if monitoring causes anxiety. Follow food storage requirements.",
+    ),
+  ),
+
+  DailyTip(
+    id: "rest-wake-anchor",
+    topic: "rest-wake-anchor",
+    category: TipCategory.recovery,
+    version: 5,
+    sourceIds: ["nhs-sleep"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Удобный ориентир пробуждения",
+      "Если режим сильно меняется и это вам мешает.",
+      task: "Выберите посильное время пробуждения для ближайших похожих дней.",
+      steps: [
+        "Посмотрите на реальный график и нужное время сна.",
+        "Наметьте удобный ориентир без урезания сна ради раннего подъёма.",
+      ],
+      example:
+          "В выходной оставить похожее время, если это совместимо с отдыхом.",
+      alternative:
+          "При сменной работе подберите индивидуальный режим; при стойких трудностях обсудите сон со специалистом.",
+      doneWhen: "Есть реалистичный ориентир без намеренного недосыпа.",
+      why:
+          "Повторяемый ориентир помогает организовать распорядок, не обещая вылечить нарушения сна.",
+      explanation:
+          "Бытовой шаг не заменяет лечение и не обещает исправить сон. При стойких трудностях и влиянии на день обратитесь за индивидуальной помощью.",
+    ),
+    en: TipCopy(
+      "A workable waking-time anchor",
+      "When changing timing bothers your routine.",
+      task: "Choose a manageable waking time for upcoming similar days.",
+      steps: [
+        "Check your real schedule and sleep needs.",
+        "Set a workable anchor without cutting sleep to wake early.",
+      ],
+      example: "Keep a similar weekend time if compatible with rest.",
+      alternative:
+          "For shift work use an individual routine; discuss persistent sleep problems with a professional.",
+      doneWhen: "A realistic anchor avoids deliberate sleep loss.",
+      why:
+          "A repeatable anchor supports routine without promising to treat sleep disorders.",
+      explanation:
+          "An everyday step does not replace treatment or promise to fix sleep. Seek individual help for persistent difficulties affecting your day.",
+    ),
+  ),
+
+  DailyTip(
+    id: "rest-worry-note",
+    topic: "rest-worry-note",
+    category: TipCategory.recovery,
+    version: 5,
+    sourceIds: ["nhs-sleep"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Перенесите вечернее дело на бумагу",
+      "Если мысли о завтрашних задачах удерживают внимание.",
+      task: "Запишите одну задачу и время, когда вернётесь к ней.",
+      steps: [
+        "Назовите конкретное незавершённое дело.",
+        "Оставьте короткую заметку и отложите её до выбранного времени.",
+      ],
+      example: "«Завтра после завтрака проверить список покупок».",
+      alternative: "Устная договорённость с близким вместо записей.",
+      doneWhen: "Одно дело получило понятный следующий момент.",
+      why: "Заметка сохраняет задачу без необходимости решать её в постели.",
+      explanation:
+          "Бытовой шаг не заменяет лечение и не обещает исправить сон. При стойких трудностях и влиянии на день обратитесь за индивидуальной помощью.",
+    ),
+    en: TipCopy(
+      "Park one evening task on paper",
+      "When tomorrow’s tasks keep holding your attention.",
+      task: "Write down one task and a time to return to it.",
+      steps: [
+        "Name a specific unfinished task.",
+        "Leave a short note and set it aside until the chosen time.",
+      ],
+      example: "“Check the shopping list after breakfast tomorrow.”",
+      alternative: "Make a spoken agreement with someone instead of writing.",
+      doneWhen: "One task has a clear next moment.",
+      why:
+          "A note keeps the task available without needing to solve it in bed.",
+      explanation:
+          "An everyday step does not replace treatment or promise to fix sleep. Seek individual help for persistent difficulties affecting your day.",
+    ),
+  ),
+
+  DailyTip(
+    id: "rest-night-clock",
+    topic: "rest-night-clock",
+    category: TipCategory.recovery,
+    version: 5,
+    sourceIds: ["nhs-sleep"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Меньше проверок часов ночью",
+      "Если постоянный взгляд на часы усиливает напряжение.",
+      task: "Уберите часы из прямого поля зрения, сохранив нужный будильник.",
+      steps: [
+        "Проверьте, что сигнал и важная связь останутся доступны.",
+        "Поверните часы или положите телефон экраном вниз в безопасном месте.",
+      ],
+      example: "Будильник работает, но циферблат не виден с подушки.",
+      alternative:
+          "Оставьте нужные медицинские устройства и сигналы как назначено.",
+      doneWhen: "Часы меньше привлекают внимание без потери нужных сигналов.",
+      why:
+          "Это уменьшает один повод проверять время; эффект на сон не гарантируется.",
+      explanation:
+          "Бытовой шаг не заменяет лечение и не обещает исправить сон. При стойких трудностях и влиянии на день обратитесь за индивидуальной помощью.",
+    ),
+    en: TipCopy(
+      "Reduce night-time clock checking",
+      "When repeatedly checking the time adds tension.",
+      task: "Move the clock out of direct view while keeping needed alarms.",
+      steps: [
+        "Check that alarms and important contact remain available.",
+        "Turn the clock or place the phone face down safely.",
+      ],
+      example:
+          "An alarm still works but the display is not visible from the pillow.",
+      alternative: "Keep required medical devices and alerts as directed.",
+      doneWhen: "The clock draws less attention without losing needed alerts.",
+      why:
+          "This removes one cue to check the time; a sleep benefit is not guaranteed.",
+      explanation:
+          "An everyday step does not replace treatment or promise to fix sleep. Seek individual help for persistent difficulties affecting your day.",
+    ),
+  ),
+
+  DailyTip(
+    id: "rest-share-quiet",
+    topic: "rest-environment",
+    category: TipCategory.recovery,
+    version: 5,
+    sourceIds: ["nhs-sleep"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Договоритесь о тихом времени дома",
+      "Если сон зависит от общего пространства.",
+      task: "Обсудите одну посильную договорённость о шуме или свете.",
+      steps: [
+        "Назовите конкретный мешающий источник без обвинений.",
+        "Предложите удобный обоим вариант на ближайший вечер.",
+      ],
+      example:
+          "Наушники для вечернего просмотра, если это безопасно и подходит.",
+      alternative:
+          "Выберите собственный доступный угол, если договориться сейчас нельзя.",
+      doneWhen: "Одна договорённость или доступная личная мера выбрана.",
+      why:
+          "Общее пространство требует согласования, а не идеального контроля над комнатой.",
+      explanation:
+          "Бытовой шаг не заменяет лечение и не обещает исправить сон. При стойких трудностях и влиянии на день обратитесь за индивидуальной помощью.",
+    ),
+    en: TipCopy(
+      "Agree a quieter time at home",
+      "When sleep depends on shared space.",
+      task: "Discuss one workable agreement about noise or light.",
+      steps: [
+        "Name a particular disturbance without blame.",
+        "Suggest an option that works for both people tonight.",
+      ],
+      example: "Headphones for evening viewing if safe and suitable.",
+      alternative:
+          "Choose a personal accessible area if agreement is not possible now.",
+      doneWhen: "One agreement or manageable personal step is chosen.",
+      why:
+          "Shared space needs cooperation rather than perfect control of a room.",
+      explanation:
+          "An everyday step does not replace treatment or promise to fix sleep. Seek individual help for persistent difficulties affecting your day.",
+    ),
+  ),
+
+  DailyTip(
+    id: "water-cup-volume",
+    topic: "water-log-review",
+    category: TipCategory.hydration,
+    version: 5,
+    sourceIds: ["cdc-water"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Узнайте объём привычной чашки",
+      "Если хотите удобнее записывать воду.",
+      task: "Один раз определите объём чашки доступным способом.",
+      steps: [
+        "Посмотрите маркировку или используйте подходящую мерную ёмкость.",
+        "Запомните объём для будущих известных записей, не восстанавливая прошлое наугад.",
+      ],
+      example: "Отметить вместимость привычной чашки по мерной ёмкости.",
+      alternative: "Оставьте приблизительную запись, если измерить нечем.",
+      doneWhen: "Объём известен или честно оставлен приблизительным.",
+      why:
+          "Понятная ёмкость упрощает будущую запись без требования точно помнить прошлое.",
+      explanation:
+          "Потребности в жидкости различаются. Назначенные ограничения важнее шкалы приложения; не нужно допивать через дискомфорт.",
+    ),
+    en: TipCopy(
+      "Learn your usual cup’s volume",
+      "To make water logging more convenient.",
+      task: "Determine the cup’s volume once using an available method.",
+      steps: [
+        "Check a volume marking or use a suitable measuring jug.",
+        "Keep the amount for future known entries without inventing past intake.",
+      ],
+      example: "Check a familiar cup against a measuring jug.",
+      alternative: "Keep an approximate entry if measurement is unavailable.",
+      doneWhen: "The volume is known or honestly approximate.",
+      why:
+          "A known container simplifies future logging without requiring perfect memory.",
+      explanation:
+          "Fluid needs vary. Prescribed restrictions take priority over the app ring; do not force drinking through discomfort.",
+    ),
+  ),
+
+  DailyTip(
+    id: "water-clean-bottle",
+    topic: "water-clean-bottle",
+    category: TipCategory.hydration,
+    version: 5,
+    sourceIds: ["cdc-water"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Подготовьте чистую бутылку",
+      "Если пользуетесь многоразовой ёмкостью.",
+      task: "Очистите бутылку способом, разрешённым производителем.",
+      steps: [
+        "Проверьте инструкцию для корпуса, крышки и деталей.",
+        "Вымойте, высушите и соберите перед следующим использованием.",
+      ],
+      example: "Снять разрешённые детали крышки и промыть по инструкции.",
+      alternative: "Используйте другую чистую подходящую ёмкость.",
+      doneWhen: "Есть чистая подходящая ёмкость для следующего использования.",
+      why: "Удобство питья включает уход за самой ёмкостью.",
+      explanation:
+          "Потребности в жидкости различаются. Назначенные ограничения важнее шкалы приложения; не нужно допивать через дискомфорт.",
+    ),
+    en: TipCopy(
+      "Prepare a clean bottle",
+      "When using a reusable container.",
+      task: "Clean the bottle using its manufacturer’s instructions.",
+      steps: [
+        "Check directions for the body, lid and removable parts.",
+        "Wash, dry and reassemble before the next use.",
+      ],
+      example: "Remove permitted lid parts and clean as directed.",
+      alternative: "Use another clean suitable container.",
+      doneWhen: "A clean suitable container is ready.",
+      why: "Convenient drinking includes maintaining the container itself.",
+      explanation:
+          "Fluid needs vary. Prescribed restrictions take priority over the app ring; do not force drinking through discomfort.",
+    ),
+  ),
+
+  DailyTip(
+    id: "water-drink-access-home",
+    topic: "water-drink-access-home",
+    category: TipCategory.hydration,
+    version: 5,
+    sourceIds: ["cdc-water"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Сделайте напиток доступным дома",
+      "Если трудно дотянуться до привычного места.",
+      task: "Разместите подходящий напиток и ёмкость в доступном месте.",
+      steps: [
+        "Выберите устойчивую поверхность по своим возможностям.",
+        "Учитывайте назначенные ограничения жидкости и безопасность рядом с техникой.",
+      ],
+      example: "Закрытая удобная бутылка на доступном столике.",
+      alternative:
+          "Попросите помочь с размещением или используйте лёгкую чашку.",
+      doneWhen: "Доступ к напитку стал удобнее без обязательного объёма.",
+      why: "Организация доступа полезнее требования выпить больше любой ценой.",
+      explanation:
+          "Потребности в жидкости различаются. Назначенные ограничения важнее шкалы приложения; не нужно допивать через дискомфорт.",
+    ),
+    en: TipCopy(
+      "Make a drink accessible at home",
+      "When the usual location is hard to reach.",
+      task: "Place a suitable drink and container within comfortable reach.",
+      steps: [
+        "Choose a stable surface for your abilities.",
+        "Respect prescribed fluid limits and safety near electronics.",
+      ],
+      example: "An easy-to-use closed bottle on an accessible side table.",
+      alternative: "Ask for help placing it or use a light cup.",
+      doneWhen: "Drink access is easier without a required volume.",
+      why:
+          "Improving access is more useful than requiring extra fluid at any cost.",
+      explanation:
+          "Fluid needs vary. Prescribed restrictions take priority over the app ring; do not force drinking through discomfort.",
+    ),
+  ),
+
+  DailyTip(
+    id: "water-container-grip",
+    topic: "drink-container-access",
+    category: TipCategory.hydration,
+    version: 5,
+    sourceIds: ["cdc-water"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Ёмкость, которую удобно удержать",
+      "Если тяжёлую бутылку неудобно поднимать.",
+      task: "Выберите лёгкую подходящую ёмкость с удобным захватом.",
+      steps: [
+        "Проверьте устойчивость и возможность удержать пустую ёмкость.",
+        "Добавьте комфортный объём без требования заполнить её целиком.",
+      ],
+      example:
+          "Небольшая чашка с удобной ручкой вместо тяжёлой полной бутылки.",
+      alternative:
+          "Попросите помочь подобрать или разместить подходящую ёмкость.",
+      doneWhen:
+          "Есть ёмкость, которую удобно использовать с учётом возможностей.",
+      why:
+          "Удобный захват решает другую задачу, чем увеличение количества выпитого.",
+      explanation:
+          "Учитывайте инструкции, свои ограничения и безопасные условия. Это бытовой пример без расчёта личной нормы.",
+    ),
+    en: TipCopy(
+      "A container that is comfortable to hold",
+      "When a heavy bottle is difficult to lift.",
+      task: "Choose a light suitable container with a comfortable grip.",
+      steps: [
+        "Check stability and whether you can hold it empty.",
+        "Add a manageable amount without needing to fill it completely.",
+      ],
+      example:
+          "A small cup with a comfortable handle instead of a heavy full bottle.",
+      alternative: "Ask for help choosing or placing a suitable container.",
+      doneWhen: "A container is convenient for your abilities.",
+      why:
+          "A comfortable grip solves an access problem rather than increasing fluid intake.",
+      explanation:
+          "Follow instructions, your restrictions and safe conditions. This is an everyday example without a prescribed personal target.",
+    ),
+  ),
+
+  DailyTip(
+    id: "water-drink-temperature",
+    topic: "water-drink-temperature",
+    category: TipCategory.hydration,
+    version: 5,
+    sourceIds: ["cdc-water"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Выберите комфортную температуру напитка",
+      "Если слишком холодный или горячий напиток вам неудобен.",
+      task: "Подберите комфортную температуру подходящего напитка.",
+      steps: [
+        "Дайте горячему остыть или выберите воду другой температуры.",
+        "Проверьте удобство небольшим осторожным глотком, не заставляя себя допивать.",
+      ],
+      example: "Вода комнатной температуры вместо ледяной, если так приятнее.",
+      alternative:
+          "При назначенных требованиях к питью следуйте индивидуальным указаниям.",
+      doneWhen: "Выбрана комфортная и безопасная температура.",
+      why:
+          "Предпочтение температуры может сделать обычный напиток удобнее без обещаний изменить обмен веществ.",
+      explanation:
+          "Потребности в жидкости различаются. Назначенные ограничения важнее шкалы приложения; не нужно допивать через дискомфорт.",
+    ),
+    en: TipCopy(
+      "Choose a comfortable drink temperature",
+      "When very cold or hot drinks feel unpleasant.",
+      task: "Choose a comfortable temperature for a suitable drink.",
+      steps: [
+        "Let a hot drink cool or choose water at another temperature.",
+        "Try a cautious small sip without making yourself finish it.",
+      ],
+      example: "Room-temperature water instead of iced water if preferred.",
+      alternative: "Follow any individual prescribed drinking requirements.",
+      doneWhen: "A comfortable safe temperature is chosen.",
+      why:
+          "Temperature preference can make a drink more convenient without claims about metabolism.",
+      explanation:
+          "Fluid needs vary. Prescribed restrictions take priority over the app ring; do not force drinking through discomfort.",
+    ),
+  ),
+
+  DailyTip(
+    id: "record-weight-typo",
+    topic: "measurement-entry-check",
+    category: TipCategory.progress,
+    version: 5,
+    sourceIds: ["nhs-weigh"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Проверьте явную опечатку веса",
+      "Если сохранённое число не совпадает с тем, что вы точно записали.",
+      task:
+          "Сверьте одну подозрительную запись с известным исходным значением.",
+      steps: [
+        "Найдите надёжную запись или показание, которое сохранили.",
+        "Исправьте только подтверждённую ошибку, не подгоняйте график.",
+      ],
+      example:
+          "При вводе перепутаны цифры, а фотография показания сохранилась.",
+      alternative:
+          "Если исходное значение неизвестно, не заменяйте его догадкой.",
+      doneWhen:
+          "Подтверждённая ошибка исправлена или неопределённость сохранена.",
+      why:
+          "Проверка ввода отличается от изменения реальных колебаний ради красивой линии.",
+      explanation:
+          "Используйте только известные сохранённые факты; пропуски не заполняйте догадками. Это не диагноз и не основание усиливать ограничение еды. Измерения и контроль можно отложить, если они вызывают тревогу.",
+    ),
+    en: TipCopy(
+      "Check an obvious weight-entry typo",
+      "When a saved number differs from a value you reliably recorded.",
+      task: "Compare one suspect entry with its known original value.",
+      steps: [
+        "Find a reliable original note or saved reading.",
+        "Correct only a confirmed error rather than smoothing the graph.",
+      ],
+      example:
+          "Digits were transposed and a photo of the scale reading remains.",
+      alternative:
+          "If the original is unknown, do not replace it with a guess.",
+      doneWhen: "A confirmed error is corrected or uncertainty retained.",
+      why:
+          "Checking entry errors differs from changing real fluctuations for a smoother line.",
+      explanation:
+          "Use only known recorded facts; do not fill gaps with guesses. This is not a diagnosis or a reason to restrict food further. Pause measurement or monitoring if it causes distress.",
+    ),
+  ),
+
+  DailyTip(
+    id: "record-weight-unit",
+    topic: "measurement-entry-check",
+    category: TipCategory.progress,
+    version: 5,
+    sourceIds: ["nhs-weigh"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Проверьте единицы перед вводом веса",
+      "Если весы показывают другую единицу.",
+      task: "Сверьте единицу на весах и в поле записи до сохранения.",
+      steps: [
+        "Посмотрите обозначение на устройстве и в приложении.",
+        "Переключите весы на нужную единицу или используйте проверенный перевод.",
+      ],
+      example: "Не переносите значение в фунтах прямо в поле килограммов.",
+      alternative:
+          "Если значение уже неизвестно, оставьте запись непроверенной вместо догадки.",
+      doneWhen: "Единицы согласованы для известного измерения.",
+      why:
+          "Проверка единиц предотвращает ошибку масштаба без изменения настоящего результата.",
+      explanation:
+          "Используйте только известные сохранённые факты; пропуски не заполняйте догадками. Это не диагноз и не основание усиливать ограничение еды. Измерения и контроль можно отложить, если они вызывают тревогу.",
+    ),
+    en: TipCopy(
+      "Check weight units before entering",
+      "When scales display another unit.",
+      task: "Match the scale unit and entry field before saving.",
+      steps: [
+        "Read the device unit and the app field label.",
+        "Switch the scale unit or use a verified conversion.",
+      ],
+      example: "Do not copy a pound value straight into a kilogram field.",
+      alternative:
+          "If the original value is unknown, retain uncertainty rather than guessing.",
+      doneWhen: "Units agree for a known measurement.",
+      why:
+          "A unit check prevents a scale error without altering the real result.",
+      explanation:
+          "Use only known recorded facts; do not fill gaps with guesses. This is not a diagnosis or a reason to restrict food further. Pause measurement or monitoring if it causes distress.",
+    ),
+  ),
+
+  DailyTip(
+    id: "record-date-check",
+    topic: "measurement-entry-check",
+    category: TipCategory.progress,
+    version: 5,
+    sourceIds: ["nhs-weigh"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Дата старого измерения",
+      "Если переносите известную запись из заметки.",
+      task: "Поставьте фактическую дату измерения перед сохранением.",
+      steps: [
+        "Найдите дату в исходной заметке.",
+        "Выберите её в форме, не используйте автоматически сегодняшний день.",
+      ],
+      example: "Измерение из понедельника добавить с датой понедельника.",
+      alternative:
+          "Если дата неизвестна, не создавайте фиктивную точку на графике.",
+      doneWhen: "Известное измерение связано с настоящей датой.",
+      why: "Динамика зависит от дат, а не только от набора чисел.",
+      explanation:
+          "Используйте только известные сохранённые факты; пропуски не заполняйте догадками. Это не диагноз и не основание усиливать ограничение еды. Измерения и контроль можно отложить, если они вызывают тревогу.",
+    ),
+    en: TipCopy(
+      "Date a past measurement accurately",
+      "When transferring a known reading from a note.",
+      task: "Set the actual measurement date before saving.",
+      steps: [
+        "Find the date in the original note.",
+        "Select that date rather than automatically using today.",
+      ],
+      example: "Enter Monday’s reading with Monday’s date.",
+      alternative:
+          "Do not create a dated graph point when the date is unknown.",
+      doneWhen: "A known reading has its actual date.",
+      why: "A trend depends on dates as well as the numbers.",
+      explanation:
+          "Use only known recorded facts; do not fill gaps with guesses. This is not a diagnosis or a reason to restrict food further. Pause measurement or monitoring if it causes distress.",
+    ),
+  ),
+
+  DailyTip(
+    id: "record-circumference-kind",
+    topic: "record-circumference-kind",
+    category: TipCategory.progress,
+    version: 5,
+    sourceIds: ["nhs-weigh"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Не перепутайте обхваты в форме",
+      "Если вносите грудь, талию и бёдра.",
+      task: "Сверьте название каждого поля с известным замером.",
+      steps: [
+        "Прочитайте подписи полей перед вводом.",
+        "Внесите только реально измеренные значения, остальные оставьте пустыми.",
+      ],
+      example: "Измерена талия — заполнить талию, не копировать число в бёдра.",
+      alternative:
+          "Сохраните только доступный замер; полный набор не обязателен.",
+      doneWhen: "Каждое введённое значение соответствует своему обхвату.",
+      why:
+          "Разные места измерения остаются разными рядами, без заполнения пропусков.",
+      explanation:
+          "Используйте только известные сохранённые факты; пропуски не заполняйте догадками. Это не диагноз и не основание усиливать ограничение еды. Измерения и контроль можно отложить, если они вызывают тревогу.",
+    ),
+    en: TipCopy(
+      "Keep circumference fields distinct",
+      "When entering chest, waist and hips.",
+      task: "Match each field label with the known measurement.",
+      steps: [
+        "Read the labels before entering values.",
+        "Enter only actual measurements, leaving others empty.",
+      ],
+      example: "Only waist measured? Fill waist without copying it into hips.",
+      alternative:
+          "Keep only the available measurement; a full set is optional.",
+      doneWhen: "Every entered value matches its circumference field.",
+      why:
+          "Different sites remain separate series without filling missing observations.",
+      explanation:
+          "Use only known recorded facts; do not fill gaps with guesses. This is not a diagnosis or a reason to restrict food further. Pause measurement or monitoring if it causes distress.",
+    ),
+  ),
+
+  DailyTip(
+    id: "record-gap-display",
+    topic: "record-gap-display",
+    category: TipCategory.progress,
+    version: 5,
+    sourceIds: ["nhs-weigh"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Отличите линию графика от измерений",
+      "Если на графике видны соединённые участки без записей.",
+      task:
+          "Найдите реальные точки по датам, прежде чем оценивать длинный промежуток.",
+      steps: [
+        "Откройте историю измерений.",
+        "Сравните даты записей с соединяющей линией, не считайте её ежедневными замерами.",
+      ],
+      example:
+          "Между двумя записями за месяц линия не доказывает равномерное изменение каждый день.",
+      alternative:
+          "При большом промежутке оставьте динамику внутри него неизвестной.",
+      doneWhen: "Реальные даты отделены от визуального соединения.",
+      why: "Визуальная линия не добавляет новых сохранённых наблюдений.",
+      explanation:
+          "Используйте только известные сохранённые факты; пропуски не заполняйте догадками. Это не диагноз и не основание усиливать ограничение еды. Измерения и контроль можно отложить, если они вызывают тревогу.",
+    ),
+    en: TipCopy(
+      "Distinguish graph lines from readings",
+      "When a graph connects periods without entries.",
+      task: "Find actual dated points before assessing a long interval.",
+      steps: [
+        "Open the measurement history.",
+        "Compare entry dates with the connecting line rather than treating it as daily readings.",
+      ],
+      example:
+          "A line between two monthly entries does not prove even daily change.",
+      alternative: "Leave changes within a long gap unknown.",
+      doneWhen: "Actual dates are separated from the visual connection.",
+      why: "A drawn line does not create new saved observations.",
+      explanation:
+          "Use only known recorded facts; do not fill gaps with guesses. This is not a diagnosis or a reason to restrict food further. Pause measurement or monitoring if it causes distress.",
+    ),
+  ),
+
+  DailyTip(
+    id: "record-forecast-boundary",
+    topic: "record-forecast-boundary",
+    category: TipCategory.progress,
+    version: 5,
+    sourceIds: ["nhs-weigh", "niddk-planner"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Прогноз отдельно от фактов",
+      "Если смотрите на ожидаемую дату достижения цели.",
+      task: "Сначала проверьте реальные измерения, затем условный прогноз.",
+      steps: [
+        "Найдите границу фактических точек и прогноза.",
+        "Не используйте ожидаемую дату как срок для ужесточения еды.",
+      ],
+      example:
+          "Прогноз сдвинулся после нового измерения — это обновление оценки, а не провал.",
+      alternative: "Если прогноз тревожит, остановитесь на реальной истории.",
+      doneWhen: "Ожидаемая дата рассматривается как условная оценка.",
+      why:
+          "Расчётная линия не является обещанием и не объясняет причины изменения веса.",
+      explanation:
+          "Используйте только известные сохранённые факты; пропуски не заполняйте догадками. Это не диагноз и не основание усиливать ограничение еды. Измерения и контроль можно отложить, если они вызывают тревогу.",
+    ),
+    en: TipCopy(
+      "Keep forecasts separate from facts",
+      "When looking at an estimated goal date.",
+      task: "Check actual readings before considering a conditional forecast.",
+      steps: [
+        "Find where recorded points end and the forecast begins.",
+        "Do not use the estimate as a deadline for restricting food.",
+      ],
+      example:
+          "A date shifts after a new reading: an updated estimate rather than failure.",
+      alternative: "If forecasts cause distress, use only the actual history.",
+      doneWhen: "The estimated date is treated as conditional.",
+      why:
+          "A calculated line is not a promise or an explanation of weight change.",
+      explanation:
+          "Use only known recorded facts; do not fill gaps with guesses. This is not a diagnosis or a reason to restrict food further. Pause measurement or monitoring if it causes distress.",
+    ),
+  ),
+
+  DailyTip(
+    id: "record-process-progress",
+    topic: "record-process-progress",
+    category: TipCategory.progress,
+    version: 5,
+    sourceIds: ["cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Отметьте практический результат вне весов",
+      "Если хотите оценить полезность своей организации дня.",
+      task: "Назовите один наблюдаемый бытовой результат.",
+      steps: [
+        "Выберите действие, которое действительно произошло.",
+        "Запишите результат без требования подтвердить его снижением веса.",
+      ],
+      example:
+          "«Два раза был готов удобный обед» вместо «цифра обязана уменьшиться».",
+      alternative:
+          "Можно просто заметить результат без ведения ещё одного трекера.",
+      doneWhen: "Назван конкретный произошедший результат.",
+      why:
+          "Удобство еды и повседневных действий можно оценивать независимо от краткого колебания веса.",
+      explanation:
+          "Используйте только известные сохранённые факты; пропуски не заполняйте догадками. Это не диагноз и не основание усиливать ограничение еды. Измерения и контроль можно отложить, если они вызывают тревогу.",
+    ),
+    en: TipCopy(
+      "Notice practical progress beyond weight",
+      "To assess how your daily organisation helps.",
+      task: "Name one observable everyday result.",
+      steps: [
+        "Choose something that actually happened.",
+        "Record the result without requiring a weight decrease to validate it.",
+      ],
+      example:
+          "“A convenient lunch was ready twice” instead of “the number must fall”.",
+      alternative: "Simply notice it without starting another tracker.",
+      doneWhen: "A particular result that happened is named.",
+      why:
+          "Food convenience and daily actions can be assessed separately from short-term weight changes.",
+      explanation:
+          "Use only known recorded facts; do not fill gaps with guesses. This is not a diagnosis or a reason to restrict food further. Pause measurement or monitoring if it causes distress.",
+    ),
+  ),
+
+  DailyTip(
+    id: "record-sharing-summary",
+    topic: "professional-support",
+    category: TipCategory.progress,
+    version: 5,
+    sourceIds: ["nhs-weigh", "cdc-habits"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Краткая сводка к консультации",
+      "Если хотите обсудить наблюдения со специалистом.",
+      task: "Подготовьте короткую сводку фактов и один вопрос.",
+      steps: [
+        "Укажите период, известные измерения и пробелы, если они есть.",
+        "Отделите наблюдаемое от предположений и запишите вопрос.",
+      ],
+      example:
+          "«За три недели есть такие даты; часть дней без записей. Что нужно уточнить?»",
+      alternative: "Покажите историю на экране без создания отдельного файла.",
+      doneWhen:
+          "Есть сводка известных фактов и вопрос без самостоятельного диагноза.",
+      why: "Краткие факты помогают обсуждению, а пропуски остаются видимыми.",
+      explanation:
+          "Используйте только известные сохранённые факты; пропуски не заполняйте догадками. Это не диагноз и не основание усиливать ограничение еды. Измерения и контроль можно отложить, если они вызывают тревогу.",
+    ),
+    en: TipCopy(
+      "Prepare a short consultation summary",
+      "When discussing observations with a professional.",
+      task: "Prepare a short factual summary and one question.",
+      steps: [
+        "Note the period, known readings and any gaps.",
+        "Separate observations from guesses and write a question.",
+      ],
+      example:
+          "“These dates cover three weeks, with missing days. What should we clarify?”",
+      alternative: "Show the history on screen without creating another file.",
+      doneWhen:
+          "Known facts and a question are ready without a self-diagnosis.",
+      why:
+          "A brief factual summary supports discussion while keeping gaps visible.",
+      explanation:
+          "Use only known recorded facts; do not fill gaps with guesses. This is not a diagnosis or a reason to restrict food further. Pause measurement or monitoring if it causes distress.",
+    ),
+  ),
+
+  DailyTip(
+    id: "kitchen-clean-hands",
+    topic: "kitchen-clean-hands",
+    category: TipCategory.nutrition,
+    version: 5,
+    sourceIds: ["fsa-cooking"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Чистые руки перед подготовкой еды",
+      "Если переходите от других дел к готовке.",
+      task:
+          "Вымойте руки перед работой с едой и после контакта с сырыми продуктами.",
+      steps: [
+        "Подготовьте доступ к воде, мылу и чистому способу высушить руки.",
+        "Не переходите от сырого мяса к готовой еде без мытья рук.",
+      ],
+      example: "После сырой курицы вымыть руки перед приготовлением салата.",
+      alternative:
+          "Если безопасные условия недоступны, выберите другой доступный способ получения готовой еды.",
+      doneWhen: "Подготовка еды включает мытьё рук в нужные моменты.",
+      why:
+          "Чистые руки помогают не переносить загрязнение на готовые продукты.",
+      explanation:
+          "Идея блюда — пример без расчёта КБЖУ. Учитывайте аллергии, переносимость, свой лечебный план и инструкции приготовления и хранения.",
+    ),
+    en: TipCopy(
+      "Clean hands before preparing food",
+      "When switching from other tasks to cooking.",
+      task:
+          "Wash hands before handling food and after contact with raw ingredients.",
+      steps: [
+        "Arrange access to water, soap and a clean way to dry hands.",
+        "Do not handle ready-to-eat food after raw meat without washing hands.",
+      ],
+      example: "Wash hands after raw chicken before making a salad.",
+      alternative:
+          "If safe facilities are unavailable, choose another accessible way to obtain prepared food.",
+      doneWhen:
+          "Food preparation includes handwashing at the necessary points.",
+      why:
+          "Clean hands help avoid transferring contamination to ready-to-eat food.",
+      explanation:
+          "This meal idea is illustrative, without calculated nutrients. Respect allergies, tolerance, your care plan, and preparation and storage directions.",
+    ),
+  ),
+
+  DailyTip(
+    id: "kitchen-date-meaning",
+    topic: "kitchen-date-meaning",
+    category: TipCategory.facts,
+    version: 5,
+    sourceIds: ["gov-food-dates"],
+    evidenceLevel: TipEvidenceLevel.practicalIdea,
+    ru: TipCopy(
+      "Поймите смысл даты на импортной упаковке",
+      "Если на упаковке указано use by или best before.",
+      task:
+          "Различите срок безопасности и срок качества перед использованием продукта.",
+      steps: [
+        "Use by относится к безопасности, best before — к качеству.",
+        "Соблюдайте хранение и указания после открытия; не определяйте безопасность продукта после use by по запаху.",
+      ],
+      example:
+          "На импортном готовом салате проверить use by и условия охлаждения.",
+      alternative:
+          "Для другой маркировки следуйте местным указаниям и инструкции производителя; при сомнении уточните значение.",
+      doneWhen: "Тип даты и условия хранения понятны.",
+      why:
+          "Одинаково выглядящие даты могут обозначать разные ограничения; запах не подтверждает безопасность.",
+      explanation:
+          "Сравнение продуктов не назначает личную норму. Учитывайте аллергию, переносимость и назначенную диету.",
+    ),
+    en: TipCopy(
+      "Understand dates on an imported food label",
+      "When a label says use by or best before.",
+      task:
+          "Distinguish a safety date from a quality date before using the food.",
+      steps: [
+        "Use by concerns safety; best before concerns quality.",
+        "Follow storage and after-opening directions; smell does not establish safety after use by.",
+      ],
+      example:
+          "Check the use-by date and chilled storage for a prepared salad.",
+      alternative:
+          "For other labelling, follow local guidance and manufacturer instructions; clarify uncertainty.",
+      doneWhen: "The date type and storage instructions are understood.",
+      why:
+          "Similar-looking dates can mean different limits; smell does not confirm safety.",
+      explanation:
+          "Food comparisons do not prescribe a personal target. Respect allergies, tolerance and prescribed diets.",
+    ),
+  ),
 ];
+
+const retiredDailyTips = <DailyTip>[
+  DailyTip(
+    id: "macros-02",
+    retired: true,
+    canonicalId: "meal-lunch",
+    topic: "meal-building",
+    destination: TipDestination.food,
+    category: TipCategory.macros,
+    basis: TipBasis.universal,
+    sourceIds: ["who-diet"],
+    evidenceLevel: TipEvidenceLevel.guidance,
+    ru: TipCopy(
+      "Дополните гарнир вместо запрета",
+      "Хлеб, рис или картофель могут остаться в меню.",
+      task:
+          "Добавьте к привычному гарниру овощи и подходящий белковый продукт.",
+      steps: [
+        "Выберите гарнир, который вам нравится.",
+        "Добавьте два подходящих компонента без обязательных пропорций.",
+      ],
+      example: "Картофель + рыба + капуста; рис + фасоль + овощи.",
+      alternative: "Если нет времени, подойдут готовые подходящие компоненты.",
+      doneWhen: "Составлен один приём пищи с привычным гарниром.",
+      why:
+          "Так проще сочетать разные группы пищи, не запрещая углеводы целиком.",
+      explanation:
+          "Важны весь рацион и подходящие порции, а не запрет группы продуктов. Цельнозерновые варианты и бобовые дают клетчатку. Хлеб, картофель, рис, паста и фрукты могут оставаться в меню.",
+    ),
+    en: TipCopy(
+      "Complete a side rather than banning it",
+      "Bread, rice or potatoes can stay on the menu.",
+      task: "Add vegetables and a suitable protein food to a familiar side.",
+      steps: [
+        "Choose a side you enjoy.",
+        "Add two suitable components without compulsory ratios.",
+      ],
+      example: "Potato + fish + cabbage; rice + beans + vegetables.",
+      alternative: "Use suitable ready-made components when time is short.",
+      doneWhen: "One meal includes a familiar side with additions.",
+      why:
+          "This combines food groups without banning carbohydrates altogether.",
+      explanation:
+          "The whole eating pattern and suitable portions matter more than banning a food group. Whole grains and pulses supply fibre. Bread, potatoes, rice, pasta and fruit can remain on the menu.",
+    ),
+  ),
+  DailyTip(
+    id: "nutrition-09",
+    retired: true,
+    canonicalId: "today-15",
+    topic: "backup-meal",
+    destination: TipDestination.food,
+    category: TipCategory.nutrition,
+    basis: TipBasis.universal,
+    sourceIds: ["cdc-eating"],
+    evidenceLevel: TipEvidenceLevel.guidance,
+    ru: TipCopy(
+      "Соберите обед с фасолью без плиты",
+      "Консервы могут стать основой обычного обеда.",
+      task: "Соедините готовые бобовые, хлеб и овощи.",
+      steps: [
+        "Проверьте состав подходящей банки и подготовьте бобовые по упаковке.",
+        "Добавьте хлеб, овощи и подходящую заправку.",
+      ],
+      example: "Фасоль + помидор + хлеб; нут + огурец + лепёшка.",
+      alternative:
+          "Нет бобовых — подойдут яйцо или готовая рыба, если подходят вам.",
+      doneWhen: "Один вариант обеда собран; количества выбраны по потребности.",
+      why:
+          "Готовые продукты сокращают готовку и дают несколько групп пищи без сложного рецепта.",
+      explanation:
+          "Консервированные бобовые экономят время и позволяют добавить растительный белок. Сравните соль на этикетке, при желании промойте. Выбирайте продукт, который подходит вашим ограничениям.",
+    ),
+    en: TipCopy(
+      "Build a no-stove bean lunch",
+      "Canned foods can be the base of an ordinary lunch.",
+      task: "Combine ready-cooked pulses, bread and vegetables.",
+      steps: [
+        "Check a suitable can and prepare the pulses as directed.",
+        "Add bread, vegetables and a suitable dressing.",
+      ],
+      example: "Beans + tomato + bread; chickpeas + cucumber + flatbread.",
+      alternative: "No pulses? Try egg or ready-to-eat fish if suitable.",
+      doneWhen: "One lunch is assembled in amounts that suit your needs.",
+      why:
+          "Ready-to-eat foods save cooking and combine food groups without a complex recipe.",
+      explanation:
+          "Canned pulses save time and add a plant-protein option. Compare label sodium and rinse if desired. Choose a product compatible with your restrictions.",
+    ),
+  ),
+  DailyTip(
+    id: "activity-02",
+    retired: true,
+    canonicalId: "today-07",
+    topic: "gentle-movement",
+    destination: TipDestination.none,
+    category: TipCategory.activity,
+    basis: TipBasis.universal,
+    sourceIds: ["niddk-eating"],
+    evidenceLevel: TipEvidenceLevel.guidance,
+    ru: TipCopy(
+      "Выберите доступное движение на паузу",
+      "Способ зависит от возможностей и самочувствия сегодня.",
+      task: "Попробуйте один комфортный вариант движения, если он безопасен.",
+      steps: [
+        "Выберите знакомое действие без цели по калориям.",
+        "Остановитесь при боли, головокружении или другом дискомфорте.",
+      ],
+      example:
+          "Короткая прогулка; движение на коляске; знакомые адаптированные движения.",
+      alternative:
+          "Если движение сейчас не подходит, выберите отдых или согласованный со специалистом вариант.",
+      doneWhen:
+          "Один безопасный вариант попробован или осознанно выбран отдых.",
+      why:
+          "Посильное движение можно включать в обычный день без обязательной интенсивной тренировки.",
+      explanation:
+          "Общая активность включает бытовое и адаптированное движение. Приложение не знает всей нагрузки по одному счётчику шагов. Выбирайте подходящий способ, а не обязательную тренировку.",
+    ),
+    en: TipCopy(
+      "Choose an accessible movement break",
+      "The option depends on your abilities and wellbeing today.",
+      task: "Try one comfortable movement option if it is safe.",
+      steps: [
+        "Choose something familiar without a calorie goal.",
+        "Stop for pain, dizziness or other discomfort.",
+      ],
+      example: "A short walk; wheeling; familiar adapted movement.",
+      alternative:
+          "If movement is unsuitable, choose rest or an agreed professional alternative.",
+      doneWhen: "One safe option is tried or rest is deliberately chosen.",
+      why:
+          "Accessible movement can fit an ordinary day without a compulsory intense workout.",
+      explanation:
+          "Activity includes household tasks and adapted movement. A step counter does not capture all effort. Choose a suitable option rather than a compulsory workout.",
+    ),
+  ),
+  DailyTip(
+    id: "food-fibre",
+    retired: true,
+    canonicalId: "nutrition-01",
+    topic: "vegetable-addition",
+    destination: TipDestination.food,
+    category: TipCategory.macros,
+    basis: TipBasis.universal,
+    sourceIds: ["nhs-fibre"],
+    evidenceLevel: TipEvidenceLevel.guidance,
+    ru: TipCopy(
+      "Добавьте привычный источник клетчатки",
+      "Начните с переносимого продукта, а не обязательных отрубей.",
+      task: "Дополните один приём пищи подходящим растительным продуктом.",
+      steps: [
+        "Выберите привычный овощ, фрукт, овсянку или бобовые.",
+        "Непривычное добавляйте постепенно, соблюдая лечебные ограничения.",
+      ],
+      example:
+          "Яблоко к овсянке; немного фасоли к рису; овощи к привычному обеду.",
+      alternative:
+          "При назначенной низковолокнистой диете не меняйте её самостоятельно — уточните подходящий вариант.",
+      doneWhen: "Один переносимый вариант выбран или уточнён со специалистом.",
+      why:
+          "Разные растительные продукты дают клетчатку; одна небольшая проба конкретнее общего требования есть полезнее.",
+      explanation:
+          "Овощи, овсянка, цельнозерновой хлеб и бобовые — разные варианты. Вводите непривычные продукты постепенно. При заболеваниях ЖКТ и лечебной диете согласуйте изменения.",
+    ),
+    en: TipCopy(
+      "Add a familiar fibre source",
+      "Start with a tolerated food rather than compulsory bran.",
+      task: "Add a suitable plant food to one meal.",
+      steps: [
+        "Choose familiar vegetables, fruit, oats or pulses.",
+        "Introduce unfamiliar foods gradually within clinical restrictions.",
+      ],
+      example:
+          "Apple with oats; a little bean with rice; vegetables with a usual lunch.",
+      alternative:
+          "Do not independently change a prescribed low-fibre diet; clarify a suitable option.",
+      doneWhen:
+          "One tolerated option is chosen or checked with a professional.",
+      why:
+          "Plant foods supply fibre; one manageable trial is more concrete than a general healthy-eating instruction.",
+      explanation:
+          "Vegetables, oats, wholegrain bread and pulses offer different choices. Introduce unfamiliar foods gradually. Discuss changes if you have digestive conditions or a clinical diet.",
+    ),
+  ),
+  DailyTip(
+    id: "meal-dinner",
+    retired: true,
+    canonicalId: "meal-lunch",
+    topic: "meal-building",
+    destination: TipDestination.food,
+    category: TipCategory.nutrition,
+    basis: TipBasis.universal,
+    sourceIds: ["cdc-eating", "who-diet"],
+    evidenceLevel: TipEvidenceLevel.guidance,
+    ru: TipCopy(
+      "Выберите ужин с короткой подготовкой",
+      "С готовыми компонентами можно ориентироваться на 10–20 минут; время зависит от продукта.",
+      task: "Соберите простой ужин, сохранив привычный гарнир.",
+      steps: [
+        "Выберите готовый гарнир или продукт с подходящим временем по упаковке.",
+        "Добавьте овощи и готовые бобовые либо тофу, соблюдая инструкцию.",
+      ],
+      example: "Готовый рис + овощи + фасоль; паста + томатный соус + тофу.",
+      alternative: "Без плиты — хлеб с фасолевой намазкой и овощами.",
+      doneWhen:
+          "Один вариант приготовлен или выбран с учётом доступного времени.",
+      why:
+          "Готовые компоненты сокращают подготовку; гарнир вечером не требуется запрещать. Это идея еды, не точные КБЖУ.",
+      explanation:
+          "Добавьте овощи и доступный источник белка, например фасоль, тофу или рыбу. Само наличие углеводов вечером не доказывает, что питание мешает снижению веса. Учитывайте свой режим и назначения.",
+    ),
+    en: TipCopy(
+      "Choose a dinner with short preparation",
+      "With ready components, 10–20 minutes may work; timing depends on the product.",
+      task: "Build a simple dinner while keeping a familiar side.",
+      steps: [
+        "Choose a ready base or a product with suitable package timing.",
+        "Add vegetables and ready-cooked pulses or tofu, following instructions.",
+      ],
+      example: "Ready rice + vegetables + beans; pasta + tomato sauce + tofu.",
+      alternative:
+          "Without a stove, try bread with bean spread and vegetables.",
+      doneWhen: "One option is made or chosen to fit available time.",
+      why:
+          "Ready components reduce preparation; evening sides need not be banned. This is a meal idea, not exact nutrition.",
+      explanation:
+          "Add vegetables and an accessible protein source such as beans, tofu or fish. Evening carbohydrate alone does not establish a barrier to weight loss. Consider your routine and care plan.",
+    ),
+  ),
+];
+
+const preservedLegacyContent = <String, String>{
+  "nutrition-08": "meal-dinner",
+  "nutrition-14": "nutrition-09",
+  "nutrition-17": "meal-dinner",
+  "macros-06": "food-fibre",
+  "macros-07": "food-fibre",
+  "macros-09": "macros-02",
+  "macros-14": "food-fibre",
+  "macros-16": "macros-02",
+  "activity-07": "activity-02",
+  "activity-12": "activity-02",
+  "activity-17": "activity-02",
+  "facts-08": "macros-02",
+  "facts-10": "food-fibre",
+  "macros-17": "food-fibre",
+  "facts-13": "food-fibre",
+};
 
 const legacyTipAliases = <String, String>{
   "nutrition-03": "food-protein",
   "nutrition-06": "meal-breakfast",
   "nutrition-07": "meal-lunch",
-  "nutrition-08": "meal-dinner",
+  "nutrition-08": "meal-lunch",
   "nutrition-10": "nutrition-01",
   "nutrition-11": "nutrition-02",
   "nutrition-12": "meal-lunch",
   "nutrition-13": "nutrition-05",
-  "nutrition-14": "nutrition-09",
+  "nutrition-14": "today-15",
   "nutrition-15": "meal-breakfast",
   "nutrition-16": "meal-lunch",
-  "nutrition-17": "meal-dinner",
+  "nutrition-17": "meal-lunch",
   "macros-05": "macros-13",
-  "macros-06": "food-fibre",
-  "macros-07": "food-fibre",
+  "macros-06": "nutrition-01",
+  "macros-07": "nutrition-01",
   "macros-08": "macros-01",
-  "macros-09": "macros-02",
+  "macros-09": "meal-lunch",
   "macros-10": "food-protein",
   "macros-11": "macros-04",
   "macros-12": "macros-13",
-  "macros-14": "food-fibre",
+  "macros-14": "nutrition-01",
   "macros-15": "macros-01",
-  "macros-16": "macros-02",
+  "macros-16": "meal-lunch",
   "macros-18": "diary-low",
   "hydration-01": "hydration-03",
   "hydration-02": "hydration-05",
@@ -2757,16 +6890,16 @@ const legacyTipAliases = <String, String>{
   "hydration-17": "hydration-05",
   "activity-05": "activity-18",
   "activity-06": "today-07",
-  "activity-07": "activity-02",
+  "activity-07": "today-07",
   "activity-08": "activity-03",
   "activity-09": "activity-18",
   "activity-10": "activity-18",
   "activity-11": "today-07",
-  "activity-12": "activity-02",
+  "activity-12": "today-07",
   "activity-14": "activity-context",
   "activity-15": "activity-18",
   "activity-16": "today-07",
-  "activity-17": "activity-02",
+  "activity-17": "today-07",
   "recovery-02": "recovery-04",
   "recovery-03": "recovery-06",
   "recovery-05": "recovery-01",
@@ -2820,8 +6953,8 @@ const legacyTipAliases = <String, String>{
   "facts-03": "meal-budget",
   "facts-05": "macros-01",
   "facts-07": "facts-fluid",
-  "facts-08": "macros-02",
-  "facts-10": "food-fibre",
+  "facts-08": "meal-lunch",
+  "facts-10": "nutrition-01",
   "facts-11": "care-context",
   "facts-12": "facts-06",
   "facts-14": "hydration-03",
@@ -2840,7 +6973,7 @@ const legacyTipAliases = <String, String>{
   "today-17": "nutrition-01",
   "today-18": "today-15",
   "nutrition-04": "meal-lunch",
-  "macros-17": "food-fibre",
+  "macros-17": "nutrition-01",
   "hydration-10": "hydration-18",
   "activity-01": "today-07",
   "activity-13": "activity-18",
@@ -2854,9 +6987,14 @@ const legacyTipAliases = <String, String>{
   "progress-01": "insight-down",
   "progress-12": "insight-short",
   "progress-13": "insight-body",
-  "facts-13": "food-fibre",
+  "facts-13": "nutrition-01",
   "today-13": "nutrition-01",
   "insight-long": "care-context",
   "recovery-appetite": "recovery-stress",
   "nutrition-18": "diary-low",
+  "macros-02": "meal-lunch",
+  "nutrition-09": "today-15",
+  "activity-02": "today-07",
+  "food-fibre": "nutrition-01",
+  "meal-dinner": "meal-lunch",
 };

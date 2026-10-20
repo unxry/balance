@@ -11,9 +11,9 @@ typography and accessible light/dark themes. Russian and English are supported.
 - Weight and chest/waist/hip measurement histories, calendar periods and synchronized
   comparison charts. Missing readings stay missing; no values are invented.
 - Local profile, achievements, versioned backup/restore and automatic snapshots.
-- Daily Tips: **60 practical bilingual action plans** in ten categories,
+- Daily Tips: **150 practical bilingual action plans** in ten categories,
   saved ideas, dated history and explicitly checked optional tasks. All 180 legacy
-  IDs remain readable through revised articles and 140 retired aliases.
+  IDs remain readable through revised articles and 145 retired aliases.
 
 Step data is unavailable in the current HealthService implementation. The UI and
 tip selector never invent steps. An optional meal-photo recognition flow sends
@@ -41,14 +41,18 @@ Returning to a previously visited date after timezone travel restores that date'
 selection. Foreground civil-clock checks and resume handling cover day and
 clock/timezone changes; the timer also fires at local midnight.
 
-The selector rotates categories, excludes IDs and related topics seen within 60 calendar days when
-sufficient eligible tips exist, prefers unseen tips throughout a full cycle, and
-then uses older eligible tips. The current library has 47 universal plans, so a
-strict 60-day article/topic exclusion is impossible when personalization is off.
-The finite fallback still avoids adjacent articles and related topics when choices
-exist; catalog size is not inflated to satisfy a repeat counter. Completed actions are deprioritized after the cycle.
-Small catalogs use a finite fallback and avoid the immediately previous ID whenever
-another eligible ID exists. Store operations are serialized across service instances
+The catalog has **137 universal and 13 contextual plans**, with 119 universal
+rotation topics. The selector excludes recorded IDs and related topics within
+60 calendar days when an eligible alternative exists. Category changes take
+priority over unseen content after that exclusion, preventing a large food
+category from forming a long run. Same-day assignments and explicit choices
+remain stable across restarts.
+The actual filtered pool is exposed by `eligiblePlans`; tests verify 137 universal
+plans for incomplete logs, unknown/minor safety context and all restriction flags.
+A restricted repository or many explicit choices can exhaust fresh topics: the
+finite fallback then uses older eligible content and avoids adjacent repeats when
+possible. This is not an unconditional no-repeat guarantee. Manual choices remain
+under the user’s control. Store operations are serialized across service instances
 sharing a Hive box. A failed write is retryable and cannot poison the queue.
 
 Personalization is **off by default**. Opting in allows only contextual tips backed
@@ -78,7 +82,9 @@ Sources, claim limits and remaining clinical review are recorded in
 [algorithm](docs/WEIGHT_PLATEAU_ALGORITHM.md),
 [redesign report](docs/DAILY_TIPS_REDESIGN_REPORT.md) and
 [validation results](docs/TEST_RESULTS.md) and
-[practical-content audit](docs/DAILY_TIPS_ACTION_AUDIT.md).
+[3.1 semantic audit](docs/DAILY_TIPS_31_AUDIT.md),
+[machine catalog](docs/daily_tips_catalog.json) and
+[3.1 release report](docs/DAILY_TIPS_31_REPORT.md).
 
 ## Weight forecast and progress
 
@@ -124,7 +130,7 @@ fl_chart, local notifications and Flutter's iOS Swift Package Manager integratio
 | Path | Contents |
 | --- | --- |
 | `lib/models` | Validated domain and persistence models |
-| `lib/data/daily_tips_catalog.dart` | 60 action plans and 140 legacy aliases |
+| `lib/data/daily_tips_catalog.dart` | 150 action plans and 145 legacy aliases |
 | `lib/services` | Tip selection/storage, analytics, backup, catalog and networking |
 | `lib/providers` | Session state and backward-compatible local persistence |
 | `lib/screens`, `lib/widgets` | App screens and shared UI |
