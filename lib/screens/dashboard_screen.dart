@@ -1014,7 +1014,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                             if (isToday && advice != null) ...[
                               const SizedBox(height: 4),
                               Text(
-                                advice.category.label(s.isRu),
+                                '${advice.category.label(s.isRu)}${advice.basis == TipBasis.universal ? '' : (s.isRu ? ' · Для вас' : ' · For you')}',
                                 style: t.inter(size: 9, color: c.accent),
                               ),
                             ],
@@ -1046,7 +1046,7 @@ class _DashboardScreenState extends State<DashboardScreen>
                     child: Text(
                       content,
                       key: ValueKey(content),
-                      maxLines: 6,
+                      maxLines: 5,
                       overflow: TextOverflow.ellipsis,
                       style: t.fraunces(
                         size: 12,
@@ -1055,6 +1055,13 @@ class _DashboardScreenState extends State<DashboardScreen>
                       ),
                     ),
                   ),
+                  if (isToday) ...[
+                    const SizedBox(height: 5),
+                    Text(
+                      s.isRu ? 'Подробнее →' : 'Read more →',
+                      style: t.inter(size: 9, color: c.accent),
+                    ),
+                  ],
                 ],
               ),
             ],

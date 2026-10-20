@@ -48,23 +48,26 @@ void main() {
   });
 
   test(
-    '180 unique bilingual tips, ten categories, matching optional tasks',
+    '80 sourced articles, all 180 legacy IDs, bilingual content and compatible aliases',
     () {
-      expect(dailyTipsCatalog, hasLength(180));
-      expect(dailyTipsCatalog.map((tip) => tip.id).toSet(), hasLength(180));
-      expect(
-        dailyTipsCatalog.map((tip) => tip.ru.body).toSet(),
-        hasLength(180),
-      );
-      expect(
-        dailyTipsCatalog.map((tip) => tip.en.body).toSet(),
-        hasLength(180),
-      );
+      expect(activeDailyTips, hasLength(80));
+      expect(dailyTipsCatalog.map((tip) => tip.id).toSet(), hasLength(200));
+      expect(activeDailyTips.map((tip) => tip.ru.body).toSet(), hasLength(80));
+      expect(activeDailyTips.map((tip) => tip.en.body).toSet(), hasLength(80));
       for (final category in TipCategory.values) {
         expect(
-          dailyTipsCatalog.where((tip) => tip.category == category),
-          hasLength(18),
+          activeDailyTips.where((tip) => tip.category == category).length,
+          greaterThanOrEqualTo(6),
         );
+        for (var n = 1; n <= 18; n++) {
+          expect(
+            dailyTipsCatalog.any(
+              (tip) =>
+                  tip.id == '${category.name}-${n.toString().padLeft(2, '0')}',
+            ),
+            isTrue,
+          );
+        }
       }
       for (final tip in dailyTipsCatalog) {
         expect(tip.ru.title, isNotEmpty);
@@ -168,7 +171,7 @@ void main() {
       final ids = <String>[];
       final categories = <TipCategory>[];
       final universal = dailyTipsCatalog
-          .where((tip) => tip.basis == TipBasis.universal)
+          .where((tip) => !tip.retired && tip.basis == TipBasis.universal)
           .length;
       for (var day = 0; day < 500; day++) {
         now = DateTime(2027, 1, 1 + day);

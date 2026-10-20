@@ -1152,7 +1152,7 @@ void main() {
     expect(find.text('СОВЕТ ДНЯ'), findsWidgets);
     expect(find.text('На основе'), findsOneWidget);
     expect(
-      find.text('Универсальная идея · личные данные не использовались'),
+      find.text('Общий материал; личная причина не устанавливалась.'),
       findsOneWidget,
     );
     expect(find.byKey(const ValueKey('tipPersonalization')), findsOneWidget);

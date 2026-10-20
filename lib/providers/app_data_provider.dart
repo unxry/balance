@@ -12,6 +12,8 @@ import '../models/recipe_models.dart';
 import '../models/reminder_models.dart';
 import '../models/user_profile.dart';
 import '../models/daily_tip.dart';
+import '../models/weight_trend_insight.dart';
+import '../services/weight_trend_insights_service.dart';
 import '../services/daily_tips_service.dart';
 import '../services/weight_forecast_cache.dart';
 import '../services/achievement_engine.dart';
@@ -117,7 +119,34 @@ class AppDataProvider extends ChangeNotifier {
     }
   }
 
-  TipContext _tipContext() {
+  TipSafetyProfile get tipsSafety {
+    final raw = _userBox.get('profile');
+    final age = raw is Map && raw['onboarded'] == true ? raw['age'] : null;
+    return TipSafetyProfile.fromJson(
+      _userBox.get('tipsSafetyV1'),
+      age: age is int && age >= 0 && age <= 100 ? age : null,
+    );
+  }
+
+  Future<void> setTipsSafety(TipSafetyProfile value) async {
+    await _userBox.put('tipsSafetyV1', value.toJson());
+    await _userBox.flush();
+    _invalidateAnalytics();
+    await refreshDailyTip();
+  }
+
+  WeightTrendInsight get weightInsight =>
+      const WeightTrendInsightsService().analyze(
+        weights: weightHistory,
+        now: _now(),
+        goal: _userBox.containsKey('profile') ? profile.goal : null,
+        targetKg: _userBox.containsKey('profile')
+            ? profile.targetWeightKg
+            : null,
+        safety: tipsSafety,
+      );
+
+  TipContext get tipContext {
     final cutoff = localDateKey(
       DateTime(today.year, today.month, today.day - 6),
     );
@@ -127,14 +156,26 @@ class AppDataProvider extends ChangeNotifier {
           entry.key.compareTo(localDateKey(today)) <= 0 &&
           entry.value.isNotEmpty,
     );
-    final completedDays = foodDays.where(
-      (entry) => entry.key != localDateKey(today),
-    );
-    final lowDays = completedDays.where((entry) {
+    final previousWeek = _foodHistory.entries
+        .where(
+          (entry) =>
+              entry.key.compareTo(
+                    localDateKey(
+                      DateTime(today.year, today.month, today.day - 7),
+                    ),
+                  ) >=
+                  0 &&
+              entry.key.compareTo(localDateKey(today)) < 0 &&
+              entry.value.isNotEmpty,
+        )
+        .toList();
+    final lowDays = previousWeek.where((entry) {
       final goal = calorieGoalForDate(entry.key);
       final logged = entry.value.fold<int>(0, (sum, food) => sum + food.kcal);
       return goal > 0 && logged < goal * .75;
     }).length;
+    final insight = weightInsight;
+    final foods = previousWeek.expand((day) => day.value).toList();
     return TipContext(
       hasFood: foodDays.isNotEmpty,
       hasWater: _waterHistory.entries.any(
@@ -143,20 +184,54 @@ class AppDataProvider extends ChangeNotifier {
             entry.key.compareTo(localDateKey(today)) <= 0 &&
             entry.value > 0,
       ),
-      hasSteps: activityAvailable,
+      hasSteps:
+          activityAvailable ||
+          dailyBalances.any(
+            (day) =>
+                day.dateKey.compareTo(cutoff) >= 0 &&
+                day.dateKey.compareTo(localDateKey(today)) <= 0 &&
+                day.stepCount != null,
+          ),
       hasWeightTrend:
-          weightHistory
-              .map((entry) => localDateKey(entry.date))
-              .toSet()
-              .length >=
-          2,
+          insight.measuredDays >= 4 &&
+          insight.spanDays >= 7 &&
+          insight.state != WeightInsightState.uncertainTrend &&
+          insight.state != WeightInsightState.insufficientData,
       lowLoggedIntake: lowDays >= 3,
+      diaryGaps: previousWeek.length < 7,
+      loggedFoodDays: previousWeek.length,
+      distinctFoods: foods
+          .map((e) => e.productId ?? e.name.trim().toLowerCase())
+          .toSet()
+          .length,
+      loggedProteinG: foods.isEmpty
+          ? null
+          : foods.fold<double>(0, (sum, e) => sum + e.proteinG),
+      loggedFatG: foods.isEmpty
+          ? null
+          : foods.fold<double>(0, (sum, e) => sum + e.fatG),
+      loggedCarbsG: foods.isEmpty
+          ? null
+          : foods.fold<double>(0, (sum, e) => sum + e.carbsG),
+      hasBody: bodyMeasurements.any(
+        (e) =>
+            localDateKey(e.date).compareTo(cutoff) >= 0 &&
+            localDateKey(e.date).compareTo(localDateKey(today)) <= 0,
+      ),
+      maintenance:
+          profile.goal == Goal.hold ||
+          insight.state == WeightInsightState.maintenance ||
+          (profile.goal == Goal.lose &&
+              weightHistory.isNotEmpty &&
+              weightHistory.last.kg <= profile.targetWeightKg * 1.005),
+      insight: insight,
+      safety: tipsSafety,
     );
   }
 
   Future<void> refreshDailyTip() async {
     try {
-      await dailyTips.refresh(context: _tipContext());
+      await dailyTips.refresh(context: tipContext);
       dailyTipsError = null;
     } catch (_) {
       dailyTipsError = 'storage';
@@ -304,6 +379,7 @@ class AppDataProvider extends ChangeNotifier {
   final Map<String, DateTime> _achievementUnlocks = {};
 
   Future<void> load() async {
+    _loaded = false;
     _userBox = _injectedUserBox ?? Hive.box<dynamic>(LocalStore.userBox);
     _foodBox = _injectedFoodBox ?? Hive.box<dynamic>(LocalStore.foodBox);
     _weightBox = _injectedWeightBox ?? Hive.box<dynamic>(LocalStore.weightBox);
@@ -1479,7 +1555,10 @@ class AppDataProvider extends ChangeNotifier {
     return null;
   }
 
-  void _invalidateAnalytics() => _analyticsCache.clear();
+  void _invalidateAnalytics() {
+    _analyticsCache.clear();
+    if (_loaded) dailyTips.context = tipContext;
+  }
 
   DateTime? get latestActualWeightDate =>
       weightHistory.isEmpty ? null : weightHistory.last.date;

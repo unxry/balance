@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
 import '../data/daily_tips_catalog.dart';
+import '../data/tip_sources.dart';
 import '../models/daily_tip.dart';
 import '../utils/calendar_date.dart';
 
@@ -58,6 +59,7 @@ class DailyTipsService {
   Set<String> _saved = {};
   bool _personalized = false;
   String? _currentDate;
+  TipContext context = const TipContext();
 
   DailyTipsService({
     required this.store,
@@ -82,11 +84,24 @@ class DailyTipsService {
     return null;
   }
 
-  DailyTip? get currentTip => tipById(currentVisit?.tipId ?? '');
+  DailyTip? get currentTip {
+    final tip = tipById(currentVisit?.tipId ?? '');
+    if (tip != null && !isSuitable(tip)) {
+      return tipById('care-context')?.asLegacy(tip.id);
+    }
+    return tip;
+  }
+
+  bool isSuitable(DailyTip tip) =>
+      !tip.weightManagementOnly ||
+      (context.safety.allowsWeightManagement &&
+          !context.maintenance &&
+          !context.lowLoggedIntake);
   Future<void> get pending => _queues[store.identity] ?? Future<void>.value();
 
   Future<void> refresh({TipContext context = const TipContext()}) => _serial(
     () async {
+      this.context = context;
       _catalog ??= List.unmodifiable(await repository.load());
       if (_catalog!.isEmpty ||
           _catalog!.map((tip) => tip.id).toSet().length != _catalog!.length) {
@@ -99,7 +114,14 @@ class DailyTipsService {
       final tip = _select(date, context);
       final next = [
         ..._history,
-        TipVisit(dateKey: date, tipId: tip.id, basis: tip.basis),
+        TipVisit(
+          dateKey: date,
+          tipId: tip.id,
+          basis: tip.basis,
+          reasonRu: context.reason(tip.basis, true),
+          reasonEn: context.reason(tip.basis, false),
+          catalogVersion: tip.version,
+        ),
       ];
       await _write(history: next);
       _history = next;
@@ -132,6 +154,9 @@ class DailyTipsService {
               tipId: visit.tipId,
               basis: visit.basis,
               completed: completed,
+              reasonRu: visit.reasonRu,
+              reasonEn: visit.reasonEn,
+              catalogVersion: visit.catalogVersion,
             )
           else
             visit,
@@ -152,24 +177,37 @@ class DailyTipsService {
     var eligible = _catalog!
         .where(
           (tip) =>
-              tip.basis == TipBasis.universal ||
-              (_personalized && context.supports(tip.basis)),
+              !tip.retired &&
+              tip.sourceIds.isNotEmpty &&
+              tip.sourceIds.every(tipSources.containsKey) &&
+              tip.evidenceLevel != TipEvidenceLevel.unverified &&
+              isSuitable(tip) &&
+              (!tip.usesLoggedMacros ||
+                  (context.distinctFoods >= 2 &&
+                      context.loggedProteinG != null &&
+                      context.loggedFatG != null &&
+                      context.loggedCarbsG != null)) &&
+              (tip.basis == TipBasis.universal ||
+                  (_personalized && context.supports(tip.basis))),
         )
         .toList();
     if (eligible.isEmpty) throw StateError('No eligible daily tips');
     if (eligible.length > 1 && _history.isNotEmpty) {
-      eligible.removeWhere((tip) => tip.id == _history.last.tipId);
+      final previous = tipById(_history.last.tipId);
+      final previousId = previous?.canonicalId ?? _history.last.tipId;
+      eligible.removeWhere((tip) => tip.id == previousId);
     }
     final recent = <String>{};
     final lastSeen = <String, int>{};
     final completed = <String>{};
     for (var i = 0; i < _history.length; i++) {
       final visit = _history[i];
-      lastSeen[visit.tipId] = i;
-      if (visit.completed) completed.add(visit.tipId);
+      final id = tipById(visit.tipId)?.canonicalId ?? visit.tipId;
+      lastSeen[id] = i;
+      if (visit.completed) completed.add(id);
       final age = calendarDayDifference(date, visit.dateKey);
       // Future civil dates can occur after travelling west. Keep them recent.
-      if (age < 60) recent.add(visit.tipId);
+      if (age < 60) recent.add(id);
     }
     final fresh = eligible.where((tip) => !recent.contains(tip.id)).toList();
     if (fresh.isNotEmpty) eligible = fresh;
@@ -187,6 +225,30 @@ class DailyTipsService {
     final previous = _history.isEmpty
         ? null
         : tipById(_history.last.tipId)?.category;
+    if (_personalized &&
+        (_history.isEmpty || _history.last.basis == TipBasis.universal)) {
+      final relevant = eligible
+          .where(
+            (tip) =>
+                tip.basis != TipBasis.universal && tip.category != previous,
+          )
+          .toList();
+      if (relevant.isNotEmpty) {
+        int priority(DailyTip tip) => switch (tip.basis) {
+          TipBasis.gentleFuel => 3,
+          TipBasis.maintenance => 2,
+          TipBasis.plateau => 1,
+          _ => 0,
+        };
+        relevant.sort((a, b) {
+          final score = priority(b).compareTo(priority(a));
+          return score != 0
+              ? score
+              : _rank(date, a.id).compareTo(_rank(date, b.id));
+        });
+        return relevant.first;
+      }
+    }
     final start = previous == null ? 0 : previous.index + 1;
     for (var offset = 0; offset < TipCategory.values.length; offset++) {
       final category =
@@ -248,6 +310,15 @@ class DailyTipsService {
                 orElse: () => TipBasis.universal,
               ),
               completed: item['completed'] == true,
+              reasonRu: item['reasonRu'] is String
+                  ? item['reasonRu'] as String
+                  : null,
+              reasonEn: item['reasonEn'] is String
+                  ? item['reasonEn'] as String
+                  : null,
+              catalogVersion: item['catalogVersion'] is int
+                  ? item['catalogVersion'] as int
+                  : 0,
             ),
     ];
     _saved = raw['saved'] is List

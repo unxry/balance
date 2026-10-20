@@ -16,6 +16,7 @@ import '../widgets/progress_chart.dart';
 import '../widgets/weight_forecast_note.dart';
 import '../widgets/progress_segmented_control.dart';
 import 'body_progress_section.dart';
+import 'weight_insights_screen.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_text_styles.dart';
 import '../theme/i18n.dart';
@@ -128,6 +129,29 @@ class _WeightScreenState extends State<WeightScreen> {
                   _header(colors, strings, data),
                   const SizedBox(height: 18),
                   _progressModes(colors, text, strings),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      key: const ValueKey('progressWeightInsights'),
+                      icon: Icon(
+                        Icons.insights_rounded,
+                        size: 17,
+                        color: colors.accent,
+                      ),
+                      label: Text(
+                        strings.isRu
+                            ? 'Почему вес стоит?'
+                            : 'Why is weight not changing?',
+                        style: text.inter(size: 11, color: colors.accent),
+                      ),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (_) => const WeightInsightsScreen(),
+                        ),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 20),
                   if (_progressMode != 0) ...[
                     _rangeSegment(colors, text, strings),

@@ -3,11 +3,13 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../models/daily_tip.dart';
+import '../models/weight_trend_insight.dart';
 import '../providers/app_data_provider.dart';
 import '../providers/settings_provider.dart';
 import '../theme/app_text_styles.dart';
 import '../widgets/common.dart';
 import '../widgets/daily_tip_card.dart';
+import 'weight_insights_screen.dart';
 
 class AdviceDetailSheet extends StatelessWidget {
   const AdviceDetailSheet({super.key});
@@ -40,6 +42,7 @@ class AdviceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) => const SafeArea(
     child: SingleChildScrollView(
+      key: ValueKey('tipsAdviceScroll'),
       padding: EdgeInsets.fromLTRB(20, 16, 20, 110),
       child: _DailyTipsContent(),
     ),
@@ -85,6 +88,52 @@ class _DailyTipsContent extends StatelessWidget {
               ],
             ),
           ),
+        const SizedBox(height: 14),
+        SectionCard(
+          radius: 24,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                ru ? 'Понять свой прогресс' : 'Understand your progress',
+                style: text.fraunces(size: 24),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                data.weightInsight.title(ru),
+                style: text.inter(size: 13, color: c.accent),
+              ),
+              TextButton.icon(
+                key: const ValueKey('openWeightInsights'),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const WeightInsightsScreen(),
+                  ),
+                ),
+                icon: Icon(Icons.insights_rounded, color: c.accent),
+                label: Text(
+                  ru ? 'Почему вес стоит?' : 'Why is weight not changing?',
+                ),
+              ),
+              TextButton.icon(
+                key: const ValueKey('openTipLibrary'),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute<void>(
+                    builder: (_) => const TipLibraryScreen(),
+                  ),
+                ),
+                icon: Icon(Icons.restaurant_outlined, color: c.accent),
+                label: Text(
+                  ru
+                      ? 'Питание и практические идеи'
+                      : 'Food and practical ideas',
+                ),
+              ),
+            ],
+          ),
+        ),
         const SizedBox(height: 14),
         Wrap(
           spacing: 8,
@@ -152,19 +201,26 @@ class _DailyTipsContent extends StatelessWidget {
               ),
               const SizedBox(height: 5),
               Text(
-                _basis(visit?.basis ?? TipBasis.universal, ru),
+                (ru ? visit?.reasonRu : visit?.reasonEn) ??
+                    _basis(visit?.basis ?? TipBasis.universal, ru),
                 style: text.inter(size: 11, color: c.accent, height: 1.5),
               ),
               const SizedBox(height: 10),
             ],
           ),
         ),
+        const SizedBox(height: 14),
+        const TipsSafetyCard(),
       ],
     );
   }
 }
 
 String _basis(TipBasis basis, bool ru) => switch (basis) {
+  TipBasis.plateau || TipBasis.maintenance || TipBasis.diary || TipBasis.body =>
+    ru
+        ? 'Основание старой записи не сохранено; актуальная оценка доступна в анализе динамики.'
+        : 'The old assignment has no saved rationale; see trend insights for the current assessment.',
   TipBasis.universal =>
     ru
         ? 'Универсальная идея · личные данные не использовались'
@@ -191,6 +247,111 @@ String _basis(TipBasis basis, bool ru) => switch (basis) {
         : 'Some food logs are below target · entries may be incomplete',
 };
 
+class TipsSafetyCard extends StatelessWidget {
+  const TipsSafetyCard({super.key});
+  @override
+  Widget build(BuildContext context) {
+    final data = context.watch<AppDataProvider>();
+    final s = data.tipsSafety;
+    final ru = context.watch<SettingsProvider>().lang == AppLang.ru;
+    final t = AppText(context.colors);
+    Future<void> save({
+      bool? pregnant,
+      bool? breastfeeding,
+      bool? eating,
+      bool? medical,
+      bool checked = false,
+    }) => tipAction(
+      context,
+      () => data.setTipsSafety(
+        TipSafetyProfile(
+          age: s.age,
+          checked: checked,
+          pregnant: pregnant ?? s.pregnant,
+          breastfeeding: breastfeeding ?? s.breastfeeding,
+          eatingDisorderRisk: eating ?? s.eatingDisorderRisk,
+          medicalRestriction: medical ?? s.medicalRestriction,
+        ),
+      ),
+    );
+    return SectionCard(
+      radius: 24,
+      child: Material(
+        type: MaterialType.transparency,
+        child: ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          title: Text(
+            ru ? 'Применимость советов' : 'Advice suitability',
+            style: t.inter(size: 14, weight: FontWeight.w600),
+          ),
+          subtitle: Text(
+            s.allowsWeightManagement
+                ? (ru ? 'Контекст уточнён' : 'Context checked')
+                : (ru
+                      ? 'Общие материалы без персональных норм'
+                      : 'General information without personal targets'),
+            style: t.inter(size: 11, color: context.colors.fg2),
+          ),
+          children: [
+            Text(
+              ru
+                  ? 'Необязательная настройка только на устройстве. Ничего не выводится по полу. При неизвестном возрасте, несовершеннолетии или неуточнённых ограничениях советы по снижению веса отключены.'
+                  : 'Optional and stored only on this device. Nothing is inferred from sex. Weight-loss suggestions are disabled for unknown age, minors or unchecked restrictions.',
+              style: t.inter(size: 12, height: 1.5),
+            ),
+            for (final item in [
+              (
+                ru ? 'Беременность' : 'Pregnancy',
+                s.pregnant,
+                (bool v) => save(pregnant: v),
+              ),
+              (
+                ru ? 'Грудное вскармливание' : 'Breastfeeding',
+                s.breastfeeding,
+                (bool v) => save(breastfeeding: v),
+              ),
+              (
+                ru
+                    ? 'Риск или история нарушений питания'
+                    : 'Eating-disorder risk or history',
+                s.eatingDisorderRisk,
+                (bool v) => save(eating: v),
+              ),
+              (
+                ru ? 'Медицинские ограничения' : 'Medical restrictions',
+                s.medicalRestriction,
+                (bool v) => save(medical: v),
+              ),
+            ])
+              SwitchListTile.adaptive(
+                contentPadding: EdgeInsets.zero,
+                title: Text(item.$1, style: t.inter(size: 12)),
+                value: item.$2,
+                onChanged: item.$3,
+              ),
+            TextButton(
+              key: const ValueKey('confirmTipsSafety'),
+              onPressed: () => save(checked: true),
+              child: Text(
+                ru
+                    ? 'Подтвердить указанный контекст'
+                    : 'Confirm the context above',
+              ),
+            ),
+            if (!s.adult)
+              Text(
+                ru
+                    ? 'Возраст не подтверждён как взрослый. Настройка не снимает это ограничение.'
+                    : 'Adult age is not confirmed. This setting does not override that restriction.',
+                style: t.inter(size: 11, color: context.colors.fg2),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class DailyTipsHistoryScreen extends StatelessWidget {
   final bool savedOnly;
   const DailyTipsHistoryScreen({super.key, this.savedOnly = false});
@@ -213,6 +374,13 @@ class DailyTipsHistoryScreen extends StatelessWidget {
             )
             .toList()
           ..sort((a, b) => b.dateKey.compareTo(a.dateKey));
+    if (savedOnly) {
+      for (final id in service.saved) {
+        if (service.tipById(id) != null && seen.add(id)) {
+          visits.add(TipVisit(dateKey: '', tipId: id));
+        }
+      }
+    }
     return Scaffold(
       backgroundColor: c.page,
       appBar: AppBar(
@@ -250,7 +418,7 @@ class DailyTipsHistoryScreen extends StatelessWidget {
                 final visit = visits[index];
                 final tip = service.tipById(visit.tipId)!;
                 return SectionCard(
-                  key: ValueKey('tipHistory-${visit.dateKey}'),
+                  key: ValueKey('tipHistory-${visit.dateKey}-${visit.tipId}'),
                   padding: const EdgeInsets.all(8),
                   child: Material(
                     type: MaterialType.transparency,
@@ -272,7 +440,7 @@ class DailyTipsHistoryScreen extends StatelessWidget {
                       subtitle: Padding(
                         padding: const EdgeInsets.only(top: 6),
                         child: Text(
-                          '${DateFormat('d MMM y', ru ? 'ru' : 'en').format(DateTime.parse(visit.dateKey))} · ${tip.category.label(ru)}${visit.completed ? (ru ? ' · Выполнено' : ' · Completed') : ''}',
+                          '${visit.dateKey.isEmpty ? (ru ? 'Из библиотеки' : 'From the library') : DateFormat('d MMM y', ru ? 'ru' : 'en').format(DateTime.parse(visit.dateKey))} · ${tip.category.label(ru)}${visit.completed ? (ru ? ' · Выполнено' : ' · Completed') : ''}',
                           style: text.inter(
                             size: 10,
                             color: c.fg2,
@@ -309,7 +477,11 @@ class DailyTipsHistoryScreen extends StatelessWidget {
                         builder: (_) => SafeArea(
                           child: SingleChildScrollView(
                             padding: const EdgeInsets.all(20),
-                            child: DailyTipCard(tip: tip, visit: visit),
+                            child: DailyTipCard(
+                              tip: tip,
+                              visit: visit,
+                              assigned: visit.dateKey.isNotEmpty,
+                            ),
                           ),
                         ),
                       ),

@@ -7,9 +7,12 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app/models/body_measurement.dart';
 import 'package:flutter_app/models/user_profile.dart';
+import 'package:flutter_app/models/weight_trend_insight.dart';
 import 'package:flutter_app/providers/app_data_provider.dart';
 import 'package:flutter_app/providers/settings_provider.dart';
 import 'package:flutter_app/screens/root_shell.dart';
+import 'package:flutter_app/screens/advice_screen.dart';
+import 'package:flutter_app/screens/weight_insights_screen.dart';
 import 'package:flutter_app/theme/app_colors.dart';
 import 'package:flutter_app/widgets/common.dart';
 
@@ -21,9 +24,43 @@ Future<void> main() async {
   var largeText = false;
   var reduceMotion = false;
   void Function()? rebuild;
+  final navigator = GlobalKey<NavigatorState>();
 
   enableFlutterDriverExtension(
     handler: (message) async {
+      if (message == 'screen-home') {
+        navigator.currentState!.popUntil((r) => r.isFirst);
+      }
+      if (message == 'screen-advice') {
+        navigator.currentState!.push(
+          MaterialPageRoute<void>(
+            builder: (_) => const Scaffold(body: AdviceScreen()),
+          ),
+        );
+      }
+      if (message == 'screen-insights') {
+        navigator.currentState!.push(
+          MaterialPageRoute<void>(builder: (_) => const WeightInsightsScreen()),
+        );
+      }
+      if (message == 'screen-library') {
+        navigator.currentState!.push(
+          MaterialPageRoute<void>(builder: (_) => const TipLibraryScreen()),
+        );
+      }
+      if (message == 'insights-plateau' || message == 'insights-short') {
+        for (final e in data.weightHistory.toList()) {
+          await data.deleteWeightEntry(e.id);
+        }
+        await data.setTipsSafety(const TipSafetyProfile(checked: true));
+        final n = message == 'insights-plateau' ? 28 : 3;
+        for (var i = 0; i < n; i++) {
+          await data.addWeightEntry(
+            80 + (i % 3 - 1) * .03,
+            date: DateTime(2026, 10, 15 - i, 8),
+          );
+        }
+      }
       if (message == 'dark') await settings.setTheme(AppThemeMode.dark);
       if (message == 'light') await settings.setTheme(AppThemeMode.wellness);
       if (message == 'ru') await settings.setLang(AppLang.ru);
@@ -200,6 +237,7 @@ Future<void> main() async {
           return AppColorsScope(
             colors: c,
             child: MaterialApp(
+              navigatorKey: navigator,
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
                 useMaterial3: true,

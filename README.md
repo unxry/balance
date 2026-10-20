@@ -11,20 +11,23 @@ typography and accessible light/dark themes. Russian and English are supported.
 - Weight and chest/waist/hip measurement histories, calendar periods and synchronized
   comparison charts. Missing readings stay missing; no values are invented.
 - Local profile, achievements, versioned backup/restore and automatic snapshots.
-- Daily Tips 2.0: **180 authored bilingual tips**, 18 in each of ten categories,
-  saved ideas, dated history and explicitly checked optional tasks.
+- Daily Tips: **80 evidence-linked bilingual articles** in ten categories,
+  saved ideas, dated history and explicitly checked optional tasks. All 180 legacy
+  IDs remain readable through revised articles and 120 retired aliases.
 
 Step data is unavailable in the current HealthService implementation. The UI and
 tip selector never invent steps. An optional meal-photo recognition flow sends
 sanitized images to the configured HTTPS service; this is separate from daily
 tips and is not required for their operation.
 
-## Daily Tips 2.0
+## Daily Tips and weight insights
 
 Tips work entirely offline, without an AI API or paid service. The service writes
 the selected ID and the local calendar date together in one versioned Hive record
 (`balance_user` → `dailyTipsV1`). A restart, language change, profile update or
 personalization toggle cannot replace a tip already assigned to that date.
+If safety or goal context changes, an unsuitable weight-management article is
+replaced with general support under the same stored ID.
 Returning to a previously visited date after timezone travel restores that date's
 selection. Foreground civil-clock checks and resume handling cover day and
 clock/timezone changes; the timer also fires at local midnight.
@@ -37,7 +40,7 @@ another eligible ID exists. Store operations are serialized across service insta
 sharing a Hive box. A failed write is retryable and cannot poison the queue.
 
 Personalization is **off by default**. Opting in allows only contextual tips backed
-by actual food/water logs, available steps or multiple dated weight readings.
+by actual food/water logs, available steps, body measurements or dated weight readings.
 The displayed explanation records which kind of data informed selection. Lower
 food logs are treated as potentially incomplete, with gentle reminders about
 regular meals and no additional food restriction. No diagnostic inference is made.
@@ -48,11 +51,17 @@ backup format. Old installations need no destructive data migration. Stable cata
 IDs must be retained when editing copy; retired entries should remain readable.
 `DailyTipsRepository` can be replaced later without changing the UI.
 
-General guidance was checked against the [NHS balanced eating guide](https://www.nhs.uk/live-well/eat-well/how-to-eat-a-balanced-diet/eating-a-balanced-diet/),
-[NHS hydration guidance](https://www.nhs.uk/Live-well/eat-well/food-guidelines-and-food-labels/water-drinks-nutrition/),
-[WHO activity guidance](https://www.who.int/health-topics/physical-activity/physical-activity)
-and [CDC sleep guidance](https://www.cdc.gov/sleep/about/). Tips are original,
-general wellness suggestions, without diagnostic or guaranteed weight-loss claims.
+The “Why is weight stable?” page uses daily medians and a robust slope of actual
+readings across up to 28 days. A possible plateau requires at least 21 well-covered
+days, a losing goal and confirmed adult safety context. Forecasts never enter this
+calculation. Short, sparse or noisy histories remain provisional or unclassified.
+Thresholds are engineering heuristics, not clinically validated diagnostic criteria.
+
+Sources, claim limits and remaining clinical review are recorded in
+[DAILY_TIPS_EVIDENCE](docs/DAILY_TIPS_EVIDENCE.md). See the
+[algorithm](docs/WEIGHT_PLATEAU_ALGORITHM.md),
+[redesign report](docs/DAILY_TIPS_REDESIGN_REPORT.md) and
+[validation results](docs/TEST_RESULTS.md).
 
 ## Weight forecast and progress
 
@@ -98,7 +107,7 @@ fl_chart, local notifications and Flutter's iOS Swift Package Manager integratio
 | Path | Contents |
 | --- | --- |
 | `lib/models` | Validated domain and persistence models |
-| `lib/data/daily_tips_catalog.dart` | 180 stable RU/EN tip records |
+| `lib/data/daily_tips_catalog.dart` | 80 RU/EN articles and 120 legacy aliases |
 | `lib/services` | Tip selection/storage, analytics, backup, catalog and networking |
 | `lib/providers` | Session state and backward-compatible local persistence |
 | `lib/screens`, `lib/widgets` | App screens and shared UI |

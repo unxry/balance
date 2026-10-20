@@ -6,6 +6,7 @@ import '../providers/app_data_provider.dart';
 import '../providers/settings_provider.dart';
 import '../theme/app_text_styles.dart';
 import 'common.dart';
+import 'tip_sources_panel.dart';
 
 IconData tipIcon(TipCategory category) => switch (category) {
   TipCategory.nutrition => Icons.restaurant_outlined,
@@ -44,7 +45,13 @@ Future<void> tipAction(
 class DailyTipCard extends StatefulWidget {
   final DailyTip tip;
   final TipVisit visit;
-  const DailyTipCard({super.key, required this.tip, required this.visit});
+  final bool assigned;
+  const DailyTipCard({
+    super.key,
+    required this.tip,
+    required this.visit,
+    this.assigned = true,
+  });
   @override
   State<DailyTipCard> createState() => _DailyTipCardState();
 }
@@ -75,7 +82,15 @@ class _DailyTipCardState extends State<DailyTipCard> {
     final text = AppText(c);
     final ru = context.watch<SettingsProvider>().lang == AppLang.ru;
     final data = context.watch<AppDataProvider>();
-    final copy = widget.tip.copy(ru);
+    final suitable = data.dailyTips.isSuitable(widget.tip);
+    final copy = suitable
+        ? widget.tip.copy(ru)
+        : TipCopy(
+            ru ? 'Сейчас — общая поддержка' : 'General support for now',
+            ru
+                ? 'Цель или ограничения изменились. Этот материал о снижении веса сейчас не подходит; дальнейшие ограничения не предлагаются.'
+                : 'Your goal or safety context changed. This weight-loss material is currently unsuitable; further restriction is not suggested.',
+          );
     final saved = data.dailyTips.saved.contains(widget.tip.id);
     final completed = data.dailyTips.history.any(
       (v) => v.dateKey == widget.visit.dateKey && v.completed,
@@ -155,10 +170,55 @@ class _DailyTipCardState extends State<DailyTipCard> {
               copy.body,
               style: text.inter(size: 14, color: c.fg2, height: 1.6),
             ),
+            if (widget.tip.retired) ...[
+              const SizedBox(height: 10),
+              Text(
+                ru
+                    ? 'Материал обновлён; прежний идентификатор, история и избранное сохранены.'
+                    : 'Content updated; the previous ID, history and saved status are preserved.',
+                style: text.inter(size: 10, color: c.muted),
+              ),
+            ],
+            if (copy.explanation != null) ...[
+              const SizedBox(height: 18),
+              Text(
+                ru ? 'Что происходит?' : 'What is happening?',
+                style: text.inter(size: 13, weight: FontWeight.w600),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                copy.explanation!,
+                style: text.inter(size: 13, color: c.fg2, height: 1.6),
+              ),
+            ],
+            if (widget.visit.basis != TipBasis.universal &&
+                widget.assigned) ...[
+              const SizedBox(height: 18),
+              Text(
+                ru
+                    ? 'Почему Balance показывает этот совет'
+                    : 'Why Balance shows this advice',
+                style: text.inter(size: 13, weight: FontWeight.w600),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                (ru ? widget.visit.reasonRu : widget.visit.reasonEn) ??
+                    (ru
+                        ? 'Основание старой записи не сохранено; новые причины не приписываются.'
+                        : 'The old assignment has no saved rationale; new reasons are not invented.'),
+                style: text.inter(size: 12, color: c.fg2, height: 1.5),
+              ),
+              Text(
+                ru
+                    ? 'Основание относится к дате назначения; после правок записей актуальную оценку смотрите в анализе динамики.'
+                    : 'This rationale describes the assignment date; after edits, see the trend page for the current assessment.',
+                style: text.inter(size: 10, color: c.muted, height: 1.5),
+              ),
+            ],
             if (copy.why != null) ...[
               const SizedBox(height: 20),
               Text(
-                ru ? 'Почему это полезно' : 'Why it helps',
+                ru ? 'Почему такое бывает?' : 'Why might this happen?',
                 style: text.inter(size: 12, weight: FontWeight.w600),
               ),
               const SizedBox(height: 6),
@@ -194,7 +254,9 @@ class _DailyTipCardState extends State<DailyTipCard> {
                     ),
                   ),
                 ),
-              if (_showTask || completed)
+              if ((_showTask || completed) && !widget.assigned)
+                Text(copy.task!, style: text.inter(size: 13, height: 1.5)),
+              if ((_showTask || completed) && widget.assigned)
                 Material(
                   color: c.accentSoft.withValues(alpha: .6),
                   borderRadius: BorderRadius.circular(18),
@@ -215,7 +277,11 @@ class _DailyTipCardState extends State<DailyTipCard> {
                       padding: const EdgeInsets.only(top: 5),
                       child: Text(
                         completed
-                            ? (ru ? 'Выполнено' : 'Completed')
+                            ? (widget.visit.catalogVersion < widget.tip.version
+                                  ? (ru
+                                        ? 'Отметка прежней версии сохранена'
+                                        : 'Previous content completion preserved')
+                                  : (ru ? 'Выполнено' : 'Completed'))
                             : (ru
                                   ? 'Отметьте, когда сделаете'
                                   : 'Check when you have done it'),
@@ -233,6 +299,12 @@ class _DailyTipCardState extends State<DailyTipCard> {
                   ),
                 ),
             ],
+            const SizedBox(height: 22),
+            TipSourcesPanel(
+              sourceIds: suitable
+                  ? widget.tip.sourceIds
+                  : const ['niddk-planner'],
+            ),
           ],
         ),
       ),

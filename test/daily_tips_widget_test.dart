@@ -12,6 +12,8 @@ import 'package:flutter_app/screens/advice_screen.dart';
 import 'package:flutter_app/theme/app_colors.dart';
 import 'package:flutter_app/widgets/common.dart';
 import 'package:flutter_app/widgets/daily_tip_card.dart';
+import 'package:flutter_app/screens/weight_insights_screen.dart';
+import 'package:flutter_app/screens/weight_screen.dart';
 
 void main() {
   late Directory directory;
@@ -102,6 +104,101 @@ void main() {
       }
     }
   }
+
+  testWidgets('insights and library stay usable at 200 percent in RU and EN', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(320, 568));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    for (final ru in [true, false]) {
+      await settings.setLang(ru ? AppLang.ru : AppLang.en);
+      await tester.pumpWidget(
+        app(dark: !ru, scale: 2, child: const WeightInsightsScreen()),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('insightState')), findsOneWidget);
+      expect(
+        find.text(ru ? 'Пока мало данных' : 'Not enough data yet'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      await tester.ensureVisible(find.byKey(const ValueKey('openInsightFood')));
+      await tester.tap(find.byKey(const ValueKey('openInsightFood')));
+      await tester.pumpAndSettle();
+      expect(find.byType(InsightFoodRecordsScreen), findsOneWidget);
+      expect(
+        find.text(ru ? 'Записей пока нет' : 'No entries yet'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+      await tester.pumpWidget(
+        app(dark: !ru, scale: 2, child: const TipLibraryScreen()),
+      );
+      await tester.pumpAndSettle();
+      final firstArticle = find.text(
+        ru ? 'Тарелка с продолжением' : 'A plate with room to grow',
+      );
+      await tester.scrollUntilVisible(
+        firstArticle,
+        150,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(firstArticle);
+      await tester.pumpAndSettle();
+      await tester.tap(firstArticle);
+      await tester.pumpAndSettle();
+      expect(find.byType(TipReadingScreen), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey('tipSource-cdc-eating')),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    }
+  });
+
+  testWidgets('insights open existing graphs on a themed page', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(375, 667));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+    await tester.pumpWidget(
+      app(dark: true, scale: 1, child: const WeightInsightsScreen()),
+    );
+    await tester.pumpAndSettle();
+    final link = find.byKey(const ValueKey('openInsightGraph'));
+    await tester.ensureVisible(link);
+    await tester.tap(link);
+    await tester.pumpAndSettle();
+    expect(find.byType(WeightScreen), findsOneWidget);
+    final graphContext = tester.element(find.byType(WeightScreen));
+    final scaffold = graphContext.findAncestorWidgetOfExactType<Scaffold>()!;
+    expect(scaffold.backgroundColor, AppColors.darkTheme.page);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets(
+    'a library-only favorite appears without creating a daily history visit',
+    (tester) async {
+      const id = 'meal-breakfast';
+      final historyCount = data.dailyTips.history.length;
+      await tester.runAsync(() => data.toggleSavedTip(id));
+      await tester.pumpWidget(
+        app(
+          dark: false,
+          scale: 1,
+          child: const DailyTipsHistoryScreen(savedOnly: true),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Завтрак из доступных продуктов'), findsOneWidget);
+      expect(find.textContaining('Из библиотеки'), findsOneWidget);
+      await tester.tap(find.text('Завтрак из доступных продуктов'));
+      await tester.pumpAndSettle();
+      expect(find.byType(DailyTipCard), findsOneWidget);
+      expect(data.dailyTips.history.length, historyCount);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets(
     'save, explicit task completion, history and saved detail persist',
